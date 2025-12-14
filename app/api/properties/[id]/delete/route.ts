@@ -3,10 +3,13 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
+    
+    // Await params in Next.js 16+
+    const { id } = await params
     
     // Check authentication
     const { data: { user } } = await supabase.auth.getUser()
@@ -21,7 +24,7 @@ export async function POST(
     const { data: property } = await supabase
       .from('properties')
       .select('seller_id, property_media (*)')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (!property || property.seller_id !== user.id) {
@@ -38,7 +41,7 @@ export async function POST(
           // Extract file path from URL
           const urlParts = media.media_url.split('/')
           const bucketName = media.media_type === 'image' ? 'property-images' : 'property-videos'
-          const filePath = `property-media/${params.id}/${urlParts[urlParts.length - 1]}`
+          const filePath = `property-media/${id}/${urlParts[urlParts.length - 1]}`
           
           await supabase.storage.from(bucketName).remove([filePath])
         } catch (err) {
@@ -51,13 +54,13 @@ export async function POST(
     await supabase
       .from('property_media')
       .delete()
-      .eq('property_id', params.id)
+      .eq('property_id', id)
 
     // Delete property
     const { error: deleteError } = await supabase
       .from('properties')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('seller_id', user.id)
 
     if (deleteError) {
