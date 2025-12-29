@@ -4,33 +4,33 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="border-t bg-zinc-50">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+    <footer className="border-t border-[var(--border)] bg-[var(--muted)]">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
           {/* Brand */}
           <div className="space-y-3">
-            <h3 className="text-lg font-bold text-zinc-900">PropLink</h3>
-            <p className="text-sm text-zinc-600">
+            <h3 className="text-lg font-bold text-[var(--primary)] tracking-[var(--letter-spacing)]">PropLink</h3>
+            <p className="text-sm text-[var(--muted-foreground)] tracking-[var(--letter-spacing)]">
               Your trusted platform for buying and selling properties in Nigeria.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-zinc-900">Quick Links</h4>
+            <h4 className="font-semibold text-[var(--foreground)] tracking-[var(--letter-spacing)] text-base">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/properties" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/properties" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   Browse Properties
                 </Link>
               </li>
               <li>
-                <Link href="/register" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/register" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   List Your Property
                 </Link>
               </li>
@@ -39,20 +39,20 @@ export function Footer() {
 
           {/* Support */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-zinc-900">Support</h4>
+            <h4 className="font-semibold text-[var(--foreground)] tracking-[var(--letter-spacing)] text-base">Support</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/about" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/about" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/contact" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/faq" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   FAQ
                 </Link>
               </li>
@@ -61,15 +61,15 @@ export function Footer() {
 
           {/* Legal */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-zinc-900">Legal</h4>
+            <h4 className="font-semibold text-[var(--foreground)] tracking-[var(--letter-spacing)] text-base">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/privacy" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/privacy" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-zinc-600 hover:text-zinc-900">
+                <Link href="/terms" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   Terms of Service
                 </Link>
               </li>
@@ -77,8 +77,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t pt-8 text-center text-sm text-zinc-600">
-          <p>&copy; {currentYear} PropLink. All rights reserved.</p>
+        <div className="mt-8 border-t border-[var(--border)] pt-6 sm:pt-8 text-center text-xs sm:text-sm text-[var(--muted-foreground)] tracking-[var(--letter-spacing)]">
+          <p className='pt-4'>&copy; {currentYear} PropLink. All rights reserved.</p>
         </div>
       </div>
     </footer>

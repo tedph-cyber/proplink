@@ -100,10 +100,10 @@ export function PropertySearch() {
           <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
-          Filters
+          {showFilters ? 'Hide Filters' : 'Show Filters'}
           {hasActiveFilters && (
-            <span className="ml-2 inline-flex items-center justify-center h-5 w-5 rounded-full bg-blue-600 text-xs text-white">
-              !
+            <span className="ml-2 inline-flex items-center justify-center h-5 w-5 rounded-full bg-[var(--primary)] text-xs text-white font-semibold">
+              {[searchQuery, propertyType, state, lga, city, minPrice, maxPrice, sortBy !== 'newest' && sortBy].filter(Boolean).length}
             </span>
           )}
         </Button>
@@ -111,17 +111,17 @@ export function PropertySearch() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="rounded-lg border border-zinc-200 bg-white p-6">
+        <div className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-6 shadow-[var(--shadow-lg)] animate-in slide-in-from-top-2">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             {/* Property Type */}
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Property Type
               </label>
               <select
                 value={propertyType}
                 onChange={(e) => setPropertyType(e.target.value)}
-                className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
               >
                 <option value="">All Types</option>
                 <option value="house">House</option>
@@ -131,13 +131,13 @@ export function PropertySearch() {
 
             {/* State */}
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 State
               </label>
               <select
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
               >
                 <option value="">All States</option>
                 {NIGERIAN_STATES.map(s => (
@@ -148,7 +148,7 @@ export function PropertySearch() {
 
             {/* LGA */}
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 LGA
               </label>
               <Input
@@ -161,7 +161,7 @@ export function PropertySearch() {
 
             {/* City */}
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 City/Area
               </label>
               <Input
@@ -174,7 +174,7 @@ export function PropertySearch() {
 
             {/* Min Price */}
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Min Price (₦)
               </label>
               <Input
@@ -187,7 +187,7 @@ export function PropertySearch() {
 
             {/* Max Price */}
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Max Price (₦)
               </label>
               <Input
@@ -200,13 +200,13 @@ export function PropertySearch() {
 
             {/* Sort By */}
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Sort By
               </label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -233,77 +233,77 @@ export function PropertySearch() {
       {hasActiveFilters && !showFilters && (
         <div className="flex flex-wrap gap-2">
           {searchQuery && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
               Search: "{searchQuery}"
               <button
                 onClick={() => {
                   setSearchQuery('')
                   handleSearch()
                 }}
-                className="hover:text-blue-900"
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
                 ×
               </button>
             </span>
           )}
           {propertyType && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800 capitalize">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20 capitalize">
               {propertyType}
               <button
                 onClick={() => {
                   setPropertyType('')
                   handleSearch()
                 }}
-                className="hover:text-blue-900"
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
                 ×
               </button>
             </span>
           )}
           {state && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
               {state}
               <button
                 onClick={() => {
                   setState('')
                   handleSearch()
                 }}
-                className="hover:text-blue-900"
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
                 ×
               </button>
             </span>
           )}
           {lga && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
               LGA: {lga}
               <button
                 onClick={() => {
                   setLga('')
                   handleSearch()
                 }}
-                className="hover:text-blue-900"
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
                 ×
               </button>
             </span>
           )}
           {city && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
               City: {city}
               <button
                 onClick={() => {
                   setCity('')
                   handleSearch()
                 }}
-                className="hover:text-blue-900"
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
                 ×
               </button>
             </span>
           )}
           {(minPrice || maxPrice) && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
               Price: ₦{minPrice || '0'} - ₦{maxPrice || '∞'}
               <button
                 onClick={() => {
@@ -311,21 +311,21 @@ export function PropertySearch() {
                   setMaxPrice('')
                   handleSearch()
                 }}
-                className="hover:text-blue-900"
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
                 ×
               </button>
             </span>
           )}
           {sortBy && sortBy !== 'newest' && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
               Sort: {sortBy === 'oldest' ? 'Oldest First' : sortBy === 'price-asc' ? 'Price Low-High' : 'Price High-Low'}
               <button
                 onClick={() => {
                   setSortBy('newest')
                   handleSearch()
                 }}
-                className="hover:text-blue-900"
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
                 ×
               </button>

@@ -1,0 +1,9 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#f3f4f6"/>
+  <g>
+    <text x="400" y="280" font-family="Arial, sans-serif" font-size="24" fill="#9ca3af" text-anchor="middle">No Image Available</text>
+    <rect x="350" y="320" width="100" height="80" fill="none" stroke="#9ca3af" stroke-width="3" rx="5"/>
+    <circle cx="375" cy="350" r="8" fill="#9ca3af"/>
+    <polyline points="360,380 375,365 390,380 410,355 440,385" fill="none" stroke="#9ca3af" stroke-width="3"/>
+  </g>
+</svg>
