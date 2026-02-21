@@ -21,11 +21,35 @@ export interface Profile {
 
 export type PropertyType = 'house' | 'land'
 
+// House categorization enums
+export type HouseType = 
+  | 'duplex' 
+  | 'bungalow' 
+  | 'flat' 
+  | 'terrace' 
+  | 'detached' 
+  | 'semi_detached' 
+  | 'townhouse' 
+  | 'cottage'
+
+export type BedroomCategory = '1' | '2' | '3' | '4' | '5_plus'
+
+// Land categorization enums
+export type LandSizeUnit = 'sqm' | 'sqft' | 'acres' | 'hectares' | 'plots'
+
 export interface PropertyFeatures {
+  // House-specific
+  house_types?: HouseType[]
+  bedroom_category?: BedroomCategory
+  
+  // Land-specific
+  land_size_unit?: LandSizeUnit
+  
+  // Backward compatibility
   bedrooms?: number
   bathrooms?: number
   land_size?: number
-  land_size_unit?: 'sqm' | 'sqft' | 'acres' | 'hectares'
+  
   additional_features?: string[]
 }
 
@@ -79,6 +103,9 @@ export interface PropertyFilters {
   state?: string
   lga?: string
   city?: string
+  house_types?: HouseType[]
+  bedroom_category?: BedroomCategory[]
+  land_size_unit?: LandSizeUnit
   sort_by?: 'newest' | 'price_low' | 'price_high'
 }
 

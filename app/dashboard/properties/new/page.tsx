@@ -1,20 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { PropertyType, PropertyFeatures } from '@/lib/types'
-
-const NIGERIAN_STATES = [
-  'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
-  'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT', 'Gombe', 'Imo',
-  'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa',
-  'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba',
-  'Yobe', 'Zamfara'
-]
+import { PropertyType, PropertyFeatures, HouseType, BedroomCategory, LandSizeUnit } from '@/lib/types'
+import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS } from '@/lib/constants'
 
 export default function NewPropertyPage() {
   const router = useRouter()
@@ -33,15 +26,22 @@ export default function NewPropertyPage() {
     state: '',
     lga: '',
     city: '',
-    // Features for houses
+    // House-specific features
+    house_types: [] as HouseType[],
+    bedroom_category: '' as BedroomCategory | '',
     bedrooms: '',
     bathrooms: '',
-    // Features for land
+    // Land-specific features
     land_size: '',
-    land_size_unit: 'sqm' as 'sqm' | 'sqft' | 'acres' | 'hectares',
+    land_size_unit: 'sqm' as LandSizeUnit,
     // Additional features
     additionalFeatures: '',
   })
+
+  // Get LGAs for selected state
+  const availableLGAs = useMemo(() => {
+    return formData.state ? (STATE_LGA_MAPPING_SIMPLIFIED[formData.state] || []) : []
+  }, [formData.state])
 
   const [mediaFiles, setMediaFiles] = useState<File[]>([])
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([])
@@ -106,9 +106,18 @@ export default function NewPropertyPage() {
       const features: PropertyFeatures = {}
       
       if (formData.property_type === 'house') {
+        // New categorization fields
+        if (formData.house_types.length > 0) {
+          features.house_types = formData.house_types
+        }
+        if (formData.bedroom_category) {
+          features.bedroom_category = formData.bedroom_category
+        }
+        // Backward compatibility fields
         if (formData.bedrooms) features.bedrooms = parseInt(formData.bedrooms)
         if (formData.bathrooms) features.bathrooms = parseInt(formData.bathrooms)
       } else {
+        // Land-specific fields
         if (formData.land_size) {
           features.land_size = parseFloat(formData.land_size)
           features.land_size_unit = formData.land_size_unit
@@ -276,7 +285,7 @@ export default function NewPropertyPage() {
               <select
                 required
                 value={formData.state}
-                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, state: e.target.value, lga: '' })}
                 className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
               >
                 <option value="">Select State</option>
@@ -287,13 +296,27 @@ export default function NewPropertyPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-700 mb-2">
-                LGA
+                Local Government Area
               </label>
-              <Input
-                placeholder="e.g., Eti-Osa"
-                value={formData.lga}
-                onChange={(e) => setFormData({ ...formData, lga: e.target.value })}
-              />
+              {formData.state && availableLGAs.length > 0 ? (
+                <select
+                  value={formData.lga}
+                  onChange={(e) => setFormData({ ...formData, lga: e.target.value })}
+                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                >
+                  <option value="">Select LGA</option>
+                  {availableLGAs.map(lga => (
+                    <option key={lga} value={lga}>{lga}</option>
+                  ))}
+                </select>
+              ) : (
+                <Input
+                  placeholder={formData.state ? 'No LGAs available' : 'Select state first'}
+                  value={formData.lga}
+                  onChange={(e) => setFormData({ ...formData, lga: e.target.value })}
+                  disabled={!formData.state}
+                />
+              )}
             </div>
           </div>
 
@@ -311,30 +334,76 @@ export default function NewPropertyPage() {
 
           {/* Conditional Features */}
           {formData.property_type === 'house' ? (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
+              {/* House Types */}
               <div>
                 <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  Bedrooms
+                  House Type(s) <span className="text-zinc-500">(select all that apply)</span>
                 </label>
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder="e.g., 4"
-                  value={formData.bedrooms}
-                  onChange={(e) => setFormData({ ...formData, bedrooms: e.target.value })}
-                />
+                <div className="grid grid-cols-2 gap-3">
+                  {HOUSE_TYPES.map(type => (
+                    <label key={type.value} className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.house_types.includes(type.value)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFormData({ ...formData, house_types: [...formData.house_types, type.value] })
+                          } else {
+                            setFormData({ ...formData, house_types: formData.house_types.filter(t => t !== type.value) })
+                          }
+                        }}
+                        className="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                      />
+                      <span className="ml-2 text-sm text-zinc-700">{type.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
+
+              {/* Bedroom Category */}
               <div>
                 <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  Bathrooms
+                  Bedroom Category
                 </label>
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder="e.g., 3"
-                  value={formData.bathrooms}
-                  onChange={(e) => setFormData({ ...formData, bathrooms: e.target.value })}
-                />
+                <select
+                  value={formData.bedroom_category}
+                  onChange={(e) => setFormData({ ...formData, bedroom_category: e.target.value as BedroomCategory })}
+                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                >
+                  <option value="">Select Bedroom Count</option>
+                  {BEDROOM_CATEGORIES.map(cat => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Legacy fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 mb-2">
+                    Bedrooms <span className="text-zinc-500">(exact count)</span>
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="e.g., 4"
+                    value={formData.bedrooms}
+                    onChange={(e) => setFormData({ ...formData, bedrooms: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 mb-2">
+                    Bathrooms
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="e.g., 3"
+                    value={formData.bathrooms}
+                    onChange={(e) => setFormData({ ...formData, bathrooms: e. target.value })}
+                  />
+                </div>
               </div>
             </div>
           ) : (
@@ -358,13 +427,12 @@ export default function NewPropertyPage() {
                 </label>
                 <select
                   value={formData.land_size_unit}
-                  onChange={(e) => setFormData({ ...formData, land_size_unit: e.target.value as any })}
+                  onChange={(e) => setFormData({ ...formData, land_size_unit: e.target.value as LandSizeUnit })}
                   className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
                 >
-                  <option value="sqm">Square Meters</option>
-                  <option value="sqft">Square Feet</option>
-                  <option value="acres">Acres</option>
-                  <option value="hectares">Hectares</option>
+                  {LAND_SIZE_UNITS.map(unit => (
+                    <option key={unit.value} value={unit.value}>{unit.label}</option>
+                  ))}
                 </select>
               </div>
             </div>

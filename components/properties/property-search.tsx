@@ -1,17 +1,11 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-
-const NIGERIAN_STATES = [
-  'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
-  'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT', 'Gombe', 'Imo',
-  'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa',
-  'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba',
-  'Yobe', 'Zamfara'
-]
+import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS } from '@/lib/constants'
+import { getHouseTypeLabel, getBedroomLabel, getLandSizeUnitDisplay } from '@/lib/utils'
 
 export function PropertySearch() {
   const router = useRouter()
@@ -24,8 +18,18 @@ export function PropertySearch() {
   const [city, setCity] = useState(searchParams.get('city') || '')
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '')
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '')
+  const [houseTypes, setHouseTypes] = useState<string[]>(
+    searchParams.get('houseTypes') ? searchParams.get('houseTypes')!.split(',') : []
+  )
+  const [bedroomCategory, setBedroomCategory] = useState(searchParams.get('bedroom') || '')
+  const [landSizeUnit, setLandSizeUnit] = useState(searchParams.get('landUnit') || '')
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
   const [showFilters, setShowFilters] = useState(false)
+
+  // Get LGAs for selected state
+  const availableLGAs = useMemo(() => {
+    return state ? (STATE_LGA_MAPPING_SIMPLIFIED[state] || []) : []
+  }, [state])
 
   useEffect(() => {
     // Update form when URL params change
@@ -36,22 +40,55 @@ export function PropertySearch() {
     setCity(searchParams.get('city') || '')
     setMinPrice(searchParams.get('minPrice') || '')
     setMaxPrice(searchParams.get('maxPrice') || '')
+    setHouseTypes(searchParams.get('houseTypes') ? searchParams.get('houseTypes')!.split(',') : [])
+    setBedroomCategory(searchParams.get('bedroom') || '')
+    setLandSizeUnit(searchParams.get('landUnit') || '')
     setSortBy(searchParams.get('sort') || 'newest')
   }, [searchParams])
 
-  const handleSearch = (e?: React.FormEvent) => {
+  const handleSearch = (e?: React.FormEvent, overrides?: Partial<{
+    searchQuery: string
+    propertyType: string
+    state: string
+    lga: string
+    city: string
+    minPrice: string
+    maxPrice: string
+    houseTypes: string[]
+    bedroomCategory: string
+    landSizeUnit: string
+    sortBy: string
+  }>) => {
     e?.preventDefault()
+
+    // Use overrides if provided, otherwise use current state
+    const values = {
+      searchQuery: overrides?.searchQuery ?? searchQuery,
+      propertyType: overrides?.propertyType ?? propertyType,
+      state: overrides?.state ?? state,
+      lga: overrides?.lga ?? lga,
+      city: overrides?.city ?? city,
+      minPrice: overrides?.minPrice ?? minPrice,
+      maxPrice: overrides?.maxPrice ?? maxPrice,
+      houseTypes: overrides?.houseTypes ?? houseTypes,
+      bedroomCategory: overrides?.bedroomCategory ?? bedroomCategory,
+      landSizeUnit: overrides?.landSizeUnit ?? landSizeUnit,
+      sortBy: overrides?.sortBy ?? sortBy,
+    }
 
     const params = new URLSearchParams()
     
-    if (searchQuery) params.set('q', searchQuery)
-    if (propertyType) params.set('type', propertyType)
-    if (state) params.set('state', state)
-    if (lga) params.set('lga', lga)
-    if (city) params.set('city', city)
-    if (minPrice) params.set('minPrice', minPrice)
-    if (maxPrice) params.set('maxPrice', maxPrice)
-    if (sortBy && sortBy !== 'newest') params.set('sort', sortBy)
+    if (values.searchQuery) params.set('q', values.searchQuery)
+    if (values.propertyType) params.set('type', values.propertyType)
+    if (values.state) params.set('state', values.state)
+    if (values.lga) params.set('lga', values.lga)
+    if (values.city) params.set('city', values.city)
+    if (values.minPrice) params.set('minPrice', values.minPrice)
+    if (values.maxPrice) params.set('maxPrice', values.maxPrice)
+    if (values.houseTypes.length > 0) params.set('houseTypes', values.houseTypes.join(','))
+    if (values.bedroomCategory) params.set('bedroom', values.bedroomCategory)
+    if (values.landSizeUnit) params.set('landUnit', values.landSizeUnit)
+    if (values.sortBy && values.sortBy !== 'newest') params.set('sort', values.sortBy)
 
     router.push(`/properties?${params.toString()}`)
   }
@@ -64,11 +101,14 @@ export function PropertySearch() {
     setCity('')
     setMinPrice('')
     setMaxPrice('')
+    setHouseTypes([])
+    setBedroomCategory('')
+    setLandSizeUnit('')
     setSortBy('newest')
     router.push('/properties')
   }
 
-  const hasActiveFilters = searchQuery || propertyType || state || lga || city || minPrice || maxPrice || (sortBy && sortBy !== 'newest')
+  const hasActiveFilters = searchQuery || propertyType || state || lga || city || minPrice || maxPrice || houseTypes.length > 0 || bedroomCategory || landSizeUnit || (sortBy && sortBy !== 'newest')
 
   return (
     <div className="space-y-4">
@@ -120,7 +160,12 @@ export function PropertySearch() {
               </label>
               <select
                 value={propertyType}
-                onChange={(e) => setPropertyType(e.target.value)}
+                onChange={(e) => {
+                  setPropertyType(e.target.value)
+                  if (e.target.value !== 'house') setHouseTypes([])
+                  if (e.target.value !== 'house') setBedroomCategory('')
+                  if (e.target.value !== 'land') setLandSizeUnit('')
+                }}
                 className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
               >
                 <option value="">All Types</option>
@@ -136,7 +181,10 @@ export function PropertySearch() {
               </label>
               <select
                 value={state}
-                onChange={(e) => setState(e.target.value)}
+                onChange={(e) => {
+                  setState(e.target.value)
+                  setLga('')
+                }}
                 className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
               >
                 <option value="">All States</option>
@@ -146,17 +194,31 @@ export function PropertySearch() {
               </select>
             </div>
 
-            {/* LGA */}
+            {/* LGA - Dynamic based on State */}
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                LGA
+                Local Government
               </label>
-              <Input
-                type="text"
-                placeholder="e.g., Eti-Osa"
-                value={lga}
-                onChange={(e) => setLga(e.target.value)}
-              />
+              {state && availableLGAs.length > 0 ? (
+                <select
+                  value={lga}
+                  onChange={(e) => setLga(e.target.value)}
+                  className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                >
+                  <option value="">All LGAs</option>
+                  {availableLGAs.map(l => (
+                    <option key={l} value={l}>{l}</option>
+                  ))}
+                </select>
+              ) : (
+                <Input
+                  type="text"
+                  placeholder={state ? 'No LGAs available' : 'Select state first'}
+                  value={lga}
+                  onChange={(e) => setLga(e.target.value)}
+                  disabled={!state}
+                />
+              )}
             </div>
 
             {/* City */}
@@ -198,6 +260,72 @@ export function PropertySearch() {
               />
             </div>
 
+            {/* House Types - Only for houses */}
+            {propertyType === 'house' && (
+              <div>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                  House Type
+                </label>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {HOUSE_TYPES.map(type => (
+                    <label key={type.value} className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={houseTypes.includes(type.value)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setHouseTypes([...houseTypes, type.value])
+                          } else {
+                            setHouseTypes(houseTypes.filter(t => t !== type.value))
+                          }
+                        }}
+                        className="rounded border-[var(--border)] text-[var(--primary)]"
+                      />
+                      <span className="ml-2 text-sm text-[var(--foreground)]">{type.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Bedroom Category - Only for houses */}
+            {propertyType === 'house' && (
+              <div>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                  Bedrooms
+                </label>
+                <select
+                  value={bedroomCategory}
+                  onChange={(e) => setBedroomCategory(e.target.value)}
+                  className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                >
+                  <option value="">Any</option>
+                  {BEDROOM_CATEGORIES.map(cat => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Land Size Unit - Only for lands */}
+            {propertyType === 'land' && (
+              <div>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                  Land Size Unit
+                </label>
+                <select
+                  value={landSizeUnit}
+                  onChange={(e) => setLandSizeUnit(e.target.value)}
+                  className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                >
+                  <option value="">Any Unit</option>
+                  {LAND_SIZE_UNITS.map(unit => (
+                    <option key={unit.value} value={unit.value}>{unit.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Sort By */}
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
@@ -238,7 +366,7 @@ export function PropertySearch() {
               <button
                 onClick={() => {
                   setSearchQuery('')
-                  handleSearch()
+                  handleSearch(undefined, { searchQuery: '' })
                 }}
                 className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
@@ -252,7 +380,7 @@ export function PropertySearch() {
               <button
                 onClick={() => {
                   setPropertyType('')
-                  handleSearch()
+                  handleSearch(undefined, { propertyType: '' })
                 }}
                 className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
@@ -266,7 +394,7 @@ export function PropertySearch() {
               <button
                 onClick={() => {
                   setState('')
-                  handleSearch()
+                  handleSearch(undefined, { state: '' })
                 }}
                 className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
@@ -280,7 +408,7 @@ export function PropertySearch() {
               <button
                 onClick={() => {
                   setLga('')
-                  handleSearch()
+                  handleSearch(undefined, { lga: '' })
                 }}
                 className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
@@ -294,7 +422,7 @@ export function PropertySearch() {
               <button
                 onClick={() => {
                   setCity('')
-                  handleSearch()
+                  handleSearch(undefined, { city: '' })
                 }}
                 className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
@@ -309,7 +437,49 @@ export function PropertySearch() {
                 onClick={() => {
                   setMinPrice('')
                   setMaxPrice('')
-                  handleSearch()
+                  handleSearch(undefined, { minPrice: '', maxPrice: '' })
+                }}
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {houseTypes.length > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+              Types: {houseTypes.map(getHouseTypeLabel).join(', ')}
+              <button
+                onClick={() => {
+                  setHouseTypes([])
+                  handleSearch(undefined, { houseTypes: [] })
+                }}
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {bedroomCategory && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+              {getBedroomLabel(bedroomCategory)}
+              <button
+                onClick={() => {
+                  setBedroomCategory('')
+                  handleSearch(undefined, { bedroomCategory: '' })
+                }}
+                className="hover:text-[var(--destructive)] transition-colors font-bold"
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {landSizeUnit && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+              Unit: {getLandSizeUnitDisplay(landSizeUnit).label}
+              <button
+                onClick={() => {
+                  setLandSizeUnit('')
+                  handleSearch(undefined, { landSizeUnit: '' })
                 }}
                 className="hover:text-[var(--destructive)] transition-colors font-bold"
               >
@@ -323,7 +493,7 @@ export function PropertySearch() {
               <button
                 onClick={() => {
                   setSortBy('newest')
-                  handleSearch()
+                  handleSearch(undefined, { sortBy: 'newest' })
                 }}
                 className="hover:text-[var(--destructive)] transition-colors font-bold"
               >

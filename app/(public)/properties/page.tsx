@@ -16,6 +16,9 @@ type SearchParams = {
   city?: string;
   minPrice?: string;
   maxPrice?: string;
+  houseTypes?: string;
+  bedroom?: string;
+  landUnit?: string;
   sort?: string;
 };
 
@@ -66,6 +69,24 @@ export default async function PropertiesPage({
   // Filter by city
   if (params.city) {
     query = query.ilike("city", `%${params.city}%`);
+  }
+
+  // Filter by house types (multi-select checkbox values)
+  if (params.houseTypes) {
+    const houseTypesArray = params.houseTypes.split(',');
+    // Filter properties where features.house_types contains any of the selected types
+    const houseTypeFilters = houseTypesArray.map(type => `features->house_types.cs.["${type}"]`);
+    query = query.or(houseTypeFilters.join(','));
+  }
+
+  // Filter by bedroom category
+  if (params.bedroom) {
+    query = query.eq('features->>>bedroom_category', params.bedroom);
+  }
+
+  // Filter by land size unit
+  if (params.landUnit) {
+    query = query.eq('features->>>land_size_unit', params.landUnit);
   }
 
   // Filter by price range

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Property, PropertyMedia } from '@/lib/types'
-import { formatPriceRange, formatLocation } from '@/lib/utils'
+import { formatPriceRange, formatLocation, getHouseTypeLabels, getBedroomLabel, formatLandSize } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 
 interface PropertyCardProps {
@@ -53,20 +53,39 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
           {/* Features Preview (if house) */}
           {property.property_type === 'house' && property.features && (
-            <div className="mt-3 flex gap-3 text-xs text-[var(--muted-foreground)]">
-              {property.features.bedrooms && (
-                <span>🛏️ {property.features.bedrooms} beds</span>
+            <div className="mt-3 space-y-2 text-xs text-[var(--muted-foreground)]">
+              {property.features.house_types && property.features.house_types.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {property.features.house_types.map((type, idx) => (
+                    <Badge key={idx} variant="default" className="text-xs">
+                      {getHouseTypeLabels([type])[0]}
+                    </Badge>
+                  ))}
+                </div>
               )}
-              {property.features.bathrooms && (
-                <span>🚿 {property.features.bathrooms} baths</span>
-              )}
+              <div className="flex gap-3">
+                {property.features.bedroom_category && (
+                  <span>🛏️ {getBedroomLabel(property.features.bedroom_category)}</span>
+                )}
+                {property.features.bedrooms && (
+                  <span>🛏️ {property.features.bedrooms} beds</span>
+                )}
+                {property.features.bathrooms && (
+                  <span>🚿 {property.features.bathrooms} baths</span>
+                )}
+              </div>
             </div>
           )}
 
           {/* Features Preview (if land) */}
-          {property.property_type === 'land' && property.features?.land_size && (
-            <div className="mt-3 text-xs text-[var(--muted-foreground)]">
-              📏 {property.features.land_size} {property.features.land_size_unit || 'sqm'}
+          {property.property_type === 'land' && property.features && (
+            <div className="mt-3 space-y-2 text-xs text-[var(--muted-foreground)]">
+              {property.features.land_size && property.features.land_size_unit && (
+                <div>📏 {formatLandSize(property.features.land_size, property.features.land_size_unit)}</div>
+              )}
+              {property.features.land_size && !property.features.land_size_unit && (
+                <div>📏 {property.features.land_size} sqm</div>
+              )}
             </div>
           )}
         </div>
