@@ -123,7 +123,7 @@ export function PropertySearch() {
             className="pr-10"
           />
           <svg
-            className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400"
+            className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--muted-foreground)]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

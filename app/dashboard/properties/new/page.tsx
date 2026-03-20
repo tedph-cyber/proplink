@@ -200,15 +200,15 @@ export default function NewPropertyPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900">Add New Property</h1>
-        <p className="mt-2 text-zinc-600">List a property for sale</p>
+        <h1 className="text-3xl font-bold text-[var(--foreground)]">Add New Property</h1>
+        <p className="mt-2 text-[var(--muted-foreground)]">List a property for sale</p>
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-3xl">
-        <div className="space-y-6 rounded-lg border border-zinc-200 bg-white p-6">
+        <div className="space-y-6 rounded-lg border border-[var(--border)] bg-[var(--card)] p-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Property Title <span className="text-red-500">*</span>
             </label>
             <Input
@@ -221,7 +221,7 @@ export default function NewPropertyPage() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Description <span className="text-red-500">*</span>
             </label>
             <Textarea
@@ -235,14 +235,14 @@ export default function NewPropertyPage() {
 
           {/* Property Type */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Property Type <span className="text-red-500">*</span>
             </label>
             <select
               required
               value={formData.property_type}
               onChange={(e) => setFormData({ ...formData, property_type: e.target.value as PropertyType })}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+              className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
             >
               <option value="house">House</option>
               <option value="land">Land</option>
@@ -252,7 +252,7 @@ export default function NewPropertyPage() {
           {/* Price */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Price (₦) <span className="text-red-500">*</span>
               </label>
               <Input
@@ -264,7 +264,7 @@ export default function NewPropertyPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Max Price (₦) <span className="text-zinc-500">(optional)</span>
               </label>
               <Input
@@ -279,14 +279,14 @@ export default function NewPropertyPage() {
           {/* Location */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 State <span className="text-red-500">*</span>
               </label>
               <select
                 required
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value, lga: '' })}
-                className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
               >
                 <option value="">Select State</option>
                 {NIGERIAN_STATES.map(state => (
@@ -295,14 +295,14 @@ export default function NewPropertyPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Local Government Area
               </label>
               {formData.state && availableLGAs.length > 0 ? (
                 <select
                   value={formData.lga}
                   onChange={(e) => setFormData({ ...formData, lga: e.target.value })}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
                 >
                   <option value="">Select LGA</option>
                   {availableLGAs.map(lga => (
@@ -321,7 +321,7 @@ export default function NewPropertyPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               City/Area <span className="text-red-500">*</span>
             </label>
             <Input
@@ -337,8 +337,8 @@ export default function NewPropertyPage() {
             <div className="space-y-4">
               {/* House Types */}
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  House Type(s) <span className="text-zinc-500">(select all that apply)</span>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                  House Type(s) <span className="text-[var(--muted-foreground)]">(select all that apply)</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {HOUSE_TYPES.map(type => (
@@ -353,9 +353,9 @@ export default function NewPropertyPage() {
                             setFormData({ ...formData, house_types: formData.house_types.filter(t => t !== type.value) })
                           }
                         }}
-                        className="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                        className="rounded border-[var(--border)] text-[var(--foreground)] focus:ring-[var(--ring)]"
                       />
-                      <span className="ml-2 text-sm text-zinc-700">{type.label}</span>
+                      <span className="ml-2 text-sm text-[var(--foreground)]">{type.label}</span>
                     </label>
                   ))}
                 </div>
@@ -363,13 +363,13 @@ export default function NewPropertyPage() {
 
               {/* Bedroom Category */}
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                   Bedroom Category
                 </label>
                 <select
                   value={formData.bedroom_category}
                   onChange={(e) => setFormData({ ...formData, bedroom_category: e.target.value as BedroomCategory })}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
                 >
                   <option value="">Select Bedroom Count</option>
                   {BEDROOM_CATEGORIES.map(cat => (
@@ -381,8 +381,8 @@ export default function NewPropertyPage() {
               {/* Legacy fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-2">
-                    Bedrooms <span className="text-zinc-500">(exact count)</span>
+                  <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                    Bedrooms <span className="text-[var(--muted-foreground)]">(exact count)</span>
                   </label>
                   <Input
                     type="number"
@@ -393,7 +393,7 @@ export default function NewPropertyPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-2">
+                  <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                     Bathrooms
                   </label>
                   <Input
@@ -409,7 +409,7 @@ export default function NewPropertyPage() {
           ) : (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                   Land Size
                 </label>
                 <Input
@@ -422,13 +422,13 @@ export default function NewPropertyPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                   Unit
                 </label>
                 <select
                   value={formData.land_size_unit}
                   onChange={(e) => setFormData({ ...formData, land_size_unit: e.target.value as LandSizeUnit })}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
                 >
                   {LAND_SIZE_UNITS.map(unit => (
                     <option key={unit.value} value={unit.value}>{unit.label}</option>
@@ -440,7 +440,7 @@ export default function NewPropertyPage() {
 
           {/* Additional Features */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Additional Features
             </label>
             <Input
@@ -448,20 +448,20 @@ export default function NewPropertyPage() {
               value={formData.additionalFeatures}
               onChange={(e) => setFormData({ ...formData, additionalFeatures: e.target.value })}
             />
-            <p className="mt-1 text-xs text-zinc-500">Separate features with commas</p>
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">Separate features with commas</p>
           </div>
 
           {/* Media Upload */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Photos & Videos <span className="text-zinc-500">(Max 10 files, 10MB each)</span>
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              Photos & Videos <span className="text-[var(--muted-foreground)]">(Max 10 files, 10MB each)</span>
             </label>
             <input
               type="file"
               multiple
               accept="image/*,video/*"
               onChange={handleFileChange}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)]"
             />
             
             {/* Media Previews */}
@@ -496,7 +496,7 @@ export default function NewPropertyPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
+            <div className="rounded-md bg-red-50 dark:bg-red-950/40 p-3 text-sm text-red-800 dark:text-red-200">
               {error}
             </div>
           )}

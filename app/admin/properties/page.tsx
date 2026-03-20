@@ -50,22 +50,22 @@ export default async function AdminPropertiesPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-900">Manage Properties</h1>
-          <p className="mt-2 text-zinc-600">
+          <h1 className="text-3xl font-bold text-[var(--foreground)]">Manage Properties</h1>
+          <p className="mt-2 text-[var(--muted-foreground)]">
             {typedProperties?.length || 0} {typedProperties?.length === 1 ? 'property' : 'properties'} total
           </p>
         </div>
         <Link
           href="/admin"
-          className="text-sm text-zinc-600 hover:text-zinc-900"
+          className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
         >
           ← Back to Dashboard
         </Link>
       </div>
 
       {!typedProperties || typedProperties.length === 0 ? (
-        <div className="rounded-lg border border-zinc-200 bg-white p-12 text-center">
-          <p className="text-zinc-600">No properties listed yet</p>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-12 text-center">
+          <p className="text-[var(--muted-foreground)]">No properties listed yet</p>
         </div>
       ) : (
         <div className="grid gap-6">
@@ -79,11 +79,11 @@ export default async function AdminPropertiesPage() {
             return (
               <div
                 key={property.id}
-                className="rounded-lg border border-zinc-200 bg-white overflow-hidden hover:shadow-md transition-shadow"
+                className="rounded-lg border border-[var(--border)] bg-[var(--card)] overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="grid md:grid-cols-[250px_1fr] gap-6">
                   {/* Property Image */}
-                  <div className="relative aspect-4/3 md:aspect-auto md:h-full bg-zinc-100">
+                  <div className="relative aspect-4/3 md:aspect-auto md:h-full bg-[var(--muted)]">
                     {firstImage ? (
                       <img
                         src={firstImage.media_url}
@@ -92,7 +92,7 @@ export default async function AdminPropertiesPage() {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
-                        <svg className="h-12 w-12 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="h-12 w-12 text-[var(--muted-foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                       </div>
@@ -110,32 +110,32 @@ export default async function AdminPropertiesPage() {
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="text-xl font-semibold text-zinc-900 mb-1">
+                          <h3 className="text-xl font-semibold text-[var(--foreground)] mb-1">
                             {property.title}
                           </h3>
-                          <p className="text-sm text-zinc-600">
+                          <p className="text-sm text-[var(--muted-foreground)]">
                             {property.city}, {property.state}
                           </p>
                         </div>
                       </div>
 
-                      <p className="text-lg font-bold text-zinc-900 mb-3">
+                      <p className="text-lg font-bold text-[var(--foreground)] mb-3">
                         {formatPriceRange(property.price_min, property.price_max)}
                       </p>
 
-                      <p className="text-sm text-zinc-600 line-clamp-2 mb-4">
+                      <p className="text-sm text-[var(--muted-foreground)] line-clamp-2 mb-4">
                         {property.description}
                       </p>
 
                       {/* Seller Info */}
-                      <div className="mb-4 p-3 bg-zinc-50 rounded-lg">
-                        <p className="text-xs font-medium text-zinc-500 mb-1">Seller</p>
+                      <div className="mb-4 p-3 bg-[var(--muted)] rounded-lg">
+                        <p className="text-xs font-medium text-[var(--muted-foreground)] mb-1">Seller</p>
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-medium text-zinc-900">
+                            <p className="text-sm font-medium text-[var(--foreground)]">
                               {seller?.company_name || 'Individual Seller'}
                             </p>
-                            <p className="text-xs text-zinc-600">
+                            <p className="text-xs text-[var(--muted-foreground)]">
                               {seller?.whatsapp_number || 'No WhatsApp'}
                             </p>
                           </div>
@@ -147,7 +147,7 @@ export default async function AdminPropertiesPage() {
 
                       {/* Property Features */}
                       {property.features && (
-                        <div className="flex flex-wrap gap-3 text-xs text-zinc-600">
+                        <div className="flex flex-wrap gap-3 text-xs text-[var(--muted-foreground)]">
                           {property.property_type === 'house' && (
                             <>
                               {property.features.bedrooms && (
@@ -182,7 +182,7 @@ export default async function AdminPropertiesPage() {
                             </svg>
                             {property.property_media?.length || 0} photos
                           </span>
-                          <span className="text-zinc-400">
+                          <span className="text-[var(--muted-foreground)]">
                             • Posted {new Date(property.created_at).toLocaleDateString()}
                           </span>
                         </div>
@@ -190,14 +190,14 @@ export default async function AdminPropertiesPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-3 mt-6 pt-4 border-t border-zinc-200">
+                    <div className="flex gap-3 mt-6 pt-4 border-t border-[var(--border)]">
                       <Link href={`/properties/${property.id}`} className="flex-1">
-                        <button className="w-full rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50">
+                        <button className="w-full rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--muted)]">
                           View Public
                         </button>
                       </Link>
                       <Link href={`/dashboard/properties/${property.id}/edit`} className="flex-1">
-                        <button className="w-full rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50">
+                        <button className="w-full rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--muted)]">
                           Edit
                         </button>
                       </Link>

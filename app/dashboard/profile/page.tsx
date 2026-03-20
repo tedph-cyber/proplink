@@ -90,7 +90,7 @@ export default function ProfilePage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border)] border-t-[var(--foreground)]"></div>
         </div>
       </div>
     )
@@ -99,29 +99,29 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900">Profile Settings</h1>
-        <p className="mt-2 text-zinc-600">Manage your account information</p>
+        <h1 className="text-3xl font-bold text-[var(--foreground)]">Profile Settings</h1>
+        <p className="mt-2 text-[var(--muted-foreground)]">Manage your account information</p>
       </div>
 
-      <div className="rounded-lg border border-zinc-200 bg-white p-6 max-w-2xl">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-6 max-w-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email (read-only) */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Email
             </label>
             <Input
               type="email"
               value={userEmail}
               disabled
-              className="bg-zinc-50"
+              className="bg-[var(--muted)]"
             />
-            <p className="mt-1 text-xs text-zinc-500">Email cannot be changed</p>
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">Email cannot be changed</p>
           </div>
 
           {/* WhatsApp Number */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               WhatsApp Number
             </label>
             <Input
@@ -130,20 +130,20 @@ export default function ProfilePage() {
               value={formData.whatsapp_number}
               onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
             />
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">
               Include country code (e.g., +234 for Nigeria)
             </p>
           </div>
 
           {/* Seller Type */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
               Account Type
             </label>
             <select
               value={formData.seller_type}
               onChange={(e) => setFormData({ ...formData, seller_type: e.target.value as 'individual' | 'agent' | 'developer' })}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+              className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
             >
               <option value="individual">Individual</option>
               <option value="agent">Agent</option>
@@ -154,7 +154,7 @@ export default function ProfilePage() {
           {/* Company Name */}
           {(formData.seller_type === 'agent' || formData.seller_type === 'developer') && (
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Company Name
               </label>
               <Input
@@ -170,8 +170,8 @@ export default function ProfilePage() {
           {message && (
             <div className={`rounded-md p-3 text-sm ${
               message.includes('Error') 
-                ? 'bg-red-50 text-red-800' 
-                : 'bg-green-50 text-green-800'
+                ? 'bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-200' 
+                : 'bg-green-50 dark:bg-green-950/40 text-green-800 dark:text-green-200'
             }`}>
               {message}
             </div>

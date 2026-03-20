@@ -3,12 +3,16 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -83,57 +87,147 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="rounded-lg bg-white p-8 shadow-md">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-zinc-900">Create Seller Account</h1>
-        <p className="mt-2 text-sm text-zinc-600">Start listing your properties today</p>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="rounded-2xl backdrop-blur-xl bg-white/90 dark:bg-zinc-900/80 border border-[var(--border)] p-8 shadow-2xl w-full"
+    >
+      <div className="mb-8 space-y-2">
+        <h1 className="text-3xl font-bold text-[var(--foreground)]">Create Seller Account</h1>
+        <p className="text-[var(--muted-foreground)]">Start listing your properties today</p>
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
+        <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 p-3 text-sm text-red-800 dark:text-red-200">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          type="email"
-          label="Email"
-          placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Name Fields Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="firstName" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              First Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              placeholder="John"
+              value={email.split('@')[0] || ''}
+              onChange={(e) => {}}
+              className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all text-sm"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="lastName" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              Last Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              placeholder="Doe"
+              className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all text-sm"
+              required
+            />
+          </div>
+        </div>
 
-        <Input
-          type="password"
-          label="Password"
-          placeholder="Minimum 6 characters"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        {/* Email */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            Email Address <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            placeholder="your@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all text-sm"
+            required
+          />
+        </div>
 
-        <Input
-          type="password"
-          label="Confirm Password"
-          placeholder="Re-enter password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
+        {/* Password */}
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            Password <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              placeholder="Minimum 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 pr-10 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all text-sm"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-[var(--muted)] rounded transition-colors"
+            >
+              {showPassword ? (
+                <EyeOff className="w-4 h-4 text-[var(--muted-foreground)]" />
+              ) : (
+                <Eye className="w-4 h-4 text-[var(--muted-foreground)]" />
+              )}
+            </button>
+          </div>
+        </div>
 
-        <Input
-          type="tel"
-          label="WhatsApp Number"
-          placeholder="e.g., 2348012345678"
-          value={whatsappNumber}
-          onChange={(e) => setWhatsappNumber(e.target.value)}
-          required
-        />
+        {/* Confirm Password */}
+        <div>
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            Confirm Password <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              id="confirmPassword"
+              placeholder="Re-enter password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-4 py-2 pr-10 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all text-sm"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-[var(--muted)] rounded transition-colors"
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="w-4 h-4 text-[var(--muted-foreground)]" />
+              ) : (
+                <Eye className="w-4 h-4 text-[var(--muted-foreground)]" />
+              )}
+            </button>
+          </div>
+        </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-zinc-700">
+        {/* WhatsApp Number */}
+        <div>
+          <label htmlFor="whatsapp" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            WhatsApp Number <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="tel"
+            id="whatsapp"
+            placeholder="e.g., 2348012345678"
+            value={whatsappNumber}
+            onChange={(e) => setWhatsappNumber(e.target.value)}
+            className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all text-sm"
+            required
+          />
+        </div>
+
+        {/* Account Type */}
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-[var(--foreground)]">
             Account Type <span className="text-red-500">*</span>
           </label>
           <div className="flex gap-4">
@@ -143,9 +237,9 @@ export default function RegisterPage() {
                 value="individual"
                 checked={sellerType === 'individual'}
                 onChange={(e) => setSellerType(e.target.value as 'individual' | 'company')}
-                className="h-4 w-4 text-zinc-900"
+                className="h-4 w-4"
               />
-              <span className="text-sm text-zinc-700">Individual</span>
+              <span className="text-sm text-[var(--foreground)]">Individual</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -153,36 +247,60 @@ export default function RegisterPage() {
                 value="company"
                 checked={sellerType === 'company'}
                 onChange={(e) => setSellerType(e.target.value as 'individual' | 'company')}
-                className="h-4 w-4 text-zinc-900"
+                className="h-4 w-4"
               />
-              <span className="text-sm text-zinc-700">Company</span>
+              <span className="text-sm text-[var(--foreground)]">Company</span>
             </label>
           </div>
         </div>
 
+        {/* Company Name (conditional) */}
         {sellerType === 'company' && (
-          <Input
-            type="text"
-            label="Company Name"
-            placeholder="Your company name"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            required
-          />
+          <div>
+            <label htmlFor="companyName" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              Company Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="companyName"
+              placeholder="Your company name"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all text-sm"
+              required
+            />
+          </div>
         )}
 
+        {/* Terms Agreement */}
+        <div className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            id="terms"
+            className="h-4 w-4 mt-1 rounded border-[var(--border)] accent-blue-600"
+            required
+          />
+          <label htmlFor="terms" className="text-xs text-[var(--muted-foreground)]">
+            I agree to the{' '}
+            <Link href="/terms" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">
+              Terms & Conditions
+            </Link>
+          </label>
+        </div>
+
+        {/* Submit Button */}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? 'Creating Account...' : 'Create Account'}
         </Button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-zinc-600">
+      <div className="mt-6 text-center text-sm text-[var(--muted-foreground)]">
         Already have an account?{' '}
-        <Link href="/login" className="font-medium text-zinc-900 hover:underline">
+        <Link href="/login" className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
           Sign in
         </Link>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

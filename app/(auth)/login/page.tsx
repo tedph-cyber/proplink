@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,16 +44,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="rounded-lg bg-white p-8 shadow-md">
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="rounded-2xl backdrop-blur-xl bg-white/90 dark:bg-zinc-900/80 border border-[var(--border)] p-8 shadow-2xl"
+    >
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-zinc-900">Welcome Back</h1>
-        <p className="mt-2 text-sm text-zinc-600">
+        <h1 className="text-2xl font-bold text-[var(--foreground)]">Welcome Back</h1>
+        <p className="mt-2 text-sm text-[var(--muted-foreground)]">
           Sign in to manage your properties
         </p>
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
+        <div className="mb-4 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 p-3 text-sm text-red-800 dark:text-red-200">
           {error}
         </div>
       )}
@@ -81,15 +87,15 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-zinc-600">
+      <div className="mt-6 text-center text-sm text-[var(--muted-foreground)]">
         Don't have an account?{" "}
         <Link
           href="/register"
-          className="font-medium text-zinc-900 hover:underline"
+          className="font-medium text-[#0568fd] hover:text-[#c379df] transition-colors"
         >
           Create account
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

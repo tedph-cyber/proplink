@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { ToggleTheme } from '@/components/ui/toggle-theme'
 import type { User } from '@supabase/supabase-js'
 
 interface UserMenuProps {
@@ -27,9 +28,9 @@ export function UserMenu({ user }: UserMenuProps) {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-50"
+        className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"
       >
-        <div className="h-6 w-6 rounded-full bg-zinc-900 flex items-center justify-center text-white text-xs">
+        <div className="h-6 w-6 rounded-full bg-[var(--primary)] flex items-center justify-center text-white text-xs">
           {user.email?.[0].toUpperCase()}
         </div>
         <svg
@@ -48,41 +49,49 @@ export function UserMenu({ user }: UserMenuProps) {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-zinc-200 bg-white shadow-lg z-20">
-            <div className="border-b border-zinc-200 px-4 py-3">
-              <p className="text-sm font-medium text-zinc-900 truncate">{user.email}</p>
-              <p className="text-xs text-zinc-500">Seller Account</p>
+          <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-[var(--border)] bg-[var(--card)] shadow-lg z-20 backdrop-blur-sm">
+            <div className="border-b border-[var(--border)] px-4 py-3">
+              <p className="text-sm font-medium text-[var(--card-foreground)] truncate">{user.email}</p>
+              <p className="text-xs text-[var(--muted-foreground)]">Seller Account</p>
             </div>
 
             <div className="py-2">
               <Link
                 href="/dashboard"
-                className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
+                className="block px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]"
                 onClick={() => setIsOpen(false)}
               >
                 Dashboard
               </Link>
               <Link
                 href="/dashboard/properties"
-                className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
+                className="block px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]"
                 onClick={() => setIsOpen(false)}
               >
                 My Properties
               </Link>
               <Link
                 href="/dashboard/profile"
-                className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
+                className="block px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]"
                 onClick={() => setIsOpen(false)}
               >
                 Profile Settings
               </Link>
             </div>
 
-            <div className="border-t border-zinc-200 py-2">
+            {/* Theme Toggle Section */}
+            <div className="border-t border-[var(--border)] py-2">
+              <div className="flex items-center justify-between px-4 py-2">
+                <span className="text-sm text-[var(--foreground)]">Theme</span>
+                <ToggleTheme />
+              </div>
+            </div>
+
+            <div className="border-t border-[var(--border)] py-2">
               <button
                 onClick={handleLogout}
                 disabled={loading}
-                className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                className="block w-full px-4 py-2 text-left text-sm text-[var(--destructive)] hover:bg-[var(--destructive)]/10 disabled:opacity-50"
               >
                 {loading ? 'Signing out...' : 'Sign Out'}
               </button>

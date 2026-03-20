@@ -40,35 +40,35 @@ export default async function AdminSellersPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-900">Manage Sellers</h1>
-          <p className="mt-2 text-zinc-600">
+          <h1 className="text-3xl font-bold text-[var(--foreground)]">Manage Sellers</h1>
+          <p className="mt-2 text-[var(--muted-foreground)]">
             {typedSellers?.length || 0} {typedSellers?.length === 1 ? 'seller' : 'sellers'} registered
           </p>
         </div>
         <Link
           href="/admin"
-          className="text-sm text-zinc-600 hover:text-zinc-900"
+          className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
         >
           ← Back to Dashboard
         </Link>
       </div>
 
       {!typedSellers || typedSellers.length === 0 ? (
-        <div className="rounded-lg border border-zinc-200 bg-white p-12 text-center">
-          <p className="text-zinc-600">No sellers registered yet</p>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-12 text-center">
+          <p className="text-[var(--muted-foreground)]">No sellers registered yet</p>
         </div>
       ) : (
-        <div className="rounded-lg border border-zinc-200 bg-white overflow-hidden">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-zinc-50 border-b border-zinc-200">
+              <thead className="bg-[var(--muted)] border-b border-[var(--border)]">
                 <tr>
-                  <th className="py-3 px-4 text-left text-sm font-medium text-zinc-600">Seller</th>
-                  <th className="py-3 px-4 text-left text-sm font-medium text-zinc-600">Type</th>
-                  <th className="py-3 px-4 text-left text-sm font-medium text-zinc-600">WhatsApp</th>
-                  <th className="py-3 px-4 text-left text-sm font-medium text-zinc-600">Properties</th>
-                  <th className="py-3 px-4 text-left text-sm font-medium text-zinc-600">Joined</th>
-                  <th className="py-3 px-4 text-left text-sm font-medium text-zinc-600">Actions</th>
+                  <th className="py-3 px-4 text-left text-sm font-medium text-[var(--muted-foreground)]">Seller</th>
+                  <th className="py-3 px-4 text-left text-sm font-medium text-[var(--muted-foreground)]">Type</th>
+                  <th className="py-3 px-4 text-left text-sm font-medium text-[var(--muted-foreground)]">WhatsApp</th>
+                  <th className="py-3 px-4 text-left text-sm font-medium text-[var(--muted-foreground)]">Properties</th>
+                  <th className="py-3 px-4 text-left text-sm font-medium text-[var(--muted-foreground)]">Joined</th>
+                  <th className="py-3 px-4 text-left text-sm font-medium text-[var(--muted-foreground)]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -76,13 +76,13 @@ export default async function AdminSellersPage() {
                   const propertyCount = seller.properties?.[0]?.count || 0
 
                   return (
-                    <tr key={seller.id} className="border-b border-zinc-100 hover:bg-zinc-50">
+                    <tr key={seller.id} className="border-b border-[var(--border)] hover:bg-[var(--muted)]">
                       <td className="py-4 px-4">
                         <div>
-                          <p className="font-medium text-zinc-900">
+                          <p className="font-medium text-[var(--foreground)]">
                             {seller.company_name || 'Individual Seller'}
                           </p>
-                          <p className="text-sm text-zinc-600">{seller.id.slice(0, 8)}...</p>
+                          <p className="text-sm text-[var(--muted-foreground)]">{seller.id.slice(0, 8)}...</p>
                         </div>
                       </td>
                       <td className="py-4 px-4">
@@ -90,7 +90,7 @@ export default async function AdminSellersPage() {
                           {seller.seller_type || 'individual'}
                         </Badge>
                       </td>
-                      <td className="py-4 px-4 text-sm text-zinc-600">
+                      <td className="py-4 px-4 text-sm text-[var(--muted-foreground)]">
                         {seller.whatsapp_number || '-'}
                       </td>
                       <td className="py-4 px-4">
@@ -98,7 +98,7 @@ export default async function AdminSellersPage() {
                           {propertyCount} {propertyCount === 1 ? 'property' : 'properties'}
                         </span>
                       </td>
-                      <td className="py-4 px-4 text-sm text-zinc-600">
+                      <td className="py-4 px-4 text-sm text-[var(--muted-foreground)]">
                         {new Date(seller.created_at).toLocaleDateString()}
                       </td>
                       <td className="py-4 px-4">
