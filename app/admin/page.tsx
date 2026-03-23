@@ -126,7 +126,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <Link
           href="/admin/sellers"
           className="rounded-lg border border-zinc-200 bg-white p-6 hover:shadow-md transition-shadow"
@@ -157,6 +157,23 @@ export default async function AdminDashboardPage() {
             <div>
               <h3 className="text-lg font-semibold text-zinc-900">Manage Properties</h3>
               <p className="text-sm text-zinc-600">View, edit, and delete all listings</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/blog"
+          className="rounded-lg border border-zinc-200 bg-white p-6 hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center gap-4">
+            <div className="h-14 w-14 rounded-full bg-emerald-100 flex items-center justify-center">
+              <svg className="h-7 w-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-zinc-900">Blog Posts</h3>
+              <p className="text-sm text-zinc-600">Write and publish articles</p>
             </div>
           </div>
         </Link>

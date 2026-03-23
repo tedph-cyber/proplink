@@ -109,6 +109,44 @@ export interface PropertyFilters {
   sort_by?: 'newest' | 'price_low' | 'price_high'
 }
 
+// ==================== Blog Types ====================
+
+export type BlogPostStatus = 'draft' | 'published'
+
+export type BlogCategory =
+  | 'market-insights'
+  | 'buyers-guide'
+  | 'sellers-tips'
+  | 'investment'
+  | 'legal-finance'
+  | 'neighborhood'
+
+export const BLOG_CATEGORIES: { value: BlogCategory; label: string }[] = [
+  { value: 'market-insights', label: 'Market Insights' },
+  { value: 'buyers-guide', label: "Buyer's Guide" },
+  { value: 'sellers-tips', label: "Seller's Tips" },
+  { value: 'investment', label: 'Investment' },
+  { value: 'legal-finance', label: 'Legal & Finance' },
+  { value: 'neighborhood', label: 'Neighborhood' },
+]
+
+export interface BlogPost {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  content: string
+  cover_image_url: string | null
+  category: BlogCategory
+  tags: string[]
+  status: BlogPostStatus
+  author_id: string | null
+  published_at: string | null
+  created_at: string
+  updated_at: string
+  author?: Profile
+}
+
 // ==================== Database Types (Supabase) ====================
 
 export interface Database {
@@ -128,6 +166,11 @@ export interface Database {
         Row: PropertyMedia
         Insert: Omit<PropertyMedia, 'id' | 'created_at'>
         Update: Partial<Omit<PropertyMedia, 'id' | 'created_at'>>
+      }
+      blog_posts: {
+        Row: BlogPost
+        Insert: Omit<BlogPost, 'id' | 'created_at' | 'updated_at' | 'author'>
+        Update: Partial<Omit<BlogPost, 'id' | 'created_at' | 'author'>>
       }
     }
   }

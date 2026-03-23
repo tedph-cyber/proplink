@@ -126,3 +126,23 @@ export function formatLandSize(size: number | undefined, unit: string | undefine
   const unitDisplay = getLandSizeUnitDisplay(unit)
   return `${size.toLocaleString()} ${unitDisplay.abbreviation}`
 }
+
+/**
+ * Generate a URL-safe slug from a title
+ */
+export function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+}
+
+/**
+ * Estimate reading time in minutes from markdown text
+ */
+export function estimateReadTime(content: string): number {
+  const words = content.trim().split(/\s+/).length
+  return Math.max(1, Math.round(words / 200))
+}

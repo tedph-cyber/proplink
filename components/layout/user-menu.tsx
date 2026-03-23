@@ -8,9 +8,10 @@ import type { User } from '@supabase/supabase-js'
 
 interface UserMenuProps {
   user: User
+  isAdmin?: boolean
 }
 
-export function UserMenu({ user }: UserMenuProps) {
+export function UserMenu({ user, isAdmin = false }: UserMenuProps) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -22,6 +23,8 @@ export function UserMenu({ user }: UserMenuProps) {
     router.push('/')
     router.refresh()
   }
+
+  const close = () => setIsOpen(false)
 
   return (
     <div className="relative">
@@ -44,41 +47,45 @@ export function UserMenu({ user }: UserMenuProps) {
 
       {isOpen && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-zinc-200 bg-white shadow-lg z-20">
+          <div className="fixed inset-0 z-10" onClick={close} />
+          <div className="absolute right-0 top-full mt-2 w-60 rounded-xl border border-zinc-200 bg-white shadow-lg z-20 overflow-hidden">
+            {/* Identity */}
             <div className="border-b border-zinc-200 px-4 py-3">
               <p className="text-sm font-medium text-zinc-900 truncate">{user.email}</p>
-              <p className="text-xs text-zinc-500">Seller Account</p>
+              <p className="text-xs text-zinc-500">{isAdmin ? 'Administrator' : 'Seller Account'}</p>
             </div>
 
-            <div className="py-2">
-              <Link
-                href="/dashboard"
-                className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
-                onClick={() => setIsOpen(false)}
-              >
+            {/* Admin shortcuts */}
+            {isAdmin && (
+              <div className="border-b border-zinc-100 py-1.5 bg-purple-50/50">
+                <p className="px-4 pt-1 pb-1 text-[10px] font-semibold text-purple-400 uppercase tracking-widest">Admin</p>
+                <Link href="/admin" className="block px-4 py-2 text-sm text-purple-700 hover:bg-purple-100 transition-colors" onClick={close}>
+                  Admin Dashboard
+                </Link>
+                <Link href="/admin/blog" className="block px-4 py-2 text-sm text-purple-700 hover:bg-purple-100 transition-colors" onClick={close}>
+                  Manage Blog
+                </Link>
+                <Link href="/admin/blog/new" className="block px-4 py-2 text-sm text-purple-700 hover:bg-purple-100 transition-colors font-medium" onClick={close}>
+                  + Write New Post
+                </Link>
+              </div>
+            )}
+
+            {/* Seller links */}
+            <div className="py-1.5">
+              <Link href="/dashboard" className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50" onClick={close}>
                 Dashboard
               </Link>
-              <Link
-                href="/dashboard/properties"
-                className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link href="/dashboard/properties" className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50" onClick={close}>
                 My Properties
               </Link>
-              <Link
-                href="/dashboard/profile"
-                className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link href="/dashboard/profile" className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50" onClick={close}>
                 Profile Settings
               </Link>
             </div>
 
-            <div className="border-t border-zinc-200 py-2">
+            {/* Sign out */}
+            <div className="border-t border-zinc-200 py-1.5">
               <button
                 onClick={handleLogout}
                 disabled={loading}
