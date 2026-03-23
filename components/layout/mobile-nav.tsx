@@ -67,15 +67,40 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
                 Browse Properties
               </Link>
 
-              {/* Admin Panel (if admin) */}
+              {/* Blog */}
+              <Link
+                href="/blog"
+                onClick={closeMenu}
+                className="block px-4 py-3 text-base font-medium text-[var(--foreground)] hover:text-[var(--primary)] hover:bg-[var(--muted)] rounded-[var(--radius)] transition-colors tracking-[var(--letter-spacing)]"
+              >
+                Blog
+              </Link>
+
+              {/* Admin links (if admin) */}
               {isAdmin && (
-                <Link
-                  href="/admin"
-                  onClick={closeMenu}
-                  className="block px-4 py-3 text-base font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-[var(--muted)] rounded-[var(--radius)] transition-colors tracking-[var(--letter-spacing)]"
-                >
-                  👑 Admin Panel
-                </Link>
+                <>
+                  <Link
+                    href="/admin"
+                    onClick={closeMenu}
+                    className="block px-4 py-3 text-base font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-[var(--radius)] transition-colors"
+                  >
+                    👑 Admin Dashboard
+                  </Link>
+                  <Link
+                    href="/admin/blog"
+                    onClick={closeMenu}
+                    className="block px-4 py-3 text-base font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-[var(--radius)] transition-colors"
+                  >
+                    📝 Manage Blog
+                  </Link>
+                  <Link
+                    href="/admin/blog/new"
+                    onClick={closeMenu}
+                    className="block px-4 py-3 text-base font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-[var(--radius)] transition-colors"
+                  >
+                    ✏️ Write New Post
+                  </Link>
+                </>
               )}
 
               {/* Divider */}

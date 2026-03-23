@@ -35,6 +35,12 @@ export async function Header() {
           >
             Browse Properties
           </Link>
+          <Link
+            href="/blog"
+            className="text-sm font-medium text-[var(--foreground)] transition-colors hover:text-[var(--primary)] tracking-[var(--letter-spacing)]"
+          >
+            Blog
+          </Link>
           
           {isAdmin && (
             <Link
@@ -46,7 +52,7 @@ export async function Header() {
           )}
           
           {user ? (
-            <UserMenu user={user} />
+            <UserMenu user={user} isAdmin={isAdmin} />
           ) : (
             <>
               <Link

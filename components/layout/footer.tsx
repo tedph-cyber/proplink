@@ -30,6 +30,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/blog" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <Link href="/register" className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors tracking-[var(--letter-spacing)]">
                   List Your Property
                 </Link>
