@@ -1,7 +1,7 @@
-# 🎉 PropLink - Project Complete!
+# 🎉 StrongTower Holdings - Project Complete!
 
 ## Project Overview
-**PropLink** is a production-ready real estate marketplace platform for properties (houses and land) across Nigeria, built with modern web technologies.
+**StrongTower Holdings** is a production-ready real estate marketplace platform for properties (houses and land) across Nigeria, built with modern web technologies.
 
 ---
 
@@ -66,7 +66,7 @@
 ## 📂 Project Structure
 
 ```
-proplink/
+StrongTower Holdings/
 ├── app/
 │   ├── (public)/           # Public routes (no auth required)
 │   │   └── properties/     # Property listing & details
@@ -247,7 +247,7 @@ Login → Admin Dashboard → View Stats → Manage Sellers/Properties
 ```bash
 # 1. Push to GitHub
 git add .
-git commit -m "Complete PropLink marketplace"
+git commit -m "Complete StrongTower Holdings marketplace"
 git push
 
 # 2. Deploy to Vercel
@@ -367,7 +367,7 @@ See DEPLOYMENT.md for detailed instructions.
 
 ## 🏆 Success!
 
-**PropLink is complete and ready for deployment!**
+**StrongTower Holdings is complete and ready for deployment!**
 
 This is a **production-grade real estate marketplace** with:
 - 5 phases fully implemented

@@ -1,0 +1,349 @@
+/* ─── Header shell ──────────────────────────── */
+.shell {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.shellScrolled {
+  border-bottom-color: var(--color-border);
+}
+
+/* ─── Logo ──────────────────────────────────── */
+.logoLink {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  transition: opacity var(--t-fast);
+  text-decoration: none;
+  padding: var(--space-12) var(--space-6)   ;
+}
+
+.logoLink:hover {
+  opacity: 0.85;
+}
+
+.logoStrong {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-accent);
+}
+
+.logoTower {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.logoHoldings {
+  display: block;
+  margin-top: 1px;
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ─── Desktop nav ───────────────────────────── */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.navLink {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.navLink:hover {
+  color: var(--color-accent);
+}
+
+.navLinkAccent {
+  composes: navLink;
+  color: var(--color-accent);
+}
+
+.navLinkAccent:hover {
+  color: var(--color-accent);
+  opacity: 0.85;
+}
+
+/* ─── User menu trigger ─────────────────────── */
+.userTrigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+
+.userTrigger:hover {
+  background: var(--color-surface);
+}
+
+.userAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.userChevron {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--t-fast);
+}
+
+.userChevronOpen {
+  transform: rotate(180deg);
+}
+
+/* ─── User menu dropdown ────────────────────── */
+.userDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 224px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  z-index: 20;
+}
+
+.userDropdownHeader {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.userDropdownEmail {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userDropdownRole {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.userDropdownItem {
+  display: block;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background var(--t-fast);
+}
+
+.userDropdownItem:hover {
+  background: var(--color-border);
+}
+
+.userDropdownDivider {
+  border-top: 1px solid var(--color-border);
+}
+
+.userDropdownSignOut {
+  composes: userDropdownItem;
+  color: var(--color-destructive);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+.userDropdownSignOut:hover {
+  background: var(--color-destructive-muted);
+}
+
+/* ─── Mobile nav ────────────────────────────── */
+.mobileHamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--radius);
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--t-fast), background var(--t-fast);
+}
+
+.mobileHamburger:hover {
+  color: var(--color-accent);
+  background: var(--color-surface);
+}
+
+.mobileBackdrop {
+  position: fixed;
+  inset: 0;
+  top: 64px;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.mobilePanel {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  left: 0;
+  z-index: 70;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mobileNavInner {
+  padding: 12px 16px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+
+.mobileNavItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.mobileNavItem:hover {
+  color: var(--color-accent);
+  background: var(--color-surface);
+}
+
+.mobileNavItemPrimary {
+  composes: mobileNavItem;
+  color: var(--color-text);
+  background: var(--color-accent);
+}
+
+.mobileNavItemPrimary:hover {
+  background: var(--color-accent);
+  opacity: 0.9;
+}
+
+.mobileNavItemIcon {
+  color: var(--color-text-muted);
+  display: flex;
+}
+
+.mobileNavItemPrimary .mobileNavItemIcon {
+  color: var(--color-text);
+}
+
+.mobileNavDivider {
+  border-top: 1px solid var(--color-border);
+  margin: 4px 0;
+}
+
+.mobileUserSection {
+  padding: 8px 12px;
+}
+
+.mobileUserLabel {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.mobileUserEmail {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Sign out button in mobile ─────────────── */
+.signOutBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-destructive);
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+
+.signOutBtn:hover {
+  background: var(--color-destructive-muted);
+}
+
+/* ─── CTA button — List Property ────────────── */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 8px 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity var(--t-fast);
+  white-space: nowrap;
+}
+
+.ctaButton:hover {
+  opacity: 0.9;
+}

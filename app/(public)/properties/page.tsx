@@ -4,7 +4,7 @@ import { PropertySearch } from "@/components/properties/property-search";
 import { Property, PropertyMedia } from "@/lib/types";
 
 export const metadata = {
-  title: "Browse Properties | PropLink",
+  title: "Browse Properties | StrongTower Holdings",
   description: "Browse all available houses and land for sale across Nigeria",
 };
 
@@ -138,12 +138,12 @@ export default async function PropertiesPage({
     params.maxPrice;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-6 lg:px-10 py-8 lg:py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900 sm:text-4xl">
+        <h1 style={{ color: 'var(--color-text)' }} className="text-3xl font-bold sm:text-4xl">
           Browse Properties
         </h1>
-        <p className="mt-2 text-zinc-600">
+        <p className="mt-2" style={{ color: 'var(--color-text-muted)' }}>
           {typedProperties?.length || 0} {hasFilters ? "matching" : ""}{" "}
           properties {hasFilters ? "found" : "available"}
         </p>
@@ -156,7 +156,8 @@ export default async function PropertiesPage({
       {typedProperties && typedProperties.length === 0 ? (
         <div className="text-center py-12">
           <svg
-            className="mx-auto h-12 w-12 text-zinc-400"
+            className="mx-auto h-12 w-12"
+            style={{ color: 'var(--color-text-hint)' }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -168,10 +169,10 @@ export default async function PropertiesPage({
               d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
             />
           </svg>
-          <h3 className="mt-4 text-lg font-semibold text-zinc-900">
+          <h3 className="mt-4 text-lg font-semibold" style={{ color: 'var(--color-text)' }}>
             No properties found
           </h3>
-          <p className="mt-2 text-zinc-600">
+          <p className="mt-2" style={{ color: 'var(--color-text-muted)' }}>
             {hasFilters
               ? "Try adjusting your search filters to find what you're looking for."
               : "No properties are currently available."}

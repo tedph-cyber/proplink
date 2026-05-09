@@ -1,40 +1,26 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react'
+import styles from '@/styles/button.module.css'
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'glass'
-  size?: 'sm' | 'md' | 'lg'
+type ButtonVariant = 'primary' | 'ghost' | 'whatsapp'
+type ButtonSize = 'sm' | 'md' | 'lg'
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant
+  size?: ButtonSize
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = '', variant = 'primary', size = 'md', children, ...props }, ref) => {
-    const baseStyles =
-      'inline-flex items-center justify-center rounded-[var(--radius)] font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 tracking-[var(--letter-spacing)]'
-
-    const variants = {
-      primary: 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 shadow-sm',
-      secondary: 'bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)]/80 border border-[var(--border)]',
-      outline: 'border border-[var(--border)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]',
-      ghost: 'hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]',
-      destructive: 'bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:opacity-90 shadow-sm',
-      glass: 'backdrop-blur-sm bg-white/10 hover:bg-white/20 border border-white/20 text-white shadow-lg',
-    }
-
-    const sizes = {
-      sm: 'h-9 px-3 text-sm',
-      md: 'h-10 px-4 text-sm',
-      lg: 'h-11 px-8 text-base',
-    }
-
-    return (
-      <button
-        ref={ref}
-        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-        {...props}
-      >
-        {children}
-      </button>
-    )
-  }
-)
-
-Button.displayName = 'Button'
+export function Button({
+  variant = 'primary',
+  size = 'md',
+  className,
+  children,
+  ...props
+}: ButtonProps) {
+  return (
+    <button
+      className={`${styles.base} ${styles[variant]} ${styles[size]}${className ? ` ${className}` : ''}`}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}

@@ -4,8 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { ToggleTheme } from '@/components/ui/toggle-theme'
 import type { User } from '@supabase/supabase-js'
+import styles from '@/styles/header.module.css'
 
 interface UserMenuProps {
   user: User
@@ -28,13 +28,13 @@ export function UserMenu({ user }: UserMenuProps) {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"
+        className={styles.userTrigger}
       >
-        <div className="h-6 w-6 rounded-full bg-[var(--primary)] flex items-center justify-center text-white text-xs">
+        <div className={styles.userAvatar}>
           {user.email?.[0].toUpperCase()}
         </div>
         <svg
-          className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`${styles.userChevron}${isOpen ? ` ${styles.userChevronOpen}` : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -49,49 +49,41 @@ export function UserMenu({ user }: UserMenuProps) {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-[var(--border)] bg-[var(--card)] shadow-lg z-20 backdrop-blur-sm">
-            <div className="border-b border-[var(--border)] px-4 py-3">
-              <p className="text-sm font-medium text-[var(--card-foreground)] truncate">{user.email}</p>
-              <p className="text-xs text-[var(--muted-foreground)]">Seller Account</p>
+          <div className={styles.userDropdown}>
+            <div className={styles.userDropdownHeader}>
+              <p className={styles.userDropdownEmail}>{user.email}</p>
+              <p className={styles.userDropdownRole}>Seller Account</p>
             </div>
 
-            <div className="py-2">
+            <div>
               <Link
                 href="/dashboard"
-                className="block px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]"
+                className={styles.userDropdownItem}
                 onClick={() => setIsOpen(false)}
               >
                 Dashboard
               </Link>
               <Link
                 href="/dashboard/properties"
-                className="block px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]"
+                className={styles.userDropdownItem}
                 onClick={() => setIsOpen(false)}
               >
                 My Properties
               </Link>
               <Link
                 href="/dashboard/profile"
-                className="block px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]"
+                className={styles.userDropdownItem}
                 onClick={() => setIsOpen(false)}
               >
                 Profile Settings
               </Link>
             </div>
 
-            {/* Theme Toggle Section */}
-            <div className="border-t border-[var(--border)] py-2">
-              <div className="flex items-center justify-between px-4 py-2">
-                <span className="text-sm text-[var(--foreground)]">Theme</span>
-                <ToggleTheme />
-              </div>
-            </div>
-
-            <div className="border-t border-[var(--border)] py-2">
+            <div className={styles.userDropdownDivider}>
               <button
                 onClick={handleLogout}
                 disabled={loading}
-                className="block w-full px-4 py-2 text-left text-sm text-[var(--destructive)] hover:bg-[var(--destructive)]/10 disabled:opacity-50"
+                className={styles.userDropdownSignOut}
               >
                 {loading ? 'Signing out...' : 'Sign Out'}
               </button>

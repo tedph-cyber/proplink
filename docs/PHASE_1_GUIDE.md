@@ -189,7 +189,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const property = await fetchProperty(params.id)
   
   return {
-    title: `${property.title} | PropLink`,
+    title: `${property.title} | StrongTower Holdings`,
     description: truncateText(property.description, 160),
     openGraph: {
       images: [property.property_media[0]?.url],

@@ -15,8 +15,8 @@ export function ImageGallery({ media, propertyTitle }: ImageGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="aspect-[16/9] w-full rounded-lg bg-[var(--muted)] flex items-center justify-center">
-        <div className="text-center text-[var(--muted-foreground)]">
+      <div className="aspect-[16/9] w-full rounded-lg bg-[var(--color-surface-2)] flex items-center justify-center">
+        <div className="text-center text-[var(--color-text-muted)]">
           <div className="mb-2 text-4xl">📷</div>
           <p>No images available</p>
         </div>
@@ -29,7 +29,7 @@ export function ImageGallery({ media, propertyTitle }: ImageGalleryProps) {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-[var(--muted)]">
+      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-[var(--color-surface-2)]">
         <Image
           src={selectedImage.media_url}
           alt={`${propertyTitle} - Image ${selectedIndex + 1}`}
@@ -44,7 +44,7 @@ export function ImageGallery({ media, propertyTitle }: ImageGalleryProps) {
           <>
             <button
               onClick={() => setSelectedIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 dark:bg-zinc-900/80 p-2 shadow-lg transition-all hover:bg-white dark:hover:bg-zinc-900 hover:scale-110"
+              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-[var(--color-surface)]/90 p-2 shadow-lg transition-all hover:bg-[var(--color-surface)] hover:scale-110"
               aria-label="Previous image"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,7 +53,7 @@ export function ImageGallery({ media, propertyTitle }: ImageGalleryProps) {
             </button>
             <button
               onClick={() => setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 dark:bg-zinc-900/80 p-2 shadow-lg transition-all hover:bg-white dark:hover:bg-zinc-900 hover:scale-110"
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-[var(--color-surface)]/90 p-2 shadow-lg transition-all hover:bg-[var(--color-surface)] hover:scale-110"
               aria-label="Next image"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -78,8 +78,8 @@ export function ImageGallery({ media, propertyTitle }: ImageGalleryProps) {
               onClick={() => setSelectedIndex(index)}
               className={`relative aspect-square overflow-hidden rounded-lg border-2 transition-all ${
                 index === selectedIndex
-                  ? 'border-[var(--foreground)] ring-2 ring-[var(--foreground)]'
-                  : 'border-[var(--border)] hover:border-[var(--muted-foreground)]'
+                  ? 'border-[var(--color-text)] ring-2 ring-[var(--color-text)]'
+                  : 'border-[var(--color-border)] hover:border-[var(--color-text-muted)]'
               }`}
             >
               <Image

@@ -12,7 +12,7 @@
 1. Select "iPhone 12 Pro" or similar from dropdown
 2. **Expected Results:**
    - ✅ Hamburger menu (☰) visible in top-right
-   - ✅ "PropLink" logo smaller (text-xl)
+   - ✅ "Doxa" logo smaller (text-xl)
    - ✅ No navigation links visible (hidden on mobile)
    - ✅ All sections stack vertically
    - ✅ Feature cards in single column
@@ -84,7 +84,7 @@
 
 2. **Logo Interaction:**
    ```
-   Hover over "PropLink" logo
+   Hover over "Doxa" logo
    → Should scale up slightly (hover:scale-105)
    ```
 

@@ -288,7 +288,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border)] border-t-[var(--foreground)]"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-border)] border-t-[var(--color-text)]"></div>
         </div>
       </div>
     )
@@ -307,15 +307,15 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)]">Edit Property</h1>
-        <p className="mt-2 text-[var(--muted-foreground)]">Update property details</p>
+        <h1 className="text-3xl font-bold text-[var(--color-text)]">Edit Property</h1>
+        <p className="mt-2 text-[var(--color-text-muted)]">Update property details</p>
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-3xl">
-        <div className="space-y-6 rounded-lg border border-[var(--border)] bg-[var(--card)] p-6">
+        <div className="space-y-6 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
               Property Title <span className="text-red-500">*</span>
             </label>
             <Input
@@ -327,7 +327,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
               Description <span className="text-red-500">*</span>
             </label>
             <Textarea
@@ -340,14 +340,14 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* Property Type */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
               Property Type <span className="text-red-500">*</span>
             </label>
             <select
               required
               value={formData.property_type}
               onChange={(e) => setFormData({ ...formData, property_type: e.target.value as PropertyType })}
-              className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+              className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
             >
               <option value="house">House</option>
               <option value="land">Land</option>
@@ -356,14 +356,14 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
               Status <span className="text-red-500">*</span>
             </label>
             <select
               required
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-              className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+              className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
             >
               <option value="active">Active</option>
               <option value="sold">Sold</option>
@@ -374,7 +374,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           {/* Price */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                 Price (₦) <span className="text-red-500">*</span>
               </label>
               <Input
@@ -385,7 +385,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                 Max Price (₦)
               </label>
               <Input
@@ -399,14 +399,14 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           {/* Location */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                 State <span className="text-red-500">*</span>
               </label>
               <select
                 required
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value, lga: '' })}
-                className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+                className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
               >
                 <option value="">Select State</option>
                 {NIGERIAN_STATES.map(state => (
@@ -415,14 +415,14 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                 Local Government Area
               </label>
               {formData.state && availableLGAs.length > 0 ? (
                 <select
                   value={formData.lga}
                   onChange={(e) => setFormData({ ...formData, lga: e.target.value })}
-                  className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+                  className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
                 >
                   <option value="">Select LGA</option>
                   {availableLGAs.map(lga => (
@@ -441,7 +441,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
               City/Area <span className="text-red-500">*</span>
             </label>
             <Input
@@ -456,8 +456,8 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
             <div className="space-y-4">
               {/* House Types */}
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                  House Type(s) <span className="text-[var(--muted-foreground)]">(select all that apply)</span>
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                  House Type(s) <span className="text-[var(--color-text-muted)]">(select all that apply)</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {HOUSE_TYPES.map(type => (
@@ -472,9 +472,9 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
                             setFormData({ ...formData, house_types: formData.house_types.filter(t => t !== type.value) })
                           }
                         }}
-                        className="rounded border-[var(--border)] text-[var(--foreground)] focus:ring-[var(--ring)]"
+                        className="rounded border-[var(--color-border)] text-[var(--color-text)] focus:ring-[var(--color-accent)]"
                       />
-                      <span className="ml-2 text-sm text-[var(--foreground)]">{type.label}</span>
+                      <span className="ml-2 text-sm text-[var(--color-text)]">{type.label}</span>
                     </label>
                   ))}
                 </div>
@@ -482,13 +482,13 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
               {/* Bedroom Category */}
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                   Bedroom Category
                 </label>
                 <select
                   value={formData.bedroom_category}
                   onChange={(e) => setFormData({ ...formData, bedroom_category: e.target.value as BedroomCategory })}
-                  className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+                  className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
                 >
                   <option value="">Select Bedroom Count</option>
                   {BEDROOM_CATEGORIES.map(cat => (
@@ -500,8 +500,8 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
               {/* Legacy fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                    Bedrooms <span className="text-[var(--muted-foreground)]">(exact count)</span>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Bedrooms <span className="text-[var(--color-text-muted)]">(exact count)</span>
                   </label>
                   <Input
                     type="number"
@@ -511,7 +511,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                     Bathrooms
                   </label>
                   <Input
@@ -526,7 +526,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           ) : (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                   Land Size
                 </label>
                 <Input
@@ -538,13 +538,13 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                   Unit
                 </label>
                 <select
                   value={formData.land_size_unit}
                   onChange={(e) => setFormData({ ...formData, land_size_unit: e.target.value as LandSizeUnit })}
-                  className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+                  className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
                 >
                   {LAND_SIZE_UNITS.map(unit => (
                     <option key={unit.value} value={unit.value}>{unit.label}</option>
@@ -556,7 +556,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* Additional Features */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
               Additional Features
             </label>
             <Input
@@ -568,7 +568,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           {/* Existing Media */}
           {existingMedia.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
                 Current Media
               </label>
               <div className="grid grid-cols-3 gap-4">
@@ -610,7 +610,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* New Media Upload */}
           <div>
-            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
               Add New Photos & Videos
             </label>
             <input
@@ -618,7 +618,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
               multiple
               accept="image/*,video/*"
               onChange={handleFileChange}
-              className="w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)]"
+              className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)]"
             />
             
             {newMediaPreviews.length > 0 && (
@@ -664,7 +664,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
             </Button>
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               onClick={() => router.push('/dashboard/properties')}
             >
               Cancel

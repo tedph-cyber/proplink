@@ -69,10 +69,10 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
   return (
     <div className="w-full flex flex-col">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">
+        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-2">
           Create your account
         </h1>
-        <p className="text-[var(--muted-foreground)]">
+        <p className="text-[var(--color-text-muted)]">
           Already have an account?{' '}
           <button
             onClick={() => router.push('/login')}
@@ -87,7 +87,7 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
         {/* Name Fields */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label htmlFor="firstName" className="block text-sm font-medium text-[var(--color-text)] mb-2">
               First Name
             </label>
             <input
@@ -97,12 +97,12 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
               value={formData.firstName}
               onChange={handleInputChange}
               placeholder="John"
-              className="w-full px-4 py-3 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface-2)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
               required
             />
           </div>
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+            <label htmlFor="lastName" className="block text-sm font-medium text-[var(--color-text)] mb-2">
               Last Name
             </label>
             <input
@@ -112,7 +112,7 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
               value={formData.lastName}
               onChange={handleInputChange}
               placeholder="Doe"
-              className="w-full px-4 py-3 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface-2)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
               required
             />
           </div>
@@ -120,7 +120,7 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
 
         {/* Email Field */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-[var(--color-text)] mb-2">
             Email Address
           </label>
           <input
@@ -130,14 +130,14 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="your@email.com"
-            className="w-full px-4 py-3 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-3 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface-2)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
             required
           />
         </div>
 
         {/* Password Field */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-[var(--color-text)] mb-2">
             Password
           </label>
           <div className="relative">
@@ -148,18 +148,18 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
               value={formData.password}
               onChange={handleInputChange}
               placeholder="Enter your password"
-              className="w-full px-4 py-3 pr-12 border border-[var(--border)] rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 pr-12 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface-2)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-[var(--muted)] rounded-full transition-colors"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-[var(--color-surface-2)] rounded-full transition-colors"
             >
               {showPassword ? (
-                <EyeOff className="w-5 h-5 text-[var(--muted-foreground)]" />
+                <EyeOff className="w-5 h-5 text-[var(--color-text-muted)]" />
               ) : (
-                <Eye className="w-5 h-5 text-[var(--muted-foreground)]" />
+                <Eye className="w-5 h-5 text-[var(--color-text-muted)]" />
               )}
             </button>
           </div>
@@ -180,15 +180,15 @@ export function SignUpForm({ userType = 'buyer', onSubmit }: SignUpFormProps) {
             name="agreeToTerms"
             checked={formData.agreeToTerms}
             onChange={handleInputChange}
-            className="w-4 h-4 text-blue-600 border-[var(--border)] rounded focus:ring-blue-500 accent-blue-600"
+            className="w-4 h-4 text-blue-600 border-[var(--color-border)] rounded focus:ring-blue-500 accent-blue-600"
             required
           />
-          <label htmlFor="agreeToTerms" className="text-sm text-[var(--muted-foreground)]">
+          <label htmlFor="agreeToTerms" className="text-sm text-[var(--color-text-muted)]">
             I agree to the{' '}
             <button 
               type="button" 
               onClick={() => router.push('/terms')}
-              className="text-[var(--foreground)] font-medium hover:underline"
+              className="text-[var(--color-text)] font-medium hover:underline"
             >
               Terms & Conditions
             </button>

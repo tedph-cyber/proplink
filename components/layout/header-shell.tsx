@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import styles from '@/styles/header.module.css'
 
 export function HeaderShell({ children }: { children: React.ReactNode }) {
   const [scrolled, setScrolled] = useState(false)
@@ -13,11 +14,7 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md transition-shadow duration-300 ${
-        scrolled ? 'shadow-md' : 'shadow-none'
-      }`}
-    >
+    <header className={`${styles.shell}${scrolled ? ` ${styles.shellScrolled}` : ''}`}>
       {children}
     </header>
   )

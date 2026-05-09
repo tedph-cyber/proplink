@@ -4,8 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { User } from '@supabase/supabase-js'
-import { UserMenu } from './user-menu'
-import { ToggleTheme } from '@/components/ui/toggle-theme'
+import styles from '@/styles/header.module.css'
 import {
   Menu,
   X,
@@ -17,7 +16,6 @@ import {
   LogIn,
   UserPlus,
   Shield,
-  Sun,
 } from 'lucide-react'
 
 interface MobileNavProps {
@@ -34,7 +32,7 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
       {/* Hamburger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center justify-center p-2 rounded-lg text-[var(--foreground)] hover:text-[var(--primary)] hover:bg-[var(--muted)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+        className={styles.mobileHamburger}
         aria-label="Toggle menu"
         aria-expanded={isOpen}
       >
@@ -61,7 +59,7 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 top-16 z-[60] bg-black/40 backdrop-blur-sm"
+              className={styles.mobileBackdrop}
               onClick={closeMenu}
             />
 
@@ -72,62 +70,101 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="fixed top-16 right-0 left-0 z-[70] bg-[var(--background)] border-b border-[var(--border)] shadow-xl"
+              className={styles.mobilePanel}
             >
-              <nav className="container mx-auto px-4 py-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
-
-                <NavItem href="/properties" icon={<Home className="w-4 h-4" />} onClick={closeMenu}>
-                  Browse Properties
-                </NavItem>
-
-                <div className="px-3 py-2.5 flex items-center justify-between rounded-lg">
-                  <span className="flex items-center gap-3 text-sm font-medium text-[var(--foreground)]">
-                    <Sun className="w-4 h-4 text-[var(--muted-foreground)]" />
-                    Theme
+              <nav className={styles.mobileNavInner}>
+                <Link
+                  href="/properties"
+                  className={styles.mobileNavItem}
+                  onClick={closeMenu}
+                >
+                  <span className={styles.mobileNavItemIcon}>
+                    <Home className="w-4 h-4" />
                   </span>
-                  <ToggleTheme />
-                </div>
+                  Browse Properties
+                </Link>
+
+                <Link
+                  href="/blog"
+                  className={styles.mobileNavItem}
+                  onClick={closeMenu}
+                >
+                  <span className={styles.mobileNavItemIcon}>
+                    <Home className="w-4 h-4" />
+                  </span>
+                  Blog
+                </Link>
 
                 {isAdmin && (
-                  <NavItem href="/admin" icon={<Shield className="w-4 h-4" />} onClick={closeMenu} accent="purple">
+                  <Link
+                    href="/admin"
+                    className={styles.mobileNavItem}
+                    onClick={closeMenu}
+                  >
+                    <span className={styles.mobileNavItemIcon}>
+                      <Shield className="w-4 h-4" />
+                    </span>
                     Admin Panel
-                  </NavItem>
+                  </Link>
                 )}
 
-                <div className="border-t border-[var(--border)] my-1" />
+                <div className={styles.mobileNavDivider} />
 
                 {user ? (
                   <>
-                    <NavItem href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} onClick={closeMenu}>
-                      Dashboard
-                    </NavItem>
-                    <NavItem href="/dashboard/properties" icon={<Home className="w-4 h-4" />} onClick={closeMenu}>
-                      My Properties
-                    </NavItem>
-                    <NavItem
-                      href="/dashboard/properties/new"
-                      icon={<Plus className="w-4 h-4" />}
+                    <Link
+                      href="/dashboard"
+                      className={styles.mobileNavItem}
                       onClick={closeMenu}
-                      primary
                     >
+                      <span className={styles.mobileNavItemIcon}>
+                        <LayoutDashboard className="w-4 h-4" />
+                      </span>
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/dashboard/properties"
+                      className={styles.mobileNavItem}
+                      onClick={closeMenu}
+                    >
+                      <span className={styles.mobileNavItemIcon}>
+                        <Home className="w-4 h-4" />
+                      </span>
+                      My Properties
+                    </Link>
+                    <Link
+                      href="/dashboard/properties/new"
+                      className={styles.mobileNavItemPrimary}
+                      onClick={closeMenu}
+                    >
+                      <span className={styles.mobileNavItemIcon}>
+                        <Plus className="w-4 h-4" />
+                      </span>
                       List Property
-                    </NavItem>
-                    <NavItem href="/dashboard/profile" icon={<UserIcon className="w-4 h-4" />} onClick={closeMenu}>
+                    </Link>
+                    <Link
+                      href="/dashboard/profile"
+                      className={styles.mobileNavItem}
+                      onClick={closeMenu}
+                    >
+                      <span className={styles.mobileNavItemIcon}>
+                        <UserIcon className="w-4 h-4" />
+                      </span>
                       Profile
-                    </NavItem>
+                    </Link>
 
-                    <div className="border-t border-[var(--border)] my-1" />
+                    <div className={styles.mobileNavDivider} />
 
-                    <div className="px-3 py-2">
-                      <p className="text-xs text-[var(--muted-foreground)]">Signed in as</p>
-                      <p className="text-sm font-medium text-[var(--foreground)] truncate">{user.email}</p>
+                    <div className={styles.mobileUserSection}>
+                      <p className={styles.mobileUserLabel}>Signed in as</p>
+                      <p className={styles.mobileUserEmail}>{user.email}</p>
                     </div>
 
                     <form action="/auth/signout" method="post">
                       <button
                         type="submit"
                         onClick={closeMenu}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-[var(--destructive)] hover:bg-[var(--destructive)]/10 rounded-lg transition-colors"
+                        className={styles.signOutBtn}
                       >
                         <LogOut className="w-4 h-4" />
                         Sign Out
@@ -136,12 +173,26 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
                   </>
                 ) : (
                   <>
-                    <NavItem href="/login" icon={<LogIn className="w-4 h-4" />} onClick={closeMenu}>
+                    <Link
+                      href="/login"
+                      className={styles.mobileNavItem}
+                      onClick={closeMenu}
+                    >
+                      <span className={styles.mobileNavItemIcon}>
+                        <LogIn className="w-4 h-4" />
+                      </span>
                       Login
-                    </NavItem>
-                    <NavItem href="/register" icon={<UserPlus className="w-4 h-4" />} onClick={closeMenu} primary>
+                    </Link>
+                    <Link
+                      href="/register"
+                      className={styles.mobileNavItemPrimary}
+                      onClick={closeMenu}
+                    >
+                      <span className={styles.mobileNavItemIcon}>
+                        <UserPlus className="w-4 h-4" />
+                      </span>
                       Create Account
-                    </NavItem>
+                    </Link>
                   </>
                 )}
 
@@ -152,37 +203,5 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
         )}
       </AnimatePresence>
     </div>
-  )
-}
-
-function NavItem({
-  href,
-  icon,
-  children,
-  onClick,
-  primary,
-  accent,
-}: {
-  href: string
-  icon: React.ReactNode
-  children: React.ReactNode
-  onClick: () => void
-  primary?: boolean
-  accent?: string
-}) {
-  const base = "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors"
-  const style = primary
-    ? `${base} bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90`
-    : accent === "purple"
-    ? `${base} text-purple-600 dark:text-purple-400 hover:bg-[var(--muted)]`
-    : `${base} text-[var(--foreground)] hover:text-[var(--primary)] hover:bg-[var(--muted)]`
-
-  return (
-    <Link href={href} onClick={onClick} className={style}>
-      <span className={primary ? "text-white" : accent === "purple" ? "text-purple-500" : "text-[var(--muted-foreground)]"}>
-        {icon}
-      </span>
-      {children}
-    </Link>
   )
 }

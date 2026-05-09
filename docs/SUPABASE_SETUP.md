@@ -1,6 +1,6 @@
-# Supabase Setup Guide for PropLink
+# Supabase Setup Guide for StrongTower Holdings
 
-This guide walks you through setting up Supabase for PropLink Phase 1 and beyond.
+This guide walks you through setting up Supabase for StrongTower Holdings Phase 1 and beyond.
 
 ---
 
@@ -10,7 +10,7 @@ This guide walks you through setting up Supabase for PropLink Phase 1 and beyond
 2. Click "New Project"
 3. Choose your organization
 4. Configure:
-   - **Project Name:** proplink (or your choice)
+   - **Project Name:** StrongTower Holdings (or your choice)
    - **Database Password:** Generate a strong password (save it!)
    - **Region:** Choose closest to your users
    - **Pricing Plan:** Free tier is fine for development

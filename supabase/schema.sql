@@ -1,4 +1,4 @@
--- PropLink Database Schema
+-- StrongTower Holdings Database Schema
 -- Run this in Supabase SQL Editor to set up all tables and policies
 
 -- Enable UUID extension
@@ -85,12 +85,21 @@ EXECUTE FUNCTION update_updated_at_column();
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, role, whatsapp_number)
+  INSERT INTO public.profiles (id, role, whatsapp_number, seller_type, company_name)
   VALUES (
     NEW.id,
-    'seller',
-    COALESCE(NEW.raw_user_meta_data->>'whatsapp_number', '')
-  );
+    COALESCE(NEW.raw_user_meta_data->>'role', 'seller'),
+    COALESCE(NEW.raw_user_meta_data->>'whatsapp_number', ''),
+    COALESCE(NEW.raw_user_meta_data->>'seller_type', 'individual'),
+    NEW.raw_user_meta_data->>'company_name'
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    seller_type     = COALESCE(EXCLUDED.seller_type, profiles.seller_type),
+    company_name    = COALESCE(EXCLUDED.company_name, profiles.company_name),
+    whatsapp_number = CASE
+      WHEN EXCLUDED.whatsapp_number = '' THEN profiles.whatsapp_number
+      ELSE EXCLUDED.whatsapp_number
+    END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

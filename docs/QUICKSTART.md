@@ -1,6 +1,6 @@
-# Quick Start Guide - PropLink
+# Quick Start Guide - StrongTower Holdings
 
-Get PropLink running locally in under 10 minutes!
+Get StrongTower Holdings running locally in under 10 minutes!
 
 ---
 
@@ -18,7 +18,7 @@ Get PropLink running locally in under 10 minutes!
 ```bash
 # If using Git
 git clone <your-repo-url>
-cd proplink
+cd StrongTower Holdings
 
 # Or download and extract the ZIP file
 ```
@@ -43,7 +43,7 @@ This installs all required packages (~2 minutes).
 2. Click **New Project**
 3. Choose organization (or create one)
 4. Enter project details:
-   - **Name**: PropLink (or your choice)
+   - **Name**: StrongTower Holdings (or your choice)
    - **Database Password**: (save this securely)
    - **Region**: Choose closest to you
 5. Click **Create new project** (takes ~2 minutes)
@@ -134,7 +134,7 @@ You should see:
 Open http://localhost:3000 in your browser.
 
 You should see:
-- PropLink homepage
+- StrongTower Holdings homepage
 - Hero section with search
 - Featured properties section (empty initially)
 
@@ -259,7 +259,7 @@ npm run build
 
 ## 🚀 Next Steps
 
-Now that you have PropLink running locally:
+Now that you have StrongTower Holdings running locally:
 
 1. **Explore Features**: Try all functionality
 2. **Customize Design**: Edit components in `/components`
@@ -372,7 +372,7 @@ UPDATE profiles SET role = 'admin' WHERE email = 'new-admin@example.com';
 
 ## ✨ You're All Set!
 
-PropLink is now running locally. Happy developing! 🎉
+StrongTower Holdings is now running locally. Happy developing! 🎉
 
 **Time to complete**: ~10 minutes  
 **Difficulty**: Easy

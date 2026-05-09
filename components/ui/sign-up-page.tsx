@@ -62,7 +62,7 @@ export function SignUpPage() {
 
           {/* Brand Content */}
           <div className="text-center">
-            <h2 className="text-4xl font-bold text-white mb-4">PropLink</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">StrongTower Holdings</h2>
             <p className="text-white/80 max-w-sm">
               Find your perfect property or list your home with ease. Join our community of buyers and sellers.
             </p>
