@@ -3,7 +3,7 @@ import { SectionReveal, StaggerReveal, StaggerItem } from '@/components/ui/motio
 import styles from '@/styles/about.module.css'
 
 export const metadata = {
-  title: 'About Us – PropLink',
+  title: 'About Us – StrongTower Holdings',
   description: 'Nigeria\'s direct property marketplace connecting buyers and sellers without the middleman.',
 }
 
@@ -78,7 +78,7 @@ export default function AboutPage() {
         </div>
         <SectionReveal>
           <div className={styles.heroInner}>
-            <span className={styles.heroBadge}>About PropLink</span>
+            <span className={styles.heroBadge}>About StrongTower Holdings</span>
             <h1 className={styles.heroTitle}>
               Nigeria&apos;s Direct<br />
               <span className={styles.heroTitleEm}>Property Marketplace</span>
