@@ -1016,6 +1016,8 @@
 .tableThWide {
   composes: tableTh;
   padding: 20px var(--space-8);
+  white-space: normal;
+  min-width: 240px;
 }
 
 .tableThRight {
@@ -1027,6 +1029,15 @@
   composes: tableTh;
   padding: 20px var(--space-8);
   text-align: right;
+  white-space: nowrap;
+  min-width: 130px;
+}
+
+.tableThCategory,
+.tableThStatus,
+.tableThDate {
+  min-width: 100px;
+  white-space: nowrap;
 }
 
 .tableBody {
@@ -1067,11 +1078,30 @@
   padding: var(--space-4) var(--space-6);
   font-size: var(--text-sm);
   color: var(--color-text-muted);
+  word-break: break-word;
+}
+
+.tableTdCategory {
+  composes: tableTd;
+  min-width: 110px;
+}
+
+.tableTdStatus {
+  composes: tableTd;
+  min-width: 90px;
+}
+
+.tableTdDate {
+  composes: tableTd;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .tableTdWide {
   composes: tableTd;
   padding: var(--space-5) var(--space-8);
+  min-width: 240px;
+  max-width: 400px;
 }
 
 .tableTdRight {
@@ -1083,6 +1113,7 @@
   composes: tableTd;
   padding: var(--space-5) var(--space-8);
   text-align: right;
+  white-space: nowrap;
 }
 
 .tableFooter {
@@ -1720,9 +1751,11 @@
   color: var(--color-text-muted);
   font-size: var(--text-xs);
   margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.4;
 }
 
 .categoryBadge {

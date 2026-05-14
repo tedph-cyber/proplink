@@ -86,11 +86,11 @@ export default async function AdminBlogPage(props: { searchParams?: Promise<{ st
         <table className={styles.table}>
           <thead>
             <tr className={styles.tableHead}>
-              <th className={styles.tableThWide}>Post Details</th>
-              <th className={styles.tableTh}>Category</th>
-              <th className={styles.tableTh}>Status</th>
-              <th className={styles.tableTh}>Date</th>
-              <th className={styles.tableThRightWide}>Actions</th>
+              <th className={styles.tableThWide} scope="col">Post Details</th>
+              <th className={styles.tableTh} scope="col">Category</th>
+              <th className={styles.tableTh} scope="col">Status</th>
+              <th className={styles.tableTh} scope="col">Date</th>
+              <th className={styles.tableThRightWide} scope="col">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--color-surface-2)]">
@@ -143,12 +143,12 @@ export default async function AdminBlogPage(props: { searchParams?: Promise<{ st
                       </div>
                     </div>
                   </td>
-                  <td className={styles.tableTd}>
+                  <td className={styles.tableTdCategory}>
                     <span className={styles.categoryBadge}>
                       {CATEGORY_LABELS[post.category] ?? post.category}
                     </span>
                   </td>
-                  <td className={styles.tableTd}>
+                  <td className={styles.tableTdStatus}>
                     {post.status === 'published' ? (
                       <span className={styles.statusActive}>
                         <span className={styles.statusActiveDot} />
@@ -161,7 +161,7 @@ export default async function AdminBlogPage(props: { searchParams?: Promise<{ st
                       </span>
                     )}
                   </td>
-                  <td className={styles.tableTd}>
+                  <td className={styles.tableTdDate}>
                     <span className="text-[var(--color-text-muted)] text-sm font-medium">
                       {new Date(post.published_at ?? post.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>

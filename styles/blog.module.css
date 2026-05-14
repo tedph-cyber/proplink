@@ -1,8 +1,7 @@
 /* ─── Hero ────────────────────────────────────── */
 .hero {
   position: relative;
-  margin-bottom: var(--space-16);
-  padding: var(--space-12) var(--space-6);
+  padding: var(--space-8) 0;
   }
 
 .heroGlow {
@@ -56,8 +55,7 @@
 .layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-12);
-  padding: var(--space-12) var(--space-6);
+  gap: var(--space-8);
 }
 
 @media (min-width: 1024px) {
@@ -69,7 +67,7 @@
 .mainContent {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-8);
 }
 
 /* ─── Featured Post Card ───────────────────────── */
@@ -542,7 +540,7 @@
 @media (min-width: 1024px) {
   .sidebar {
     position: sticky;
-    top: 112px;
+    top: 96px;
     align-self: start;
   }
 }
