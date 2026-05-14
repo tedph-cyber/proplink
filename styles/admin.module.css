@@ -1421,7 +1421,8 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, var(--color-text), rgba(245, 240, 232, 0.8) 60%, transparent);
+  background: linear-gradient(to right, var(--color-surface-2), rgba(110, 101, 85, 0.8) 60%, transparent);
+  /* background: var(--color-surface); */
   z-index: 1;
 }
 

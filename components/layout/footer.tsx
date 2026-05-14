@@ -10,9 +10,12 @@ export function Footer() {
         <div className={styles.grid}>
           {/* Brand */}
           <div className={styles.brandColumn}>
-            <h3 className={styles.brandName}>StrongTower Holdings</h3>
+            <h3 className={styles.brandName}>
+              <span className={styles.brandNameAccent}>Strong</span>Tower
+            </h3>
             <p className={styles.brandDesc}>
               Your trusted platform for buying and selling properties in Nigeria.
+              No agents, no middlemen, no noise.
             </p>
           </div>
 
@@ -50,6 +53,10 @@ export function Footer() {
           <p className={styles.copyright}>
             &copy; {currentYear} StrongTower Holdings. All rights reserved.
           </p>
+          <div className={styles.bottomLinks}>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+          </div>
         </div>
       </div>
     </footer>
