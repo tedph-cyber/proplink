@@ -34,17 +34,17 @@ export async function GET(request: NextRequest) {
 
       // Create profile from metadata stored during signUp.
       // Uses upsert so it's idempotent (safe to run multiple times).
-      if (meta.role) {
-        await supabase.from('profiles').upsert({
-          id: user.id,
-          role: meta.role ?? 'seller',
-          seller_type: meta.seller_type ?? 'individual',
-          company_name: meta.company_name ?? null,
-          whatsapp_number: meta.whatsapp_number ?? '',
-        })
-        // Errors here are silently ignored — the user is still authenticated.
-        // They can update their profile later via /dashboard/profile.
-      }
+      // NOTE: role is intentionally excluded — the DB trigger sets it on
+      // first creation, and we never overwrite it here so manually promoted
+      // admins keep their role across sessions.
+      await supabase.from('profiles').upsert({
+        id: user.id,
+        seller_type: meta.seller_type ?? 'individual',
+        company_name: meta.company_name ?? null,
+        whatsapp_number: meta.whatsapp_number ?? '',
+      })
+      // Errors here are silently ignored — the user is still authenticated.
+      // They can update their profile later via /dashboard/profile.
 
       return NextResponse.redirect(`${origin}${next}`)
     }

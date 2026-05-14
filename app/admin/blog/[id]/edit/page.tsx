@@ -15,13 +15,5 @@ export default async function EditBlogPostPage({ params }: { params: Promise<{ i
   const { data: post } = await supabase.from('blog_posts').select('*').eq('id', id).single()
   if (!post) notFound()
 
-  return (
-    <div className="p-6 md:p-10 max-w-[1200px] mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text)]">Edit Post</h1>
-        <p className="text-[var(--color-text-muted)] mt-1">Update your blog article.</p>
-      </div>
-      <BlogPostForm postId={id} initialData={post as BlogPost} />
-    </div>
-  )
+  return <BlogPostForm postId={id} initialData={post as BlogPost} />
 }

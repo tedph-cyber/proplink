@@ -4,7 +4,9 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import styles from "@/styles/auth.module.css";
 
 function LoginPageContent() {
   const router = useRouter();
@@ -14,6 +16,7 @@ function LoginPageContent() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(confirmationFailed ? "Email confirmation failed. Please try registering again." : "");
   const [loading, setLoading] = useState(false);
 
@@ -50,87 +53,88 @@ function LoginPageContent() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="w-full max-w-[400px] mx-auto bg-[var(--color-surface)] rounded-2xl shadow-[0_24px_48px_-12px_rgba(10,29,47,0.08)] p-8 flex flex-col"
+      className="w-full max-w-[400px] mx-auto"
     >
-      {/* Brand */}
-      <div className="flex flex-col items-center mb-8">
-        <span className="font-display text-3xl font-bold tracking-tight text-[var(--color-text)]">StrongTower</span>
-        <span className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-accent)] uppercase">Holdings</span>
-        <h1 className="mt-6 text-2xl font-bold text-[var(--color-text)] tracking-tight">Welcome back</h1>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Please enter your details to sign in</p>
-      </div>
-
-      <AnimatePresence mode="wait">
-        {error && (
-          <motion.div
-            key="error"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="mb-5 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2"
-          >
-            <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {error}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Email */}
-        <div className="space-y-1.5">
-          <label htmlFor="email" className="block text-[11px] font-bold uppercase tracking-[0.05em] text-[var(--color-text-muted)]">
-            Email Address
-          </label>
-          <input
-            id="email"
-            type="email"
-            placeholder="name@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full bg-[var(--color-surface-2)] border-none rounded-lg px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20 focus:bg-[var(--color-surface)] transition-all duration-300"
-          />
+      <div className={styles.card}>
+        <div className={styles.brand}>
+          <span className={styles.brandName}>StrongTower</span>
+          <span className={styles.brandAccent}>Holdings</span>
+          <h1 className={styles.headingSpaced}>Welcome back</h1>
+          <p className={styles.subtitle}>Please enter your details to sign in</p>
         </div>
 
-        {/* Password */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <label htmlFor="password" className="block text-[11px] font-bold uppercase tracking-[0.05em] text-[var(--color-text-muted)]">
-              Password
-            </label>
-            <Link href="/forgot-password" className="text-xs font-semibold text-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
-              Forgot password?
-            </Link>
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className={styles.bannerError}
+            >
+              <svg className={styles.bannerIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className={styles.bannerMessage}>{error}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.field}>
+            <label htmlFor="email" className={styles.label}>Email Address</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className={styles.input}
+            />
           </div>
-          <input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full bg-[var(--color-surface-2)] border-none rounded-lg px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20 focus:bg-[var(--color-surface)] transition-all duration-300"
-          />
+
+          <div className={styles.field}>
+            <div className={styles.labelRow}>
+              <label htmlFor="password" className={styles.label}>Password</label>
+              <Link href="/forgot-password" className={styles.labelLink}>
+                Forgot password?
+              </Link>
+            </div>
+            <div className={styles.inputPasswordWrap}>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className={styles.inputPassword}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.inputToggle}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" disabled={loading} className={styles.btnPrimary}>
+            {loading ? "Signing in…" : "Sign In"}
+          </button>
+        </form>
+
+        <div className={styles.divider}>
+          <p className={styles.footerText}>
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className={styles.footerLink}>
+              Register
+            </Link>
+          </p>
         </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-[var(--color-accent)] w-full py-3.5 rounded-xl text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {loading ? "Signing in…" : "Sign In"}
-        </button>
-      </form>
-
-      <div className="mt-8 pt-6 border-t border-[var(--color-border)]/20 text-center">
-        <p className="text-sm text-[var(--color-text-muted)]">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-bold text-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors ml-1">
-            Register
-          </Link>
-        </p>
       </div>
     </motion.div>
   );
@@ -138,7 +142,7 @@ function LoginPageContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="w-full max-w-[400px] mx-auto p-8 flex justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="w-full max-w-[400px] mx-auto p-8 flex justify-center text-[var(--color-text-muted)] text-sm">Loading...</div>}>
       <LoginPageContent />
     </Suspense>
   );

@@ -45,6 +45,7 @@ export function SnapScroll({ panels }: SnapScrollProps) {
   const hintsRef = useRef<{ prev: HTMLDivElement | null; next: HTMLDivElement | null }>({ prev: null, next: null })
   const dotsRef = useRef<(HTMLButtonElement | null)[]>([])
   const panelRefs = useRef<(HTMLElement | null)[]>([])
+  const delayedCallRef = useRef<gsap.core.Tween | null>(null)
 
   const updateUI = useCallback(() => {
     const current = currentRef.current
@@ -121,7 +122,8 @@ export function SnapScroll({ panels }: SnapScrollProps) {
       ease: 'power2.in',
     })
 
-    gsap.delayedCall(0.88, () => {
+    delayedCallRef.current?.kill()
+    delayedCallRef.current = gsap.delayedCall(0.88, () => {
       currentRef.current = target
       isAnimatingRef.current = false
       blockerRef.current?.classList.remove(styles.blockerActive)
@@ -159,6 +161,15 @@ export function SnapScroll({ panels }: SnapScrollProps) {
     hintsRef.current.next?.classList.add(styles.scrollHintVisible)
 
     return () => {
+      delayedCallRef.current?.kill()
+      gsap.killTweensOf(panelRefs.current.filter(Boolean))
+      const contentElems = panelRefs.current.filter(Boolean).flatMap(p => [
+        p?.querySelector(`.${styles.eyebrow}`),
+        p?.querySelector(`.${styles.headline}`),
+        p?.querySelector(`.${styles.bodyCopy}`),
+        p?.querySelector(`.${styles.ctaLink}`),
+      ].filter(Boolean))
+      gsap.killTweensOf(contentElems)
       document.body.style.overflow = ''
     }
   }, [updateUI])

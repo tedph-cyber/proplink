@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Property, PropertyMedia, Profile } from '@/lib/types'
 import { generateWhatsAppLink, formatPriceRange, truncateText } from '@/lib/utils'
+import { ImageGallery } from '@/components/properties/image-gallery'
+import { MapWrapper } from '@/components/properties/map-wrapper'
 import type { Metadata } from 'next'
 import styles from '@/styles/property-detail.module.css'
 
@@ -47,8 +49,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   if (!property) notFound()
 
   const { property_media, profiles: seller } = property
-  const images = (property_media || []).filter(m => m.media_type === 'image')
-  const [coverImage, ...thumbImages] = images
   const whatsappLink = generateWhatsAppLink(seller.whatsapp_number, property.title, property.id)
 
   const locationParts = [property.city, property.lga, property.state, property.country].filter(Boolean)
@@ -72,16 +72,8 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
       {/* Gallery */}
       <section className={styles.gallery}>
-        <div className={styles.mainImageWrap}>
-          {coverImage ? (
-            <img src={coverImage.media_url} alt={property.title} />
-          ) : (
-            <div className={styles.imagePlaceholder}>
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            </div>
-          )}
+        <div className="relative">
+          <ImageGallery media={property_media} propertyTitle={property.title} />
           <div className={styles.galleryBadges}>
             <span className={styles.verifiedBadge}>
               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
@@ -94,26 +86,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
             </span>
           </div>
         </div>
-
-        {thumbImages.length > 0 && (
-          <div className={styles.thumbStrip}>
-            {coverImage && (
-              <div className={styles.thumbActive}>
-                <img src={coverImage.media_url} alt={property.title} />
-              </div>
-            )}
-            {thumbImages.map((img, i) => (
-              <div key={img.id} className={styles.thumbItem}>
-                <img src={img.media_url} alt={`${property.title} ${i + 2}`} />
-                {i === thumbImages.length - 1 && images.length > 5 && (
-                  <div className={styles.thumbOverflow}>
-                    +{images.length - 5}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
       </section>
 
       {/* Main Content + Sidebar */}
@@ -269,14 +241,22 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
               Location
             </p>
             <p className={styles.locationCardText}>{locationParts.join(', ')}</p>
-            <div className={styles.mapPlaceholder}>
-              <div className={styles.mapPlaceholderInner}>
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                </svg>
-                <p>Map view</p>
+            {property.latitude && property.longitude ? (
+              <MapWrapper
+                lat={property.latitude}
+                lng={property.longitude}
+                label={property.title}
+              />
+            ) : (
+              <div className={styles.mapPlaceholder}>
+                <div className={styles.mapPlaceholderInner}>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                  <p>Map unavailable</p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Listed date */}

@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { BlogPost, BlogCategory } from '@/lib/types'
+import styles from '@/styles/blog-editor.module.css'
 
 const CATEGORIES: { value: BlogCategory; label: string }[] = [
   { value: 'market-insights', label: 'Market Insights' },
@@ -33,18 +35,16 @@ export function BlogPostForm({ postId, initialData }: Props) {
   const [excerpt, setExcerpt] = useState(initialData?.excerpt ?? '')
   const [coverUrl, setCoverUrl] = useState(initialData?.cover_image_url ?? '')
   const [tags, setTags] = useState((initialData?.tags ?? []).join(', '))
-  const [status, setStatus] = useState<'draft' | 'published'>(initialData?.status ?? 'draft')
+  const [status, setStatus] = useState<'draft' | 'published'>(initialData?.status ?? (postId ? 'draft' : 'published'))
   const [content, setContent] = useState(initialData?.content ?? '')
   const [preview, setPreview] = useState('')
   const [activeTab, setActiveTab] = useState<'write' | 'preview'>('write')
   const [slugManual, setSlugManual] = useState(!!initialData?.slug)
 
-  // Auto-generate slug from title
   useEffect(() => {
     if (!slugManual && title) setSlug(generateSlug(title))
   }, [title, slugManual])
 
-  // Debounced markdown preview
   const updatePreview = useCallback(async (md: string) => {
     try {
       const { marked } = await import('marked')
@@ -92,223 +92,267 @@ export function BlogPostForm({ postId, initialData }: Props) {
     }
   }
 
-  const inputCls = 'w-full bg-[var(--color-surface-2)] border-none rounded-xl px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20 transition-all text-sm'
-  const labelCls = 'block text-[11px] font-bold uppercase tracking-[0.05em] text-[var(--color-text-muted)] mb-2'
+  const insertMarkdown = (template: string) => {
+    setContent(c => c + template)
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <div className={styles.page}>
+      {/* Breadcrumbs */}
+      <nav className={styles.breadcrumbs}>
+        <Link href="/admin" className={styles.breadcrumbLink}>Dashboard</Link>
+        <span>/</span>
+        <Link href="/admin/blog" className={styles.breadcrumbLink}>Blog</Link>
+        <span>/</span>
+        <span className={styles.breadcrumbCurrent}>{postId ? 'Edit Post' : 'New Post'}</span>
+      </nav>
+
+      {/* Header */}
+      <div className={styles.header}>
+        <h1 className={styles.headerTitle}>{postId ? 'Edit Post' : 'New Blog Post'}</h1>
+        <p className={styles.headerSubtitle}>
+          {postId ? 'Update your article content and settings.' : 'Create a new article for the StrongTower Holdings blog.'}
+        </p>
+      </div>
+
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">
+        <div className={styles.errorBanner}>
+          <svg className={styles.errorIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Fields */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Title */}
-          <div>
-            <label className={labelCls}>Title *</label>
-            <input
-              required
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              className={inputCls}
-              placeholder="Enter post title..."
-            />
-          </div>
-
-          {/* Slug */}
-          <div>
-            <label className={labelCls}>Slug</label>
-            <div className="flex items-center bg-[var(--color-surface-2)] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[var(--color-accent)]/20">
-              <span className="pl-4 pr-1 text-sm text-[var(--color-text-muted)] font-mono">/blog/</span>
-              <input
-                value={slug}
-                onChange={e => { setSlugManual(true); setSlug(e.target.value) }}
-                className="flex-1 bg-transparent border-none py-3 pr-4 text-[var(--color-text)] focus:outline-none text-sm font-mono"
-                placeholder="auto-generated-from-title"
-              />
-            </div>
-          </div>
-
-          {/* Excerpt */}
-          <div>
-            <label className={labelCls}>
-              Excerpt
-              <span className={`ml-2 ${excerpt.length > 200 ? 'text-red-500' : 'text-[var(--color-text-muted)]'}`}>
-                {excerpt.length}/200
-              </span>
-            </label>
-            <textarea
-              value={excerpt}
-              onChange={e => setExcerpt(e.target.value)}
-              rows={3}
-              maxLength={200}
-              className={inputCls + ' resize-none'}
-              placeholder="Brief description shown in listing pages..."
-            />
-          </div>
-
-          {/* Cover Image */}
-          <div>
-            <label className={labelCls}>Cover Image URL</label>
-            <input
-              value={coverUrl}
-              onChange={e => setCoverUrl(e.target.value)}
-              className={inputCls}
-              placeholder="https://..."
-              type="url"
-            />
-            {coverUrl && (
-              <div className="mt-3 rounded-xl overflow-hidden h-40">
-                <img src={coverUrl} alt="Cover preview" className="w-full h-full object-cover" />
-              </div>
-            )}
-          </div>
-
-          {/* Content Editor */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className={labelCls + ' mb-0'}>Content * (Markdown)</label>
-              <div className="flex gap-1 bg-[var(--color-surface-2)] p-1 rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('write')}
-                  className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'write' ? 'bg-[var(--color-surface)] text-[var(--color-text)] shadow-sm' : 'text-[var(--color-text-muted)]'}`}
-                >
-                  Write
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('preview')}
-                  className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${activeTab === 'preview' ? 'bg-[var(--color-surface)] text-[var(--color-text)] shadow-sm' : 'text-[var(--color-text-muted)]'}`}
-                >
-                  Preview
-                </button>
+      <form onSubmit={handleSubmit}>
+        <div className={styles.layout}>
+          {/* ─── Main Column ─────────────────────────────── */}
+          <div className={styles.mainColumn}>
+            {/* Title */}
+            <div className={styles.card}>
+              <div className={styles.field}>
+                <label className={styles.label}>Title</label>
+                <input
+                  required
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  className={styles.input}
+                  placeholder="Enter a compelling title…"
+                />
               </div>
             </div>
 
-            {/* Toolbar */}
-            <div className="flex gap-1 mb-2 flex-wrap">
-              {[
-                { label: 'B', action: () => setContent(c => c + '**bold**') },
-                { label: 'I', action: () => setContent(c => c + '_italic_') },
-                { label: 'H2', action: () => setContent(c => c + '\n## Heading\n') },
-                { label: 'H3', action: () => setContent(c => c + '\n### Heading\n') },
-                { label: 'Link', action: () => setContent(c => c + '[text](url)') },
-                { label: 'Quote', action: () => setContent(c => c + '\n> blockquote\n') },
-              ].map(({ label, action }) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={action}
-                  className="px-3 py-1 bg-[var(--color-surface-2)] hover:bg-[var(--color-border)] rounded-lg text-xs font-bold text-[var(--color-text-muted)] transition-colors"
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            {activeTab === 'write' ? (
-              <textarea
-                required
-                value={content}
-                onChange={e => setContent(e.target.value)}
-                rows={18}
-                className={inputCls + ' resize-none font-mono text-sm leading-relaxed'}
-                placeholder="Write your article in Markdown..."
-              />
-            ) : (
-              <div
-                className="prose min-h-[400px] bg-[var(--color-surface)] rounded-xl p-6 border border-[var(--color-border)]"
-                dangerouslySetInnerHTML={{ __html: preview || '<p class="text-[var(--color-text-muted)] italic">Nothing to preview yet.</p>' }}
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Sidebar Settings */}
-        <div className="space-y-6">
-          <div className="bg-[var(--color-surface)] rounded-2xl p-6 shadow-[var(--shadow-card)] space-y-6">
-            <h3 className="font-bold text-sm text-[var(--color-text)] uppercase tracking-wider">Post Settings</h3>
-
-            {/* Status */}
-            <div>
-              <label className={labelCls}>Status</label>
-              <div className="flex gap-2">
-                {(['draft', 'published'] as const).map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setStatus(s)}
-                    className={`flex-1 py-2.5 rounded-xl text-sm font-bold capitalize transition-all ${
-                      status === s
-                        ? s === 'published' ? 'bg-emerald-500 text-white' : 'bg-[var(--color-surface-2)] text-[var(--color-text)]'
-                        : 'bg-[var(--color-surface-2)]/50 text-[var(--color-text-muted)]'
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Category */}
-            <div>
-              <label className={labelCls}>Category *</label>
-              <select
-                required
-                value={category}
-                onChange={e => setCategory(e.target.value as BlogCategory)}
-                className={inputCls + ' cursor-pointer'}
-              >
-                {CATEGORIES.map(c => (
-                  <option key={c.value} value={c.value}>{c.label}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Tags */}
-            <div>
-              <label className={labelCls}>Tags (comma-separated)</label>
-              <input
-                value={tags}
-                onChange={e => setTags(e.target.value)}
-                className={inputCls}
-                placeholder="Lagos, investment, land"
-              />
-              {tags && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {tags.split(',').map(t => t.trim()).filter(Boolean).map(tag => (
-                    <span key={tag} className="px-3 py-1 bg-[var(--color-surface-2)] rounded-full text-xs font-medium text-[var(--color-text-muted)]">
-                      #{tag}
-                    </span>
-                  ))}
+            {/* Slug */}
+            <div className={styles.card}>
+              <div className={styles.field}>
+                <label className={styles.label}>URL Slug</label>
+                <div className={styles.slugWrap}>
+                  <span className={styles.slugPrefix}>/blog/</span>
+                  <input
+                    value={slug}
+                    onChange={e => { setSlugManual(true); setSlug(e.target.value) }}
+                    className={styles.slugInput}
+                    placeholder="auto-generated-from-title"
+                  />
                 </div>
+              </div>
+            </div>
+
+            {/* Excerpt */}
+            <div className={styles.card}>
+              <div className={styles.field}>
+                <div className={styles.labelRow}>
+                  <label className={styles.label}>Excerpt</label>
+                  <span className={excerpt.length > 200 ? styles.charCountWarn : styles.charCount}>
+                    {excerpt.length}/200
+                  </span>
+                </div>
+                <textarea
+                  value={excerpt}
+                  onChange={e => setExcerpt(e.target.value)}
+                  rows={3}
+                  maxLength={200}
+                  className={styles.textarea}
+                  placeholder="Brief description shown in listing pages…"
+                />
+              </div>
+            </div>
+
+            {/* Cover Image */}
+            <div className={styles.card}>
+              <div className={styles.field}>
+                <label className={styles.label}>Cover Image URL</label>
+                <input
+                  value={coverUrl}
+                  onChange={e => setCoverUrl(e.target.value)}
+                  className={styles.input}
+                  placeholder="https://…"
+                  type="url"
+                />
+                {coverUrl && (
+                  <div className={styles.coverPreview}>
+                    <img src={coverUrl} alt="Cover preview" />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Content Editor */}
+            <div className={styles.editorCard}>
+              <div className={styles.editorHeader}>
+                <div className={styles.editorTabs}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('write')}
+                    className={activeTab === 'write' ? styles.editorTabActive : styles.editorTab}
+                  >
+                    Write
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('preview')}
+                    className={activeTab === 'preview' ? styles.editorTabActive : styles.editorTab}
+                  >
+                    Preview
+                  </button>
+                </div>
+              </div>
+
+              {activeTab === 'write' && (
+                <>
+                  <div className={styles.editorToolbar}>
+                    {[
+                      { label: 'B', action: () => insertMarkdown('**bold**') },
+                      { label: 'I', action: () => insertMarkdown('_italic_') },
+                      { label: 'H2', action: () => insertMarkdown('\n## Heading\n') },
+                      { label: 'H3', action: () => insertMarkdown('\n### Heading\n') },
+                      { label: 'Link', action: () => insertMarkdown('[text](url)') },
+                      { label: 'Quote', action: () => insertMarkdown('\n> blockquote\n') },
+                      { label: 'UL', action: () => insertMarkdown('\n- item\n- item\n') },
+                      { label: 'OL', action: () => insertMarkdown('\n1. item\n2. item\n') },
+                    ].map(({ label, action }) => (
+                      <button key={label} type="button" onClick={action} className={styles.toolbarBtn}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className={styles.editorBody}>
+                    <textarea
+                      required
+                      value={content}
+                      onChange={e => setContent(e.target.value)}
+                      className={styles.editorTextarea}
+                      placeholder="Write your article in Markdown…"
+                    />
+                  </div>
+                </>
+              )}
+
+              {activeTab === 'preview' && (
+                <div
+                  className={styles.previewPane}
+                  dangerouslySetInnerHTML={{
+                    __html: preview || '<p class="editorEmpty">Nothing to preview yet.</p>'
+                  }}
+                />
               )}
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex flex-col gap-3">
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full py-4 rounded-xl bg-[var(--color-accent)] text-white font-bold disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {saving ? 'Saving...' : postId ? 'Update Post' : 'Create Post'}
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push('/admin/blog')}
-              className="w-full py-3 rounded-xl bg-[var(--color-surface-2)] text-[var(--color-text)] font-semibold text-sm hover:bg-[var(--color-border)] transition-colors"
-            >
-              Cancel
-            </button>
+          {/* ─── Sidebar Column ─────────────────────────── */}
+          <div className={styles.sidebarColumn}>
+            {/* Post Settings */}
+            <div className={styles.settingsCard}>
+              <span className={styles.cardTitle}>Post Settings</span>
+
+              <div className={styles.settingsSection}>
+                <div className={styles.field}>
+                  <label className={styles.label}>Status</label>
+                  <div className={styles.statusToggle}>
+                    <button
+                      type="button"
+                      onClick={() => setStatus('draft')}
+                      className={status === 'draft' ? styles.statusDraftActive : styles.statusDraft}
+                    >
+                      Draft
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStatus('published')}
+                      className={status === 'published' ? styles.statusPublishedActive : styles.statusPublished}
+                    >
+                      Published
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.settingsSection}>
+                <div className={styles.field}>
+                  <label className={styles.label}>Category</label>
+                  <select
+                    required
+                    value={category}
+                    onChange={e => setCategory(e.target.value as BlogCategory)}
+                    className={styles.select}
+                  >
+                    {CATEGORIES.map(c => (
+                      <option key={c.value} value={c.value}>{c.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.settingsSection}>
+                <div className={styles.field}>
+                  <label className={styles.label}>Tags</label>
+                  <input
+                    value={tags}
+                    onChange={e => setTags(e.target.value)}
+                    className={styles.input}
+                    placeholder="e.g. Lagos, investment, land"
+                  />
+                  {tags && (
+                    <div className={styles.tagsPreview}>
+                      {tags.split(',').map(t => t.trim()).filter(Boolean).map(tag => (
+                        <span key={tag} className={styles.tagPill}>#{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className={styles.actionsCard}>
+              <button
+                type="submit"
+                disabled={saving}
+                className={styles.actionPrimary}
+              >
+                {saving ? (
+                  <>Saving…</>
+                ) : (
+                  <>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {postId ? 'Update Post' : 'Create Post'}
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push('/admin/blog')}
+                className={styles.actionSecondary}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   )
 }

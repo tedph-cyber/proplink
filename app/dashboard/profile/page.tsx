@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Profile } from '@/lib/types'
+import { AvatarUpload } from '@/components/ui/avatar-upload'
+import styles from '@/styles/admin.module.css'
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -13,7 +15,10 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [userEmail, setUserEmail] = useState('')
+  const [userId, setUserId] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [formData, setFormData] = useState({
+    username: '',
     whatsapp_number: '',
     seller_type: 'individual' as 'individual' | 'agent' | 'developer',
     company_name: '',
@@ -23,15 +28,18 @@ export default function ProfilePage() {
     async function loadProfile() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
+      setUserId(user.id)
       setUserEmail(user.email || '')
       const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
       if (data) {
         const p = data as Profile
         setFormData({
+          username: p.username || '',
           whatsapp_number: p.whatsapp_number || '',
           seller_type: p.seller_type || 'individual',
           company_name: p.company_name || '',
         })
+        setAvatarUrl(p.avatar_url || null)
       }
       setLoading(false)
     }
@@ -44,13 +52,21 @@ export default function ProfilePage() {
     setMessage(null)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
-    const { error } = await supabase.from('profiles').update({
+
+    const updates: Record<string, any> = {
       whatsapp_number: formData.whatsapp_number,
       seller_type: formData.seller_type,
       company_name: formData.company_name,
-    }).eq('id', user.id)
+      username: formData.username || null,
+    }
+
+    const { error } = await supabase.from('profiles').update(updates).eq('id', user.id)
     if (error) {
-      setMessage({ type: 'error', text: 'Error updating profile: ' + error.message })
+      if (error.message.includes('profiles_username_key') || error.message.includes('unique')) {
+        setMessage({ type: 'error', text: 'This username is already taken. Please choose another.' })
+      } else {
+        setMessage({ type: 'error', text: 'Error updating profile: ' + error.message })
+      }
     } else {
       setMessage({ type: 'success', text: 'Profile updated successfully!' })
       setTimeout(() => setMessage(null), 4000)
@@ -59,11 +75,7 @@ export default function ProfilePage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[300px]">
-        <div className="w-10 h-10 rounded-full border-4 border-[var(--color-surface-2)] border-t-[var(--color-accent)] animate-spin" />
-      </div>
-    )
+    return <div className={styles.loadingCenter}><div className={styles.loadingSpinner} /></div>
   }
 
   const typeOptions = [
@@ -73,35 +85,46 @@ export default function ProfilePage() {
   ]
 
   return (
-    <div className="space-y-8 max-w-2xl">
+    <div className={styles.pageNarrow}>
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-text)] mb-1">Profile Settings</h1>
-        <p className="text-[var(--color-text-muted)]">Manage your account information and preferences.</p>
+        <h1 className={styles.pageTitleLg}>Profile Settings</h1>
+        <p className={styles.pageSubtitle}>Manage your account information and preferences.</p>
+      </div>
+
+      {/* Avatar */}
+      <div className={styles.profileCard}>
+        <p className={styles.profileCardTitle}>Profile Photo</p>
+        <AvatarUpload
+          userId={userId}
+          currentAvatarUrl={avatarUrl}
+          onUploadComplete={(url) => setAvatarUrl(url)}
+        />
+        <p className={styles.profileInputHint + ' mt-3'}>Square image recommended. Max 2MB.</p>
       </div>
 
       {/* Email card (read-only) */}
-      <div className="bg-[var(--color-surface)] rounded-2xl p-6 shadow-[var(--shadow-card)]">
-        <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">Account Email</p>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-muted)] flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className={styles.profileCard}>
+        <p className={styles.profileCardTitle}>Account Email</p>
+        <div className={styles.profileEmailRow}>
+          <div className={styles.profileEmailIcon}>
+            <svg className={styles.profileIconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
           <div>
-            <p className="font-semibold text-[var(--color-text)]">{userEmail}</p>
-            <p className="text-xs text-[var(--color-text-muted)] mt-0.5">Email address cannot be changed</p>
+            <p className={styles.profileEmailValue}>{userEmail}</p>
+            <p className={styles.profileEmailHint}>Email address cannot be changed</p>
           </div>
         </div>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className={styles.profileForm}>
         {/* Account Type */}
-        <div className="bg-[var(--color-surface)] rounded-2xl p-6 shadow-[var(--shadow-card)] space-y-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Account Type</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className={styles.profileCard}>
+          <p className={styles.profileCardTitle}>Account Type</p>
+          <div className={styles.typeGrid}>
             {typeOptions.map(({ value, label, desc, icon }) => {
               const active = formData.seller_type === value
               return (
@@ -109,19 +132,15 @@ export default function ProfilePage() {
                   key={value}
                   type="button"
                   onClick={() => setFormData({ ...formData, seller_type: value as typeof formData.seller_type })}
-                  className={`flex flex-col items-start p-4 rounded-xl border-2 transition-all text-left ${
-                    active
-                      ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)]'
-                      : 'border-[var(--color-surface-2)] bg-[var(--color-surface-2)]/50 hover:border-[var(--color-border)]'
-                  }`}
+                  className={active ? styles.typeOptionActive : styles.typeOption}
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${active ? 'bg-[var(--color-accent)] text-white' : 'bg-[var(--color-surface)] text-[var(--color-text-muted)]'}`}>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className={active ? styles.typeOptionIconActive : styles.typeOptionIconDefault}>
+                    <svg className={styles.typeIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
                     </svg>
                   </div>
-                  <p className={`font-bold text-sm ${active ? 'text-[var(--color-accent)]' : 'text-[var(--color-text)]'}`}>{label}</p>
-                  <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{desc}</p>
+                  <p className={active ? styles.typeLabelActive : styles.typeLabelDefault}>{label}</p>
+                  <p className={styles.typeDesc}>{desc}</p>
                 </button>
               )
             })}
@@ -129,63 +148,77 @@ export default function ProfilePage() {
         </div>
 
         {/* Contact & Identity */}
-        <div className="bg-[var(--color-surface)] rounded-2xl p-6 shadow-[var(--shadow-card)] space-y-5">
-          <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Contact Details</p>
+        <div className={styles.profileCard}>
+          <p className={styles.profileCardTitle}>Contact Details</p>
+          <div className={styles.fieldGroup}>
 
-          {/* WhatsApp */}
-          <div>
-            <label className="block text-sm font-semibold text-[var(--color-text)] mb-2">
-              WhatsApp Number
-            </label>
-            <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-              </div>
-              <input
-                type="tel"
-                placeholder="+234 XXX XXX XXXX"
-                value={formData.whatsapp_number}
-                onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
-                className="w-full pl-11 pr-4 py-3.5 bg-[var(--color-surface-2)] border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-[var(--color-accent)]/20 focus:bg-[var(--color-surface)] transition-all outline-none text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]"
-              />
-            </div>
-            <p className="mt-1.5 text-xs text-[var(--color-text-muted)]">Include country code, e.g., +234 for Nigeria</p>
-          </div>
-
-          {/* Company Name (conditional) */}
-          {(formData.seller_type === 'agent' || formData.seller_type === 'developer') && (
+            {/* Username */}
             <div>
-              <label className="block text-sm font-semibold text-[var(--color-text)] mb-2">
-                Company Name
-              </label>
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
+              <label className={styles.fieldLabel}>Username</label>
+              <div className={styles.profileNameWrap}>
+                <div className={styles.profileNameIcon}>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
                 <input
                   type="text"
-                  placeholder="Your company or agency name"
-                  value={formData.company_name}
-                  onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
-                  className="w-full pl-11 pr-4 py-3.5 bg-[var(--color-surface-2)] border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-[var(--color-accent)]/20 focus:bg-[var(--color-surface)] transition-all outline-none text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]"
+                  placeholder="Choose a unique username"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  className={styles.profileNameInput}
                 />
               </div>
+              <p className={styles.profileInputHint}>Public handle. Must be unique.</p>
             </div>
-          )}
+
+            {/* WhatsApp */}
+            <div>
+              <label className={styles.fieldLabel}>WhatsApp Number</label>
+              <div className={styles.inputWrap}>
+                <div className={styles.inputPrefix}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <input
+                  type="tel"
+                  placeholder="+234 XXX XXX XXXX"
+                  value={formData.whatsapp_number}
+                  onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
+                  className={styles.profileNameInput}
+                />
+              </div>
+              <p className={styles.profileInputHint}>Include country code, e.g., +234 for Nigeria</p>
+            </div>
+
+            {/* Company Name (conditional) */}
+            {(formData.seller_type === 'agent' || formData.seller_type === 'developer') && (
+              <div>
+                <label className={styles.fieldLabel}>Company Name</label>
+                <div className={styles.profileNameWrap}>
+                  <div className={styles.profileNameIcon}>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Your company or agency name"
+                    value={formData.company_name}
+                    onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
+                    className={styles.profileNameInput}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Message */}
         {message && (
-          <div className={`flex items-center gap-3 px-5 py-4 rounded-xl text-sm font-semibold ${
-            message.type === 'error'
-              ? 'bg-red-50 text-red-700 border border-red-100'
-              : 'bg-green-50 text-green-700 border border-green-100'
-          }`}>
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className={message.type === 'error' ? styles.messageError : styles.messageSuccess}>
+            <svg className={styles.messageIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {message.type === 'error'
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -196,31 +229,23 @@ export default function ProfilePage() {
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            disabled={saving}
-            className="bg-[var(--color-accent)] px-8 py-3.5 rounded-xl text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
+        <div className={styles.formActions}>
+          <button type="submit" disabled={saving} className={styles.btnPrimary}>
             {saving ? (
               <>
-                <div className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                <div className={styles.spinnerSm} />
                 Saving…
               </>
             ) : (
               <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={styles.btnIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Save Changes
               </>
             )}
           </button>
-          <button
-            type="button"
-            onClick={() => router.push('/dashboard')}
-            className="px-8 py-3.5 rounded-full font-bold text-sm bg-[var(--color-surface-2)] text-[var(--color-text)] hover:bg-[var(--color-surface-2)] transition-all"
-          >
+          <button type="button" onClick={() => router.push('/dashboard')} className={styles.btnSecondary}>
             Cancel
           </button>
         </div>

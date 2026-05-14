@@ -14,6 +14,8 @@ export interface Profile {
   seller_type?: SellerType
   company_name?: string | null
   whatsapp_number: string
+  username?: string | null
+  avatar_url?: string | null
   created_at: string
 }
 
@@ -65,6 +67,9 @@ export interface Property {
   state: string
   lga: string | null
   city: string | null
+  street?: string | null
+  latitude?: number | null
+  longitude?: number | null
   features: PropertyFeatures
   status: 'active' | 'sold' | 'inactive'
   created_at: string

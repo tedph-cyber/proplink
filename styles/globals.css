@@ -1,23 +1,23 @@
 :root {
   /* ── Palette ─────────────────────────────────────── */
-  --color-bg:          #0c0b0a;
-  --color-surface:     #161412;
-  --color-surface-2:   #1e1b18;
-  --color-border:      rgba(255,245,235,0.09);
-  --color-border-hover:rgba(255,245,235,0.18);
+  --color-bg:          #0B0B0C;
+  --color-surface:     #131313;
+  --color-surface-2:   #1B1B1D;
+  --color-border:      rgba(255,255,255,0.08);
+  --color-border-hover:rgba(255,255,255,0.16);
 
-  --color-accent:      #c4622d;
-  --color-accent-hover:#d4703a;
-  --color-accent-muted:rgba(196,98,45,0.12);
+  --color-accent:      #D97736;
+  --color-accent-hover:#E8854A;
+  --color-accent-muted:rgba(217,119,54,0.12);
 
   --color-whatsapp:      #25d366;
   --color-whatsapp-hover: #1db954;
   --color-destructive:   #e05050;
   --color-destructive-muted: rgba(224, 80, 80, 0.12);
 
-  --color-text:        #f5f0e8;
-  --color-text-muted:  rgba(245,240,232,0.52);
-  --color-text-hint:   rgba(245,240,232,0.32);
+  --color-text:        #F5F5F5;
+  --color-text-muted:  #A1A1AA;
+  --color-text-hint:   rgba(245,245,245,0.32);
 
   /* ── Typography ──────────────────────────────────── */
   --font-display:      'Fraunces', Georgia, serif;
@@ -61,4 +61,81 @@
   /* ── Shadows ─────────────────────────────────────── */
   --shadow-card:    0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.25);
   --shadow-modal:   0 8px 40px rgba(0,0,0,0.6);
+}
+
+/* ── Light Theme ──────────────────────────────────── */
+:root[data-theme="light"] {
+  --color-bg:          #F5F5F0;
+  --color-surface:     #FFFFFF;
+  --color-surface-2:   #EDEDE8;
+  --color-border:      rgba(0,0,0,0.08);
+  --color-border-hover:rgba(0,0,0,0.16);
+
+  --color-accent-muted:rgba(217,119,54,0.08);
+
+  --color-text:        #1A1A1A;
+  --color-text-muted:  #6B6B6B;
+  --color-text-hint:   rgba(0,0,0,0.25);
+
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-modal:   0 8px 40px rgba(0,0,0,0.08);
+}
+
+/* ── Animations ──────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulseAccent {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 54, 0.3); }
+  50%      { box-shadow: 0 0 0 6px rgba(217, 119, 54, 0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s var(--ease-out) both;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s var(--ease-out) both;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.35s var(--ease-out) both;
+}
+
+.animate-stagger > * {
+  animation: fadeInUp 0.4s var(--ease-out) both;
+}
+
+.animate-stagger > *:nth-child(1)  { animation-delay: 0.02s; }
+.animate-stagger > *:nth-child(2)  { animation-delay: 0.06s; }
+.animate-stagger > *:nth-child(3)  { animation-delay: 0.10s; }
+.animate-stagger > *:nth-child(4)  { animation-delay: 0.14s; }
+.animate-stagger > *:nth-child(5)  { animation-delay: 0.18s; }
+.animate-stagger > *:nth-child(6)  { animation-delay: 0.22s; }
+.animate-stagger > *:nth-child(7)  { animation-delay: 0.26s; }
+.animate-stagger > *:nth-child(8)  { animation-delay: 0.30s; }
+
+/* ── Reduced motion ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

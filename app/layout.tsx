@@ -28,7 +28,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${fraunces.variable}`}>
+    <html lang="en" className={`${dmSans.variable} ${fraunces.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              var t = localStorage.getItem('theme');
+              if (!t) t = 'dark';
+              document.documentElement.setAttribute('data-theme', t);
+            })()
+          `,
+        }} />
+      </head>
       <body>{children}</body>
     </html>
   );
