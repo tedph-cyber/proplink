@@ -1,6 +1,6 @@
 export default function NotFound() {
   return (
-    <div className="container mx-auto px-6 lg:px-10 py-16">
+    <div className="container-base py-16">
       <div className="mx-auto max-w-md text-center">
         <div className="mb-6 text-6xl">🏚️</div>
         <h1 className="mb-4 text-3xl font-bold" style={{ color: 'var(--color-text)' }}>

@@ -21,7 +21,7 @@ export async function Header() {
 
   return (
     <HeaderShell>
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="container-base flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className={styles.logoLink}>
           <span className={styles.logoStrong}>Strong</span>

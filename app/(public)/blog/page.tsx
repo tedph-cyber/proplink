@@ -71,7 +71,7 @@ export default async function BlogListingPage() {
   const widePosts = rest.slice(2, 3)
 
   return (
-    <main className="container-base py-16 lg:py-20">
+    <main className="container-base py-8 lg:py-16">
       {/* ── Content ────────────────────────────── */}
       <div className={styles.layout}>
         {/* Main */}

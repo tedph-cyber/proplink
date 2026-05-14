@@ -82,7 +82,7 @@ export default async function AdminBlogPage(props: { searchParams?: Promise<{ st
       </div>
 
       {/* Content Card */}
-      <div className={styles.tableWrapBorder}>
+      <div className={`${styles.tableWrapBorder} table-wrap`}>
         <table className={styles.table}>
           <thead>
             <tr className={styles.tableHead}>

@@ -55,7 +55,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <h1 className={styles.topbarTitle}>Admin Panel</h1>
             <div className={styles.topbarNav}>
               <ThemeToggle />
-              <Link href="/" className={styles.topbarLink}>← Home</Link>
+              <Link href="/" className={`${styles.topbarLink} ${styles.topbarLinkHideMobile}`}>← Home</Link>
               <span className="w-px h-4 bg-[var(--color-border)]" />
               <LogoutButton />
             </div>

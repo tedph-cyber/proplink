@@ -138,7 +138,7 @@ export default async function PropertiesPage({
     params.maxPrice;
 
   return (
-    <div className={`container mx-auto px-6 lg:px-10 py-8 lg:py-12 ${styles.page}`}>
+    <div className={`container-base py-8 lg:py-12 ${styles.page}`}>
       <div className={styles.header}>
         <h1 className={styles.title}>Browse Properties</h1>
         <p className={styles.subtitle}>

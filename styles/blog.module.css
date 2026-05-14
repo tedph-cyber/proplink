@@ -1,6 +1,7 @@
 /* ─── Hero ────────────────────────────────────── */
 .hero {
   position: relative;
+  overflow: hidden;
   padding: var(--space-8) 0;
   }
 
@@ -100,7 +101,13 @@
 .featuredImageWrap {
   position: relative;
   overflow: hidden;
-  height: 320px;
+  height: 220px;
+}
+
+@media (min-width: 640px) {
+  .featuredImageWrap {
+    height: 320px;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -144,10 +151,16 @@
 }
 
 .featuredContent {
-  padding: var(--space-8);
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .featuredContent {
+    padding: var(--space-8);
+  }
 }
 
 @media (min-width: 1024px) {

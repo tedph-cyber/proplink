@@ -28,7 +28,12 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
   const closeMenu = () => setIsOpen(false)
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden flex items-center gap-2">
+      {user && (
+        <div className={styles.mobileUserBadge}>
+          {user.email?.[0].toUpperCase()}
+        </div>
+      )}
       {/* Hamburger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}

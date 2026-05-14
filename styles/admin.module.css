@@ -517,12 +517,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-2);
 }
 
 @media (max-width: 767px) {
   .topbarInner {
-    padding-left: 60px;
+    padding-left: 56px;
   }
 }
 
@@ -534,15 +535,29 @@
 
 .topbarTitle {
   font-weight: 700;
-  font-size: var(--text-xl);
+  font-size: var(--text-base);
   letter-spacing: -0.02em;
   color: var(--color-text);
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .topbarTitle {
+    font-size: var(--text-xl);
+  }
 }
 
 .topbarNav {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .topbarNav {
+    gap: var(--space-3);
+  }
 }
 
 .topbarLink {
@@ -551,10 +566,21 @@
   color: var(--color-text-muted);
   text-decoration: none;
   transition: color var(--t-fast);
+  white-space: nowrap;
 }
 
 .topbarLink:hover {
   color: var(--color-accent);
+}
+
+@media (max-width: 480px) {
+  .topbarLinkHideMobile {
+    display: none;
+  }
+  
+  .topbarTitle {
+    font-size: var(--text-sm);
+  }
 }
 
 /* ─── Page ──────────────────────────────────────── */
@@ -562,15 +588,23 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: var(--space-6) 0;
+  padding: var(--space-4) var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  gap: var(--space-6);
 }
 
 @media (min-width: 768px) {
   .page {
+    padding: var(--space-6) var(--space-6);
+    gap: var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
     padding: var(--space-8) 0;
+    gap: var(--space-10);
   }
 }
 
@@ -599,6 +633,15 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  gap: var(--space-4);
+}
+
+@media (max-width: 639px) {
+  .pageHeaderRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
 }
 
 .pageTitle {
@@ -978,7 +1021,7 @@
 
 /* ─── Table ────────────────────────────────────── */
 .tableWrap {
-  overflow: hidden;
+  overflow-x: auto;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
 }
@@ -1004,7 +1047,7 @@
 }
 
 .tableTh {
-  padding: var(--space-3) var(--space-6);
+  padding: var(--space-3) var(--space-4);
   font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -1013,11 +1056,24 @@
   white-space: nowrap;
 }
 
+@media (min-width: 768px) {
+  .tableTh {
+    padding: var(--space-3) var(--space-6);
+  }
+}
+
 .tableThWide {
   composes: tableTh;
-  padding: 20px var(--space-8);
+  padding: var(--space-4);
   white-space: normal;
-  min-width: 240px;
+  min-width: 200px;
+}
+
+@media (min-width: 768px) {
+  .tableThWide {
+    padding: 20px var(--space-8);
+    min-width: 240px;
+  }
 }
 
 .tableThRight {
@@ -1075,10 +1131,17 @@
 }
 
 .tableTd {
-  padding: var(--space-4) var(--space-6);
-  font-size: var(--text-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
   word-break: break-word;
+}
+
+@media (min-width: 768px) {
+  .tableTd {
+    padding: var(--space-4) var(--space-6);
+    font-size: var(--text-sm);
+  }
 }
 
 .tableTdCategory {
@@ -1099,9 +1162,17 @@
 
 .tableTdWide {
   composes: tableTd;
-  padding: var(--space-5) var(--space-8);
-  min-width: 240px;
-  max-width: 400px;
+  padding: var(--space-3) var(--space-4);
+  min-width: 200px;
+  max-width: 300px;
+}
+
+@media (min-width: 768px) {
+  .tableTdWide {
+    padding: var(--space-5) var(--space-8);
+    min-width: 240px;
+    max-width: 400px;
+  }
 }
 
 .tableTdRight {
@@ -1770,11 +1841,25 @@
 }
 
 .blogActionBtn {
-  padding: 10px;
-  border-radius: var(--radius-lg);
+  padding: 8px;
+  border-radius: var(--radius-md);
   color: var(--color-text-muted);
   transition: all var(--t-fast);
   text-decoration: none;
+  min-height: 36px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .blogActionBtn {
+    padding: 10px;
+    border-radius: var(--radius-lg);
+    min-height: 40px;
+    min-width: 40px;
+  }
 }
 
 .blogActionBtn:hover {
@@ -1783,8 +1868,15 @@
 }
 
 .blogActionIcon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+}
+
+@media (min-width: 768px) {
+  .blogActionIcon {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 /* ─── Profile Page ─────────────────────────────── */

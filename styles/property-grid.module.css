@@ -1,8 +1,29 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
-  padding: var(--space-12) var(--space-6);
+  gap: 1rem;
+  padding-block: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    gap: 1.25rem;
+    padding-block: var(--space-8);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
 }
 
 @media (min-width: 768px) {

@@ -19,7 +19,13 @@
   gap: 2px;
   transition: opacity var(--t-fast);
   text-decoration: none;
-  padding: var(--space-12) var(--space-6)   ;
+  padding: var(--space-4) var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .logoLink {
+    padding: var(--space-6) var(--space-6);
+  }
 }
 
 .logoLink:hover {
@@ -71,6 +77,7 @@
   transition: color var(--t-fast);
 }
 
+
 .navLink:hover {
   color: var(--color-accent);
 }
@@ -83,6 +90,13 @@
 .navLinkAccent:hover {
   color: var(--color-accent);
   opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  .navLink,
+  .navLinkAccent {
+    display: none;
+  }
 }
 
 /* ─── User menu trigger ─────────────────────── */
@@ -214,6 +228,21 @@
 .mobileHamburger:hover {
   color: var(--color-accent);
   background: var(--color-surface);
+}
+
+.mobileUserBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
 .mobileBackdrop {

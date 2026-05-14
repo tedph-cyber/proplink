@@ -9,6 +9,7 @@
 
 html {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -140,6 +141,42 @@ a {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
+}
+
+/* ─── Responsive Table Overflow ───────────────── */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap::-webkit-scrollbar {
+  height: 4px;
+}
+
+.table-wrap::-webkit-scrollbar-thumb {
+  background: var(--color-text-hint);
+  border-radius: var(--radius-pill);
+}
+
+/* ─── Mobile Responsive Utilities ─────────────── */
+@media (max-width: 639px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .stack-mobile {
+    flex-direction: column !important;
+  }
+
+  .full-width-mobile {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 640px) {
+  .show-mobile {
+    display: none !important;
+  }
 }
 
 /* ─── Custom scrollbar ────────────────────────── */
