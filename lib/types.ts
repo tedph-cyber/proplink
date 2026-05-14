@@ -125,6 +125,15 @@ export type BlogCategory =
   | 'legal-finance'
   | 'neighborhood'
 
+export const BLOG_CATEGORIES: { value: BlogCategory; label: string }[] = [
+  { value: 'market-insights', label: 'Market Insights' },
+  { value: 'buyers-guide', label: "Buyer's Guide" },
+  { value: 'sellers-tips', label: 'Sellers Tips' },
+  { value: 'investment', label: 'Investment' },
+  { value: 'legal-finance', label: 'Legal & Finance' },
+  { value: 'neighborhood', label: 'Neighborhood' },
+]
+
 export interface BlogPost {
   id: string
   title: string
