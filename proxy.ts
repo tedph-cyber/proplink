@@ -33,26 +33,25 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Check if route requires admin access
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    if (!user) {
-      // Redirect to login if not authenticated
-      const redirectUrl = new URL('/login', request.url)
-      redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
-      return NextResponse.redirect(redirectUrl)
-    }
-
-    // Check if user is admin
+  if (user) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single()
 
-    if (profile?.role !== 'admin') {
-      // Redirect non-admins to dashboard
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+    console.log(`[AUTH] path=${request.nextUrl.pathname} user=${user.email} role_from_db=${profile?.role}`)
+
+    // Check if route requires admin access
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+      if (profile?.role !== 'admin') {
+        console.log(`[AUTH] BLOCKED /admin for ${user.email} (role=${profile?.role})`)
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
+      console.log(`[AUTH] ALLOWED /admin for ${user.email}`)
     }
+  } else {
+    console.log(`[AUTH] path=${request.nextUrl.pathname} user=none`)
   }
 
   // Protected routes that require authentication (but not admin)
@@ -62,7 +61,6 @@ export async function proxy(request: NextRequest) {
   )
 
   if (isProtectedPath && !user) {
-    // Redirect to login if not authenticated
     const redirectUrl = new URL('/login', request.url)
     redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)

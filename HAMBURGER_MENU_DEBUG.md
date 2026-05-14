@@ -19,7 +19,7 @@
 
 ### 1. Start Dev Server
 ```bash
-cd /home/tedph/dev/proplink
+cd /home/tedph/dev/Doxa
 npm run dev
 ```
 

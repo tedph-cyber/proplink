@@ -1,4 +1,4 @@
-# PropLink - Real Estate Marketplace
+# StrongTower Holdings - Real Estate Marketplace
 
 **Phase 5 Complete** ✅ - Search & Filters
 
@@ -114,7 +114,7 @@ Visit http://localhost:3000
 ## 📁 Project Structure
 
 ```
-proplink/
+StrongTower Holdings/
 ├── app/
 │   ├── (public)/          # Public routes (properties, etc.)
 │   ├── (auth)/            # Auth routes (login, register)

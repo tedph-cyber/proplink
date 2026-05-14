@@ -1,6 +1,6 @@
-# Deployment Guide - PropLink
+# Deployment Guide - StrongTower Holdings
 
-This guide covers deploying PropLink to production on Vercel with Supabase.
+This guide covers deploying StrongTower Holdings to production on Vercel with Supabase.
 
 ---
 
@@ -66,10 +66,10 @@ After deployment, create an admin account:
 # Initialize git (if not already done)
 git init
 git add .
-git commit -m "Initial commit - PropLink v1.0"
+git commit -m "Initial commit - StrongTower Holdings v1.0"
 
 # Create GitHub repository and push
-git remote add origin https://github.com/yourusername/proplink.git
+git remote add origin https://github.com/yourusername/StrongTower Holdings.git
 git branch -M main
 git push -u origin main
 ```
@@ -78,7 +78,7 @@ git push -u origin main
 
 1. Go to [vercel.com](https://vercel.com) and sign in
 2. Click **Add New Project**
-3. Import your GitHub repository (`proplink`)
+3. Import your GitHub repository (`StrongTower Holdings`)
 4. Configure project:
    - **Framework Preset:** Next.js
    - **Root Directory:** `./` (default)
@@ -264,7 +264,7 @@ git push
 
 ## Success! 🎉
 
-Your PropLink marketplace is now live and ready to connect property sellers with buyers across Nigeria!
+Your StrongTower Holdings marketplace is now live and ready to connect property sellers with buyers across Nigeria!
 
 **Next Steps:**
 1. Share your URL with beta testers

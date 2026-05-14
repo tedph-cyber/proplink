@@ -1,0 +1,418 @@
+/* ─── Panel container ──────────────────────────── */
+.panels {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  will-change: transform;
+}
+
+.panel {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ─── Background image layer ──────────────────── */
+.panelBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.panelBg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.panelOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.panelCounter {
+  position: absolute;
+  right: 8vw;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  text-align: right;
+  pointer-events: none;
+}
+
+.panelCounterNum {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 18vw, 16rem);
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(255,255,255,0.04);
+  letter-spacing: -0.06em;
+  user-select: none;
+}
+
+/* ─── Panel inner content ──────────────────────── */
+.panelInner {
+  position: relative;
+  z-index: 2;
+  padding: 0 8vw;
+  max-width: 900px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.accentRule {
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 300;
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+  margin-bottom: 28px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.headline em {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.bodyCopy {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+  max-width: 480px;
+  opacity: 0;
+  transform: translateY(16px);
+  margin-bottom: 32px;
+}
+
+/* ─── CTA link within panel content ────────────── */
+.ctaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--t-fast);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--color-border-hover);
+}
+
+.ctaLink:hover {
+  border-bottom-color: var(--color-text);
+}
+
+.ctaLink svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--t-fast);
+}
+
+.ctaLink:hover svg {
+  transform: translateX(3px);
+}
+
+/* ─── Overlay navigation bar ──────────────────── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%);
+}
+
+.navLogo {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.navLogoStrong {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.navLogoSub {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+.navLinks {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.navLinks a {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  position: relative;
+  transition: color var(--t-fast);
+}
+
+.navLinks a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 1px;
+  background: var(--color-text);
+  transition: width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.navLinks a:hover {
+  color: var(--color-text);
+}
+
+.navLinks a:hover::after {
+  width: 100%;
+}
+
+/* ─── Panel footer ─────────────────────────────── */
+.panelFooter {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.footerNav {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.footerNav a {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.footerNav a:hover {
+  color: var(--color-text);
+}
+
+.footerContact {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.footerContact:hover {
+  color: var(--color-text);
+}
+
+/* ─── Progress Dots ────────────────────────────── */
+.progressDots {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 100;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s, border-color 0.3s;
+  padding: 0;
+}
+
+.dot:hover {
+  transform: scale(1.4);
+}
+
+.dotActive {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  transform: scale(1.2);
+}
+
+/* ─── Scroll Hints ────────────────────────────── */
+.scrollHint {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.scrollHintVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scrollHintLeft {
+  left: 24px;
+}
+
+.scrollHintRight {
+  right: 52px;
+}
+
+.scrollHintLabel {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  writing-mode: vertical-lr;
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+
+.scrollHintLabel:hover {
+  color: var(--color-text);
+}
+
+.scrollHintArrow {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+
+.scrollHintArrow:hover {
+  border-color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.08);
+}
+
+.scrollHintArrow svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ─── Blocker ──────────────────────────────────── */
+.blocker {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: none;
+}
+
+.blockerActive {
+  display: block;
+}
+
+/* ─── Grain overlay ────────────────────────────── */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ─── Accessibility ────────────────────────────── */
+.srOnly {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Responsive ───────────────────────────────── */
+@media (max-width: 600px) {
+  .nav { padding: 0 20px; }
+  .navLinks { display: none; }
+  .panelInner { padding: 0 6vw; }
+  .panelFooter { padding: 16px 20px; }
+  .progressDots { right: 14px; }
+  .scrollHintRight { right: 40px; }
+}
+
+/* ─── Focus styles ────────────────────────────── */
+.dot:focus-visible,
+.scrollHintArrow:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.6);
+  outline-offset: 3px;
+}

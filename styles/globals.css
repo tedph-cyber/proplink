@@ -1,0 +1,141 @@
+:root {
+  /* ── Palette ─────────────────────────────────────── */
+  --color-bg:          #0B0B0C;
+  --color-surface:     #131313;
+  --color-surface-2:   #1B1B1D;
+  --color-border:      rgba(255,255,255,0.08);
+  --color-border-hover:rgba(255,255,255,0.16);
+
+  --color-accent:      #D97736;
+  --color-accent-hover:#E8854A;
+  --color-accent-muted:rgba(217,119,54,0.12);
+
+  --color-whatsapp:      #25d366;
+  --color-whatsapp-hover: #1db954;
+  --color-destructive:   #e05050;
+  --color-destructive-muted: rgba(224, 80, 80, 0.12);
+
+  --color-text:        #F5F5F5;
+  --color-text-muted:  #A1A1AA;
+  --color-text-hint:   rgba(245,245,245,0.32);
+
+  /* ── Typography ──────────────────────────────────── */
+  --font-display:      'Fraunces', Georgia, serif;
+  --font-body:         'DM Sans', system-ui, sans-serif;
+
+  --text-xs:   0.72rem;
+  --text-sm:   0.82rem;
+  --text-base: 1rem;
+  --text-lg:   1.18rem;
+  --text-xl:   1.45rem;
+  --text-2xl:  1.85rem;
+  --text-3xl:  clamp(2.4rem, 5.5vw, 4.2rem);
+
+  /* ── Spacing ─────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Radius ──────────────────────────────────────── */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+  --radius-pill: 999px;
+
+  /* ── Transitions ─────────────────────────────────── */
+  --ease-base:  cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out:   cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in:    cubic-bezier(0.4, 0.0, 1, 1);
+  --t-fast:  0.15s var(--ease-base);
+  --t-base:  0.25s var(--ease-base);
+  --t-slow:  0.4s  var(--ease-out);
+
+  /* ── Shadows ─────────────────────────────────────── */
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.25);
+  --shadow-modal:   0 8px 40px rgba(0,0,0,0.6);
+}
+
+/* ── Light Theme ──────────────────────────────────── */
+:root[data-theme="light"] {
+  --color-bg:          #F5F5F0;
+  --color-surface:     #FFFFFF;
+  --color-surface-2:   #EDEDE8;
+  --color-border:      rgba(0,0,0,0.08);
+  --color-border-hover:rgba(0,0,0,0.16);
+
+  --color-accent-muted:rgba(217,119,54,0.08);
+
+  --color-text:        #1A1A1A;
+  --color-text-muted:  #6B6B6B;
+  --color-text-hint:   rgba(0,0,0,0.25);
+
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-modal:   0 8px 40px rgba(0,0,0,0.08);
+}
+
+/* ── Animations ──────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulseAccent {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 54, 0.3); }
+  50%      { box-shadow: 0 0 0 6px rgba(217, 119, 54, 0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s var(--ease-out) both;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s var(--ease-out) both;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.35s var(--ease-out) both;
+}
+
+.animate-stagger > * {
+  animation: fadeInUp 0.4s var(--ease-out) both;
+}
+
+.animate-stagger > *:nth-child(1)  { animation-delay: 0.02s; }
+.animate-stagger > *:nth-child(2)  { animation-delay: 0.06s; }
+.animate-stagger > *:nth-child(3)  { animation-delay: 0.10s; }
+.animate-stagger > *:nth-child(4)  { animation-delay: 0.14s; }
+.animate-stagger > *:nth-child(5)  { animation-delay: 0.18s; }
+.animate-stagger > *:nth-child(6)  { animation-delay: 0.22s; }
+.animate-stagger > *:nth-child(7)  { animation-delay: 0.26s; }
+.animate-stagger > *:nth-child(8)  { animation-delay: 0.30s; }
+
+/* ── Reduced motion ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

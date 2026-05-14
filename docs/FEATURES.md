@@ -1,6 +1,6 @@
-# PropLink - Feature Documentation
+# StrongTower Holdings - Feature Documentation
 
-Complete feature overview of the PropLink real estate marketplace platform.
+Complete feature overview of the StrongTower Holdings real estate marketplace platform.
 
 ---
 
@@ -476,7 +476,7 @@ Complete feature overview of the PropLink real estate marketplace platform.
 
 ## 🎉 Summary
 
-PropLink is a **complete, production-ready real estate marketplace** with:
+StrongTower Holdings is a **complete, production-ready real estate marketplace** with:
 
 ✅ **5 Phases Completed**
 - Public marketplace browsing

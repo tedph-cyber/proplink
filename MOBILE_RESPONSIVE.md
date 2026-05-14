@@ -1,7 +1,7 @@
 # Mobile Responsive Implementation
 
 ## Overview
-PropLink is now fully mobile responsive with optimized layouts for all screen sizes from mobile phones (320px) to large desktop displays (1920px+).
+Doxa is now fully mobile responsive with optimized layouts for all screen sizes from mobile phones (320px) to large desktop displays (1920px+).
 
 ## Breakpoints Used
 
@@ -68,7 +68,7 @@ Following Tailwind CSS default breakpoints:
 - ✅ Responsive spacing: `pt-6` → `pt-8` on larger screens
 
 **Layout:**
-- Brand section with PropLink description
+- Brand section with Doxa description
 - Quick Links (Home, Browse, List Property)
 - Support (About, Contact, FAQ)
 - Legal (Privacy, Terms)
@@ -90,7 +90,7 @@ Following Tailwind CSS default breakpoints:
 - ✅ Title: `text-2xl` → `text-3xl` on larger screens
 - ✅ "View all" link: Prevents wrapping with `sm:whitespace-nowrap`
 
-#### Why Choose PropLink Section
+#### Why Choose Doxa Section
 **Mobile Changes:**
 - ✅ Padding: `py-12` mobile → `py-20` desktop
 - ✅ Title: `text-2xl` → `text-4xl` (progressive scaling)

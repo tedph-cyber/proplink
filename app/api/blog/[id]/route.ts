@@ -4,97 +4,52 @@ import { createClient } from '@/lib/supabase/server'
 async function verifyAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (!profile || profile.role !== 'admin') return null
   return user
 }
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
-
   const user = await verifyAdmin(supabase)
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const body = await request.json()
-  const { title, slug, category, tags, excerpt, cover_image_url, status, content } = body
+  const body = await req.json()
+  const { title, slug, category, excerpt, cover_image_url, tags, status, content } = body
 
-  // Fetch current post to check status transition
-  const { data: current } = await supabase
-    .from('blog_posts')
-    .select('status, published_at')
-    .eq('id', id)
-    .single()
-
-  if (!current) return NextResponse.json({ error: 'Post not found' }, { status: 404 })
-
-  const wasPublished = current.status === 'published'
-  const willBePublished = status === 'published'
+  // Get current post to check status transition
+  const { data: current } = await supabase.from('blog_posts').select('status, published_at').eq('id', id).single()
 
   const updates: Record<string, unknown> = {
+    title, slug, category,
+    excerpt: excerpt ?? null,
+    cover_image_url: cover_image_url ?? null,
+    tags: tags ?? [],
+    status: status ?? 'draft',
+    content,
     updated_at: new Date().toISOString(),
   }
 
-  if (title !== undefined) updates.title = title
-  if (slug !== undefined) updates.slug = slug
-  if (category !== undefined) updates.category = category
-  if (tags !== undefined) updates.tags = tags
-  if (excerpt !== undefined) updates.excerpt = excerpt || null
-  if (cover_image_url !== undefined) updates.cover_image_url = cover_image_url || null
-  if (status !== undefined) updates.status = status
-  if (content !== undefined) updates.content = content
-
-  // Set published_at when transitioning to published for the first time
-  if (willBePublished && !wasPublished && !current.published_at) {
+  // Set published_at on first publish
+  if (status === 'published' && current?.status !== 'published') {
     updates.published_at = new Date().toISOString()
-  }
-  // Clear published_at if reverting to draft
-  if (!willBePublished && wasPublished) {
+  } else if (status === 'draft') {
     updates.published_at = null
   }
 
-  const { data: post, error } = await supabase
-    .from('blog_posts')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single()
-
-  if (error) {
-    if (error.code === '23505') {
-      return NextResponse.json({ error: 'A post with this slug already exists' }, { status: 409 })
-    }
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-
-  return NextResponse.json(post)
+  const { data, error } = await supabase.from('blog_posts').update(updates).eq('id', id).select().single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+  return NextResponse.json(data)
 }
 
-export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
-
   const user = await verifyAdmin(supabase)
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { error } = await supabase
-    .from('blog_posts')
-    .delete()
-    .eq('id', id)
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
+  const { error } = await supabase.from('blog_posts').delete().eq('id', id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json({ success: true })
 }

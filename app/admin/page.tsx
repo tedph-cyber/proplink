@@ -1,228 +1,136 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import styles from '@/styles/admin.module.css'
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
-  
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
-  if (!user) {
-    redirect('/login')
-  }
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  if (!profile || profile.role !== 'admin') redirect('/dashboard')
 
-  // Check if user is admin
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
+  const [
+    { count: totalSellers },
+    { count: totalProperties },
+    { count: activeProperties },
+    { count: pendingProperties },
+  ] = await Promise.all([
+    supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'seller'),
+    supabase.from('properties').select('*', { count: 'exact', head: true }),
+    supabase.from('properties').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+    supabase.from('properties').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+  ])
 
-  if (!profile || profile.role !== 'admin') {
-    redirect('/dashboard')
-  }
-
-  // Get statistics
-  const { count: totalSellers } = await supabase
-    .from('profiles')
-    .select('*', { count: 'exact', head: true })
-    .eq('role', 'seller')
-
-  const { count: totalProperties } = await supabase
-    .from('properties')
-    .select('*', { count: 'exact', head: true })
-
-  const { count: activeProperties } = await supabase
-    .from('properties')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'active')
-
-  const { count: soldProperties } = await supabase
-    .from('properties')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'sold')
-
-  // Recent properties
   const { data: recentProperties } = await supabase
     .from('properties')
-    .select(`
-      id,
-      title,
-      property_type,
-      status,
-      created_at,
-      profiles!properties_seller_id_fkey (
-        id,
-        whatsapp_number
-      )
-    `)
+    .select('id, title, property_type, status, created_at, state')
     .order('created_at', { ascending: false })
-    .limit(5)
+    .limit(8)
+
+  const stats = [
+    { label: 'Total Users', value: totalSellers ?? 0, badge: '+12%', svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /> },
+    { label: 'Active Properties', value: activeProperties ?? 0, badge: '+5.2%', svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /> },
+    { label: 'Total Listings', value: totalProperties ?? 0, badge: '+8.1%', svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /> },
+    { label: 'Pending Review', value: pendingProperties ?? 0, badge: pendingProperties ? `${pendingProperties} new` : '0', svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
+  ]
+
+  const quickLinks = [
+    { href: '/admin/sellers', label: 'Manage Users', sub: 'View and manage seller accounts' },
+    { href: '/admin/properties', label: 'Property Inventory', sub: 'Review, edit and delete listings' },
+    { href: '/admin/blog', label: 'Blog & Content', sub: 'Publish and manage blog posts' },
+  ]
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900">Admin Dashboard</h1>
-        <p className="mt-2 text-zinc-600">Manage sellers, properties, and platform content</p>
-      </div>
-
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <div className="rounded-lg border border-zinc-200 bg-white p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-zinc-600">Total Sellers</p>
-              <p className="mt-2 text-3xl font-bold text-zinc-900">{totalSellers || 0}</p>
-            </div>
-            <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-              <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
+    <div className={styles.page}>
+      {/* Top Nav */}
+      <header className={styles.pageHeader}>
+        <div>
+          <h1 className={styles.pageTitleLg}>Welcome, Admin!</h1>
+          <p className={styles.pageSubtitle}>High-level platform health overview.</p>
+        </div>
+        <div className={styles.pageActions}>
+          <div className={styles.searchWrap}>
+            <svg className={styles.searchIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <input className={styles.searchInput} placeholder="Search data..." />
           </div>
         </div>
+      </header>
 
-        <div className="rounded-lg border border-zinc-200 bg-white p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-zinc-600">Total Properties</p>
-              <p className="mt-2 text-3xl font-bold text-zinc-900">{totalProperties || 0}</p>
+      {/* Stats */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map(({ label, value, badge, svg }) => (
+          <div key={label} className={styles.statCardSurface}>
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 rounded-lg bg-[var(--color-accent-muted)] text-[var(--color-accent)]">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">{svg}</svg>
+              </div>
+              <span className={styles.badgeGreen}>
+                {badge}
+              </span>
             </div>
-            <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
-              <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            </div>
+            <p className={styles.statLabelMuted}>{label}</p>
+            <p className={styles.statValueDefault}>{value.toLocaleString()}</p>
           </div>
+        ))}
+      </section>
+
+      {/* Quick Links */}
+      <section className={styles.actionGrid}>
+        {quickLinks.map(({ href, label, sub }) => (
+          <Link key={href} href={href} className={styles.actionCard}>
+            <div className="p-3 rounded-lg bg-[var(--color-accent-muted)] text-[var(--color-accent)] flex-shrink-0">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+            </div>
+            <div>
+              <p className={styles.actionLabel}>{label}</p>
+              <p className={styles.actionDesc}>{sub}</p>
+            </div>
+          </Link>
+        ))}
+      </section>
+
+      {/* Market Activity Table */}
+      <section className={styles.marketSection}>
+        <div className={styles.marketHeader}>
+          <div>
+            <h2 className={styles.marketTitle}>Market Activity</h2>
+            <p className={styles.marketSub}>Most recent platform transactions</p>
+          </div>
+          <Link href="/admin/properties" className={styles.marketLink}>
+            Load Detailed History →
+          </Link>
         </div>
-
-        <div className="rounded-lg border border-zinc-200 bg-white p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-zinc-600">Active Listings</p>
-              <p className="mt-2 text-3xl font-bold text-zinc-900">{activeProperties || 0}</p>
-            </div>
-            <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-              <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-zinc-200 bg-white p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-zinc-600">Sold Properties</p>
-              <p className="mt-2 text-3xl font-bold text-zinc-900">{soldProperties || 0}</p>
-            </div>
-            <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center">
-              <svg className="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Link
-          href="/admin/sellers"
-          className="rounded-lg border border-zinc-200 bg-white p-6 hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-full bg-blue-100 flex items-center justify-center">
-              <svg className="h-7 w-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-zinc-900">Manage Sellers</h3>
-              <p className="text-sm text-zinc-600">View and manage seller accounts</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/properties"
-          className="rounded-lg border border-zinc-200 bg-white p-6 hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-full bg-purple-100 flex items-center justify-center">
-              <svg className="h-7 w-7 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-zinc-900">Manage Properties</h3>
-              <p className="text-sm text-zinc-600">View, edit, and delete all listings</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/blog"
-          className="rounded-lg border border-zinc-200 bg-white p-6 hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-full bg-emerald-100 flex items-center justify-center">
-              <svg className="h-7 w-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-zinc-900">Blog Posts</h3>
-              <p className="text-sm text-zinc-600">Write and publish articles</p>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* Recent Properties */}
-      <div className="rounded-lg border border-zinc-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-zinc-900 mb-4">Recent Properties</h2>
-        
         {!recentProperties || recentProperties.length === 0 ? (
-          <p className="text-sm text-zinc-600">No properties yet</p>
+          <p className="px-6 py-8 text-sm text-[var(--color-text-muted)]">No properties yet.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className={styles.table}>
               <thead>
-                <tr className="border-b border-zinc-200">
-                  <th className="py-3 px-4 text-left font-medium text-zinc-600">Title</th>
-                  <th className="py-3 px-4 text-left font-medium text-zinc-600">Type</th>
-                  <th className="py-3 px-4 text-left font-medium text-zinc-600">Status</th>
-                  <th className="py-3 px-4 text-left font-medium text-zinc-600">Date</th>
-                  <th className="py-3 px-4 text-left font-medium text-zinc-600">Actions</th>
+                <tr className={styles.tableHead}>
+                  <th className={styles.tableTh}>Transaction ID</th>
+                  <th className={styles.tableTh}>Property</th>
+                  <th className={styles.tableTh}>Type</th>
+                  <th className={styles.tableTh}>Status</th>
+                  <th className={styles.tableTh}>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                {recentProperties.map((property: any) => (
-                  <tr key={property.id} className="border-b border-zinc-100 hover:bg-zinc-50">
-                    <td className="py-3 px-4 font-medium text-zinc-900">{property.title}</td>
-                    <td className="py-3 px-4 text-zinc-600 capitalize">{property.property_type}</td>
-                    <td className="py-3 px-4">
-                      <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                        property.status === 'active' 
-                          ? 'bg-green-100 text-green-800'
-                          : property.status === 'sold'
-                          ? 'bg-orange-100 text-orange-800'
-                          : 'bg-zinc-100 text-zinc-800'
-                      }`}>
-                        {property.status}
-                      </span>
+              <tbody className={styles.tableBody}>
+                {(recentProperties as any[]).map((p) => (
+                  <tr key={p.id} className={styles.tableRow}>
+                    <td className={styles.tableTd}>
+                      <span className={styles.transactionId}>#PL-{p.id.slice(0, 5).toUpperCase()}</span>
                     </td>
-                    <td className="py-3 px-4 text-zinc-600">
-                      {new Date(property.created_at).toLocaleDateString()}
+                    <td className="px-4 py-4 font-medium text-[var(--color-text)]">{p.title}</td>
+                    <td className="px-4 py-4 text-[var(--color-text-muted)] capitalize">{p.property_type}</td>
+                    <td className="px-4 py-4">
+                      {p.status === 'active' ? <span className={styles.statusPillActive}>{p.status}</span> :
+                       p.status === 'sold' ? <span className={styles.statusPillSold}>{p.status}</span> :
+                       <span className={styles.statusPillInactive}>{p.status}</span>}
                     </td>
-                    <td className="py-3 px-4">
-                      <Link
-                        href={`/properties/${property.id}`}
-                        className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-                      >
-                        View
-                      </Link>
+                    <td className={styles.tableTd}>
+                      {new Date(p.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                   </tr>
                 ))}
@@ -230,8 +138,7 @@ export default async function AdminDashboardPage() {
             </table>
           </div>
         )}
-      </div>
+      </section>
     </div>
   )
 }
-

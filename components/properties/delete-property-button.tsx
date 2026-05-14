@@ -39,7 +39,7 @@ export function DeletePropertyButton({ propertyId, propertyTitle }: DeleteProper
   return (
     <Button
       type="button"
-      variant="outline"
+      variant="ghost"
       onClick={handleDelete}
       disabled={deleting}
       className="text-red-600 hover:text-red-700 hover:bg-red-50"

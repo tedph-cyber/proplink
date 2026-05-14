@@ -1,5 +1,5 @@
 /**
- * Core TypeScript types for PropLink
+ * Core TypeScript types for StrongTower Holdings
  * Phase 0 - Foundation types
  */
 
@@ -14,6 +14,8 @@ export interface Profile {
   seller_type?: SellerType
   company_name?: string | null
   whatsapp_number: string
+  username?: string | null
+  avatar_url?: string | null
   created_at: string
 }
 
@@ -65,6 +67,9 @@ export interface Property {
   state: string
   lga: string | null
   city: string | null
+  street?: string | null
+  latitude?: number | null
+  longitude?: number | null
   features: PropertyFeatures
   status: 'active' | 'sold' | 'inactive'
   created_at: string
@@ -112,7 +117,6 @@ export interface PropertyFilters {
 // ==================== Blog Types ====================
 
 export type BlogPostStatus = 'draft' | 'published'
-
 export type BlogCategory =
   | 'market-insights'
   | 'buyers-guide'
@@ -124,7 +128,7 @@ export type BlogCategory =
 export const BLOG_CATEGORIES: { value: BlogCategory; label: string }[] = [
   { value: 'market-insights', label: 'Market Insights' },
   { value: 'buyers-guide', label: "Buyer's Guide" },
-  { value: 'sellers-tips', label: "Seller's Tips" },
+  { value: 'sellers-tips', label: 'Sellers Tips' },
   { value: 'investment', label: 'Investment' },
   { value: 'legal-finance', label: 'Legal & Finance' },
   { value: 'neighborhood', label: 'Neighborhood' },
@@ -169,8 +173,8 @@ export interface Database {
       }
       blog_posts: {
         Row: BlogPost
-        Insert: Omit<BlogPost, 'id' | 'created_at' | 'updated_at' | 'author'>
-        Update: Partial<Omit<BlogPost, 'id' | 'created_at' | 'author'>>
+        Insert: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<BlogPost, 'id' | 'created_at'>>
       }
     }
   }

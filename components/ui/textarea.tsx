@@ -10,14 +10,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="space-y-2">
         {label && (
-          <label className="text-sm font-medium text-[var(--foreground)] tracking-[var(--letter-spacing)]">
+          <label className="text-sm font-medium text-[var(--color-text)] tracking-[var(--letter-spacing)]">
             {label}
             {props.required && <span className="text-[var(--destructive)] ml-1">*</span>}
           </label>
         )}
         <textarea
           ref={ref}
-          className={`flex min-h-30 w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:border-[var(--ring)] disabled:cursor-not-allowed disabled:opacity-50 transition-all tracking-[var(--letter-spacing)] ${
+          className={`flex min-h-30 w-full rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-50 transition-all tracking-[var(--letter-spacing)] ${
             error ? 'border-[var(--destructive)] focus:ring-[var(--destructive)]' : ''
           } ${className}`}
           {...props}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/input'
@@ -8,14 +8,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { PropertyType, PropertyFeatures, Property, PropertyMedia, HouseType, BedroomCategory, LandSizeUnit } from '@/lib/types'
 import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS } from '@/lib/constants'
+import styles from '@/styles/admin.module.css'
 
-interface EditPropertyPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default function EditPropertyPage({ params }: EditPropertyPageProps) {
+export default function EditPropertyPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: propertyId } = use(params)
   const router = useRouter()
   const supabase = createClient()
   
@@ -56,7 +52,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
   useEffect(() => {
     loadProperty()
-  }, [params.id])
+  }, [propertyId])
 
   const loadProperty = async () => {
     try {
@@ -72,7 +68,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           *,
           property_media (*)
         `)
-        .eq('id', params.id)
+        .eq('id', propertyId)
         .eq('seller_id', user.id)
         .single()
 
@@ -212,13 +208,14 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           property_type: formData.property_type,
           price_min: parseInt(formData.price_min),
           price_max: formData.price_max ? parseInt(formData.price_max) : null,
+          country: 'Nigeria',
           state: formData.state,
           lga: formData.lga || null,
           city: formData.city || null,
           status: formData.status,
           features,
         })
-        .eq('id', params.id)
+        .eq('id', propertyId)
         .eq('seller_id', user.id)
 
       if (updateError) throw updateError
@@ -231,7 +228,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
             // Extract file path from URL
             const urlParts = media.media_url.split('/')
             const bucketName = media.media_type === 'image' ? 'property-images' : 'property-videos'
-            const filePath = `property-media/${params.id}/${urlParts[urlParts.length - 1]}`
+            const filePath = `property-media/${propertyId}/${urlParts[urlParts.length - 1]}`
             
             // Delete from storage
             await supabase.storage.from(bucketName).remove([filePath])
@@ -249,7 +246,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
         for (let i = 0; i < newMediaFiles.length; i++) {
           const file = newMediaFiles[i]
           const fileExt = file.name.split('.').pop()
-          const fileName = `${params.id}/${Date.now()}-${i}.${fileExt}`
+          const fileName = `${propertyId}/${Date.now()}-${i}.${fileExt}`
           const filePath = `property-media/${fileName}`
           const isImage = file.type.startsWith('image/')
           const bucketName = isImage ? 'property-images' : 'property-videos'
@@ -267,7 +264,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           const { error: mediaError } = await supabase
             .from('property_media')
             .insert({
-              property_id: params.id,
+              property_id: propertyId,
               media_url: publicUrl,
               media_type: isImage ? 'image' : 'video',
               display_order: maxOrder + i + 1
@@ -285,19 +282,13 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
   }
 
   if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900"></div>
-        </div>
-      </div>
-    )
+    return <div className={styles.loadingCenter}><div className={styles.loadingSpinner} /></div>
   }
 
   if (!property) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="rounded-lg bg-red-50 p-4 text-red-800">
+      <div>
+        <div className={styles.errorBanner}>
           {error || 'Property not found'}
         </div>
       </div>
@@ -305,18 +296,18 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900">Edit Property</h1>
-        <p className="mt-2 text-zinc-600">Update property details</p>
+    <div className={styles.editWrap + ' max-w-3xl'}>
+      <div className={styles.formSection}>
+        <h1 className={styles.formSectionHeading}>Edit Property</h1>
+        <p className={styles.formSectionDesc}>Update property details</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-3xl">
-        <div className="space-y-6 rounded-lg border border-zinc-200 bg-white p-6">
+      <form onSubmit={handleSubmit}>
+        <div className={styles.editSection}>
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Property Title <span className="text-red-500">*</span>
+            <label className={styles.editLabel}>
+              Property Title <span className={styles.editLabelRequired}>*</span>
             </label>
             <Input
               required
@@ -327,8 +318,8 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Description <span className="text-red-500">*</span>
+            <label className={styles.editLabel}>
+              Description <span className={styles.editLabelRequired}>*</span>
             </label>
             <Textarea
               required
@@ -338,44 +329,44 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
             />
           </div>
 
-          {/* Property Type */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Property Type <span className="text-red-500">*</span>
-            </label>
-            <select
-              required
-              value={formData.property_type}
-              onChange={(e) => setFormData({ ...formData, property_type: e.target.value as PropertyType })}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-            >
-              <option value="house">House</option>
-              <option value="land">Land</option>
-            </select>
-          </div>
-
-          {/* Status */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Status <span className="text-red-500">*</span>
-            </label>
-            <select
-              required
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-            >
-              <option value="active">Active</option>
-              <option value="sold">Sold</option>
-              <option value="inactive">Inactive</option>
-            </select>
+          {/* Property Type + Status */}
+          <div className={styles.editGrid}>
+            <div>
+              <label className={styles.editLabel}>
+                Property Type <span className={styles.editLabelRequired}>*</span>
+              </label>
+              <select
+                required
+                value={formData.property_type}
+                onChange={(e) => setFormData({ ...formData, property_type: e.target.value as PropertyType })}
+                className={styles.editSelect}
+              >
+                <option value="house">House</option>
+                <option value="land">Land</option>
+              </select>
+            </div>
+            <div>
+              <label className={styles.editLabel}>
+                Status <span className={styles.editLabelRequired}>*</span>
+              </label>
+              <select
+                required
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                className={styles.editSelect}
+              >
+                <option value="active">Active</option>
+                <option value="sold">Sold</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
           </div>
 
           {/* Price */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={styles.editGrid}>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
-                Price (₦) <span className="text-red-500">*</span>
+              <label className={styles.editLabel}>
+                Price (₦) <span className={styles.editLabelRequired}>*</span>
               </label>
               <Input
                 type="number"
@@ -385,9 +376,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
-                Max Price (₦)
-              </label>
+              <label className={styles.editLabel}>Max Price (₦)</label>
               <Input
                 type="number"
                 value={formData.price_max}
@@ -397,16 +386,16 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           </div>
 
           {/* Location */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={styles.editGrid}>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
-                State <span className="text-red-500">*</span>
+              <label className={styles.editLabel}>
+                State <span className={styles.editLabelRequired}>*</span>
               </label>
               <select
                 required
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value, lga: '' })}
-                className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                className={styles.editSelect}
               >
                 <option value="">Select State</option>
                 {NIGERIAN_STATES.map(state => (
@@ -415,14 +404,12 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
-                Local Government Area
-              </label>
+              <label className={styles.editLabel}>Local Government Area</label>
               {formData.state && availableLGAs.length > 0 ? (
                 <select
                   value={formData.lga}
                   onChange={(e) => setFormData({ ...formData, lga: e.target.value })}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className={styles.editSelect}
                 >
                   <option value="">Select LGA</option>
                   {availableLGAs.map(lga => (
@@ -441,8 +428,8 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              City/Area <span className="text-red-500">*</span>
+            <label className={styles.editLabel}>
+              City/Area <span className={styles.editLabelRequired}>*</span>
             </label>
             <Input
               required
@@ -454,14 +441,13 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           {/* Conditional Features */}
           {formData.property_type === 'house' ? (
             <div className="space-y-4">
-              {/* House Types */}
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  House Type(s) <span className="text-zinc-500">(select all that apply)</span>
+                <label className={styles.editLabel}>
+                  House Type(s) <span className="text-[var(--color-text-muted)]">(select all that apply)</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className={styles.chipGrid}>
                   {HOUSE_TYPES.map(type => (
-                    <label key={type.value} className="flex items-center cursor-pointer">
+                    <label key={type.value} className={styles.editCheckboxLabel}>
                       <input
                         type="checkbox"
                         checked={formData.house_types.includes(type.value)}
@@ -472,23 +458,20 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
                             setFormData({ ...formData, house_types: formData.house_types.filter(t => t !== type.value) })
                           }
                         }}
-                        className="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                        className={styles.editCheckbox}
                       />
-                      <span className="ml-2 text-sm text-zinc-700">{type.label}</span>
+                      <span className={styles.editCheckboxText}>{type.label}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
-              {/* Bedroom Category */}
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  Bedroom Category
-                </label>
+                <label className={styles.editLabel}>Bedroom Category</label>
                 <select
                   value={formData.bedroom_category}
                   onChange={(e) => setFormData({ ...formData, bedroom_category: e.target.value as BedroomCategory })}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className={styles.editSelect}
                 >
                   <option value="">Select Bedroom Count</option>
                   {BEDROOM_CATEGORIES.map(cat => (
@@ -497,12 +480,9 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
                 </select>
               </div>
 
-              {/* Legacy fields */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className={styles.editGrid}>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-2">
-                    Bedrooms <span className="text-zinc-500">(exact count)</span>
-                  </label>
+                  <label className={styles.editLabel}>Bedrooms <span className="text-[var(--color-text-muted)]">(exact count)</span></label>
                   <Input
                     type="number"
                     min="0"
@@ -511,9 +491,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-2">
-                    Bathrooms
-                  </label>
+                  <label className={styles.editLabel}>Bathrooms</label>
                   <Input
                     type="number"
                     min="0"
@@ -524,11 +502,9 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4">
+            <div className={styles.editGrid}>
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  Land Size
-                </label>
+                <label className={styles.editLabel}>Land Size</label>
                 <Input
                   type="number"
                   min="0"
@@ -538,13 +514,11 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  Unit
-                </label>
+                <label className={styles.editLabel}>Unit</label>
                 <select
                   value={formData.land_size_unit}
                   onChange={(e) => setFormData({ ...formData, land_size_unit: e.target.value as LandSizeUnit })}
-                  className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                  className={styles.editSelect}
                 >
                   {LAND_SIZE_UNITS.map(unit => (
                     <option key={unit.value} value={unit.value}>{unit.label}</option>
@@ -556,9 +530,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* Additional Features */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Additional Features
-            </label>
+            <label className={styles.editLabel}>Additional Features</label>
             <Input
               value={formData.additionalFeatures}
               onChange={(e) => setFormData({ ...formData, additionalFeatures: e.target.value })}
@@ -568,37 +540,22 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
           {/* Existing Media */}
           {existingMedia.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
-                Current Media
-              </label>
-              <div className="grid grid-cols-3 gap-4">
+              <label className={styles.editLabel}>Current Media</label>
+              <div className={styles.editMediaGrid}>
                 {existingMedia.map((media) => (
                   <div
                     key={media.id}
-                    className={`relative ${
-                      mediaToDelete.includes(media.id) ? 'opacity-50' : ''
-                    }`}
+                    className={mediaToDelete.includes(media.id) ? styles.editMediaItemDimmed : styles.editMediaItem}
                   >
                     {media.media_type === 'image' ? (
-                      <img
-                        src={media.media_url}
-                        alt="Property"
-                        className="h-32 w-full rounded-lg object-cover"
-                      />
+                      <img src={media.media_url} alt="Property" className={styles.editMediaThumb} />
                     ) : (
-                      <video
-                        src={media.media_url}
-                        className="h-32 w-full rounded-lg object-cover"
-                      />
+                      <video src={media.media_url} className={styles.editMediaThumb} />
                     )}
                     <button
                       type="button"
                       onClick={() => toggleDeleteExistingMedia(media.id)}
-                      className={`absolute -right-2 -top-2 rounded-full px-2 py-1 text-xs text-white ${
-                        mediaToDelete.includes(media.id)
-                          ? 'bg-green-500 hover:bg-green-600'
-                          : 'bg-red-500 hover:bg-red-600'
-                      }`}
+                      className={mediaToDelete.includes(media.id) ? styles.editMediaToggleRestore : styles.editMediaToggleDelete}
                     >
                       {mediaToDelete.includes(media.id) ? '↺' : '✕'}
                     </button>
@@ -610,37 +567,28 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* New Media Upload */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">
-              Add New Photos & Videos
-            </label>
+            <label className={styles.editLabel}>Add New Photos & Videos</label>
             <input
               type="file"
               multiple
               accept="image/*,video/*"
               onChange={handleFileChange}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className={styles.editFileInput}
             />
             
             {newMediaPreviews.length > 0 && (
-              <div className="mt-4 grid grid-cols-3 gap-4">
+              <div className={styles.editNewMediaGrid}>
                 {newMediaPreviews.map((preview, index) => (
-                  <div key={index} className="relative">
+                  <div key={index} className={styles.editNewMediaItem}>
                     {newMediaFiles[index].type.startsWith('image/') ? (
-                      <img
-                        src={preview}
-                        alt={`New ${index + 1}`}
-                        className="h-32 w-full rounded-lg object-cover"
-                      />
+                      <img src={preview} alt={`New ${index + 1}`} className={styles.editMediaThumb} />
                     ) : (
-                      <video
-                        src={preview}
-                        className="h-32 w-full rounded-lg object-cover"
-                      />
+                      <video src={preview} className={styles.editMediaThumb} />
                     )}
                     <button
                       type="button"
                       onClick={() => removeNewMedia(index)}
-                      className="absolute -right-2 -top-2 rounded-full bg-red-500 px-2 py-1 text-xs text-white hover:bg-red-600"
+                      className={styles.editNewMediaRemove}
                     >
                       ✕
                     </button>
@@ -652,19 +600,19 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
           {/* Error Message */}
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
+            <div className={styles.editError + ' bg-[var(--color-destructive-muted)] text-[var(--color-destructive)]'}>
               {error}
             </div>
           )}
 
           {/* Submit Buttons */}
-          <div className="flex gap-4 pt-4">
+          <div className={styles.editActions}>
             <Button type="submit" disabled={submitting}>
               {submitting ? 'Saving...' : 'Save Changes'}
             </Button>
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               onClick={() => router.push('/dashboard/properties')}
             >
               Cancel

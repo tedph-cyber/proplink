@@ -1,7 +1,7 @@
 # Theme System Implementation
 
 ## Overview
-PropLink now features a comprehensive, modern design system using CSS custom properties (CSS variables) for consistent theming across the entire application.
+StrongTower Holdings now features a comprehensive, modern design system using CSS custom properties (CSS variables) for consistent theming across the entire application.
 
 ## Design Tokens
 

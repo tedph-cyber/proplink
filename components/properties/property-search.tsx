@@ -7,6 +7,33 @@ import { Button } from '@/components/ui/button'
 import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS } from '@/lib/constants'
 import { getHouseTypeLabel, getBedroomLabel, getLandSizeUnitDisplay } from '@/lib/utils'
 
+function Chip({
+  children,
+  onRemove,
+}: {
+  children: React.ReactNode
+  onRemove: () => void
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm border"
+      style={{
+        background: 'var(--color-accent-muted)',
+        color: 'var(--color-accent)',
+        borderColor: 'var(--color-accent-muted)',
+      }}
+    >
+      {children}
+      <button
+        onClick={onRemove}
+        className="hover:opacity-70 transition-opacity font-bold leading-none"
+        style={{ color: 'var(--color-accent)' }}
+      >
+        ×
+      </button>
+    </span>
+  )
+}
+
 export function PropertySearch() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -26,13 +53,11 @@ export function PropertySearch() {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
   const [showFilters, setShowFilters] = useState(false)
 
-  // Get LGAs for selected state
   const availableLGAs = useMemo(() => {
     return state ? (STATE_LGA_MAPPING_SIMPLIFIED[state] || []) : []
   }, [state])
 
   useEffect(() => {
-    // Update form when URL params change
     setSearchQuery(searchParams.get('q') || '')
     setPropertyType(searchParams.get('type') || '')
     setState(searchParams.get('state') || '')
@@ -61,7 +86,6 @@ export function PropertySearch() {
   }>) => {
     e?.preventDefault()
 
-    // Use overrides if provided, otherwise use current state
     const values = {
       searchQuery: overrides?.searchQuery ?? searchQuery,
       propertyType: overrides?.propertyType ?? propertyType,
@@ -110,6 +134,13 @@ export function PropertySearch() {
 
   const hasActiveFilters = searchQuery || propertyType || state || lga || city || minPrice || maxPrice || houseTypes.length > 0 || bedroomCategory || landSizeUnit || (sortBy && sortBy !== 'newest')
 
+  const selectClass = 'w-full rounded-[var(--radius)] border px-3 py-2 text-sm transition-all'
+  const selectStyle: React.CSSProperties = {
+    background: 'var(--color-surface)',
+    borderColor: 'var(--color-border)',
+    color: 'var(--color-text)',
+  }
+
   return (
     <div className="space-y-4">
       {/* Search Bar */}
@@ -123,7 +154,8 @@ export function PropertySearch() {
             className="pr-10"
           />
           <svg
-            className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400"
+            className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5"
+            style={{ color: 'var(--color-text-muted)' }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -134,7 +166,7 @@ export function PropertySearch() {
         <Button type="submit">Search</Button>
         <Button
           type="button"
-          variant="outline"
+          variant="ghost"
           onClick={() => setShowFilters(!showFilters)}
         >
           <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -142,7 +174,10 @@ export function PropertySearch() {
           </svg>
           {showFilters ? 'Hide Filters' : 'Show Filters'}
           {hasActiveFilters && (
-            <span className="ml-2 inline-flex items-center justify-center h-5 w-5 rounded-full bg-[var(--primary)] text-xs text-white font-semibold">
+            <span
+              className="ml-2 inline-flex items-center justify-center h-5 w-5 rounded-full text-xs text-white font-semibold"
+              style={{ background: 'var(--color-accent)' }}
+            >
               {[searchQuery, propertyType, state, lga, city, minPrice, maxPrice, sortBy !== 'newest' && sortBy].filter(Boolean).length}
             </span>
           )}
@@ -151,11 +186,17 @@ export function PropertySearch() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-6 shadow-[var(--shadow-lg)] animate-in slide-in-from-top-2">
+        <div
+          className="rounded-[var(--radius)] border p-6"
+          style={{
+            borderColor: 'var(--color-border)',
+            background: 'var(--color-surface)',
+          }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             {/* Property Type */}
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                 Property Type
               </label>
               <select
@@ -166,7 +207,8 @@ export function PropertySearch() {
                   if (e.target.value !== 'house') setBedroomCategory('')
                   if (e.target.value !== 'land') setLandSizeUnit('')
                 }}
-                className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                className={selectClass}
+                style={selectStyle}
               >
                 <option value="">All Types</option>
                 <option value="house">House</option>
@@ -176,7 +218,7 @@ export function PropertySearch() {
 
             {/* State */}
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                 State
               </label>
               <select
@@ -185,7 +227,8 @@ export function PropertySearch() {
                   setState(e.target.value)
                   setLga('')
                 }}
-                className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                className={selectClass}
+                style={selectStyle}
               >
                 <option value="">All States</option>
                 {NIGERIAN_STATES.map(s => (
@@ -194,16 +237,17 @@ export function PropertySearch() {
               </select>
             </div>
 
-            {/* LGA - Dynamic based on State */}
+            {/* LGA */}
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                 Local Government
               </label>
               {state && availableLGAs.length > 0 ? (
                 <select
                   value={lga}
                   onChange={(e) => setLga(e.target.value)}
-                  className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                  className={selectClass}
+                  style={selectStyle}
                 >
                   <option value="">All LGAs</option>
                   {availableLGAs.map(l => (
@@ -223,7 +267,7 @@ export function PropertySearch() {
 
             {/* City */}
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                 City/Area
               </label>
               <Input
@@ -236,7 +280,7 @@ export function PropertySearch() {
 
             {/* Min Price */}
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                 Min Price (₦)
               </label>
               <Input
@@ -249,7 +293,7 @@ export function PropertySearch() {
 
             {/* Max Price */}
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                 Max Price (₦)
               </label>
               <Input
@@ -260,10 +304,10 @@ export function PropertySearch() {
               />
             </div>
 
-            {/* House Types - Only for houses */}
+            {/* House Types */}
             {propertyType === 'house' && (
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                   House Type
                 </label>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -279,25 +323,27 @@ export function PropertySearch() {
                             setHouseTypes(houseTypes.filter(t => t !== type.value))
                           }
                         }}
-                        className="rounded border-[var(--border)] text-[var(--primary)]"
+                        style={{ accentColor: 'var(--color-accent)' }}
+                        className="rounded border"
                       />
-                      <span className="ml-2 text-sm text-[var(--foreground)]">{type.label}</span>
+                      <span className="ml-2 text-sm" style={{ color: 'var(--color-text)' }}>{type.label}</span>
                     </label>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Bedroom Category - Only for houses */}
+            {/* Bedroom Category */}
             {propertyType === 'house' && (
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                   Bedrooms
                 </label>
                 <select
                   value={bedroomCategory}
                   onChange={(e) => setBedroomCategory(e.target.value)}
-                  className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                  className={selectClass}
+                  style={selectStyle}
                 >
                   <option value="">Any</option>
                   {BEDROOM_CATEGORIES.map(cat => (
@@ -307,16 +353,17 @@ export function PropertySearch() {
               </div>
             )}
 
-            {/* Land Size Unit - Only for lands */}
+            {/* Land Size Unit */}
             {propertyType === 'land' && (
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                   Land Size Unit
                 </label>
                 <select
                   value={landSizeUnit}
                   onChange={(e) => setLandSizeUnit(e.target.value)}
-                  className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                  className={selectClass}
+                  style={selectStyle}
                 >
                   <option value="">Any Unit</option>
                   {LAND_SIZE_UNITS.map(unit => (
@@ -328,13 +375,14 @@ export function PropertySearch() {
 
             {/* Sort By */}
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                 Sort By
               </label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] transition-all"
+                className={selectClass}
+                style={selectStyle}
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -349,7 +397,7 @@ export function PropertySearch() {
               Apply Filters
             </Button>
             {hasActiveFilters && (
-              <Button onClick={handleClearFilters} variant="outline">
+              <Button onClick={handleClearFilters} variant="ghost">
                 Clear All
               </Button>
             )}
@@ -361,145 +409,85 @@ export function PropertySearch() {
       {hasActiveFilters && !showFilters && (
         <div className="flex flex-wrap gap-2">
           {searchQuery && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
-              Search: "{searchQuery}"
-              <button
-                onClick={() => {
-                  setSearchQuery('')
-                  handleSearch(undefined, { searchQuery: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            <Chip onRemove={() => {
+              setSearchQuery('')
+              handleSearch(undefined, { searchQuery: '' })
+            }}>
+              Search: &quot;{searchQuery}&quot;
+            </Chip>
           )}
           {propertyType && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20 capitalize">
+            <Chip onRemove={() => {
+              setPropertyType('')
+              handleSearch(undefined, { propertyType: '' })
+            }}>
               {propertyType}
-              <button
-                onClick={() => {
-                  setPropertyType('')
-                  handleSearch(undefined, { propertyType: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {state && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setState('')
+              handleSearch(undefined, { state: '' })
+            }}>
               {state}
-              <button
-                onClick={() => {
-                  setState('')
-                  handleSearch(undefined, { state: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {lga && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setLga('')
+              handleSearch(undefined, { lga: '' })
+            }}>
               LGA: {lga}
-              <button
-                onClick={() => {
-                  setLga('')
-                  handleSearch(undefined, { lga: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {city && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setCity('')
+              handleSearch(undefined, { city: '' })
+            }}>
               City: {city}
-              <button
-                onClick={() => {
-                  setCity('')
-                  handleSearch(undefined, { city: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {(minPrice || maxPrice) && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setMinPrice('')
+              setMaxPrice('')
+              handleSearch(undefined, { minPrice: '', maxPrice: '' })
+            }}>
               Price: ₦{minPrice || '0'} - ₦{maxPrice || '∞'}
-              <button
-                onClick={() => {
-                  setMinPrice('')
-                  setMaxPrice('')
-                  handleSearch(undefined, { minPrice: '', maxPrice: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {houseTypes.length > 0 && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setHouseTypes([])
+              handleSearch(undefined, { houseTypes: [] })
+            }}>
               Types: {houseTypes.map(getHouseTypeLabel).join(', ')}
-              <button
-                onClick={() => {
-                  setHouseTypes([])
-                  handleSearch(undefined, { houseTypes: [] })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {bedroomCategory && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setBedroomCategory('')
+              handleSearch(undefined, { bedroomCategory: '' })
+            }}>
               {getBedroomLabel(bedroomCategory)}
-              <button
-                onClick={() => {
-                  setBedroomCategory('')
-                  handleSearch(undefined, { bedroomCategory: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {landSizeUnit && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setLandSizeUnit('')
+              handleSearch(undefined, { landSizeUnit: '' })
+            }}>
               Unit: {getLandSizeUnitDisplay(landSizeUnit).label}
-              <button
-                onClick={() => {
-                  setLandSizeUnit('')
-                  handleSearch(undefined, { landSizeUnit: '' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
           {sortBy && sortBy !== 'newest' && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-sm text-[var(--primary)] border border-[var(--primary)]/20">
+            <Chip onRemove={() => {
+              setSortBy('newest')
+              handleSearch(undefined, { sortBy: 'newest' })
+            }}>
               Sort: {sortBy === 'oldest' ? 'Oldest First' : sortBy === 'price-asc' ? 'Price Low-High' : 'Price High-Low'}
-              <button
-                onClick={() => {
-                  setSortBy('newest')
-                  handleSearch(undefined, { sortBy: 'newest' })
-                }}
-                className="hover:text-[var(--destructive)] transition-colors font-bold"
-              >
-                ×
-              </button>
-            </span>
+            </Chip>
           )}
         </div>
       )}

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snap Scroll — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!--
+    Creative Direction
+    Aesthetic:  Dark Cinematic Editorial — three visual chapters, each a distinct mood
+    Palette:    Navy / Emerald / Ember, all deep-dark, with luminous gradient orbs
+    Typography: Cormorant Garamond display (with italic accent word) + DM Sans body
+    Motion:     GSAP power3.inOut snap (0.9s), staggered content reveal on enter
+    Signature:  One italic word inside each headline breaks the rhythm — crafted not generated
+  -->
+
+  <style>
+    /* ─── Tokens ──────────────────────────────────────── */
+    :root {
+      --ease-snap: cubic-bezier(0.77, 0, 0.175, 1);
+      --snap-dur: 0.9s;
+
+      --nav-h: 64px;
+
+      /* Panel palettes */
+      --p0-bg-a: #060c1e;
+      --p0-bg-b: #0f1f4a;
+      --p0-orb:  rgba(80, 130, 255, 0.35);
+      --p0-accent: #5c8fff;
+
+      --p1-bg-a: #030f09;
+      --p1-bg-b: #0a2618;
+      --p1-orb:  rgba(60, 200, 130, 0.30);
+      --p1-accent: #3ecf8e;
+
+      --p2-bg-a: #100803;
+      --p2-bg-b: #2e1205;
+      --p2-orb:  rgba(255, 140, 60, 0.32);
+      --p2-accent: #ff8c3c;
+
+      --text-bright: #f2f2f0;
+      --text-muted:  rgba(242, 242, 240, 0.50);
+      --dot-size: 8px;
+    }
+
+    /* ─── Reset & Base ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif; color: var(--text-bright); }
+
+    /* ─── Panels ─────────────────────────────────────── */
+    .panels {
+      position: fixed;
+      inset: 0;
+      will-change: transform;
+    }
+
+    .panel {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .panel[data-index="0"] { background: linear-gradient(145deg, var(--p0-bg-a) 0%, var(--p0-bg-b) 100%); }
+    .panel[data-index="1"] { background: linear-gradient(145deg, var(--p1-bg-a) 0%, var(--p1-bg-b) 100%); }
+    .panel[data-index="2"] { background: linear-gradient(145deg, var(--p2-bg-a) 0%, var(--p2-bg-b) 100%); }
+
+    /* ─── Background layer (subtle dot grid) ──────────── */
+    .panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+
+    /* ─── Foreground orb (gradient placeholder for "image") */
+    .fg-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(60px);
+    }
+
+    /* Panel 0 — large orb right side */
+    .panel[data-index="0"] .fg-orb {
+      width: 70vmin; height: 70vmin;
+      right: -10vmin; top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(ellipse, var(--p0-orb) 0%, transparent 70%);
+    }
+
+    /* Panel 1 — large orb bottom-left */
+    .panel[data-index="1"] .fg-orb {
+      width: 80vmin; height: 80vmin;
+      left: -15vmin; bottom: -20vmin;
+      background: radial-gradient(ellipse, var(--p1-orb) 0%, transparent 65%);
+    }
+
+    /* Panel 2 — dual orb: center-right and top-left accent */
+    .panel[data-index="2"] .fg-orb {
+      width: 60vmin; height: 60vmin;
+      right: 5vmin; top: 50%;
+      transform: translateY(-60%);
+      background: radial-gradient(ellipse, var(--p2-orb) 0%, transparent 70%);
+    }
+    .panel[data-index="2"] .fg-orb-2 {
+      position: absolute;
+      width: 35vmin; height: 35vmin;
+      left: 5vmin; bottom: 10vmin;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,60,80,0.18) 0%, transparent 70%);
+      filter: blur(50px);
+      pointer-events: none;
+    }
+
+    /* ─── Thin accent line — the "signature" detail ───── */
+    .panel[data-index="0"] .accent-rule { background: var(--p0-accent); }
+    .panel[data-index="1"] .accent-rule { background: var(--p1-accent); }
+    .panel[data-index="2"] .accent-rule { background: var(--p2-accent); }
+
+    /* ─── Panel content ───────────────────────────────── */
+    .panel-inner {
+      position: relative;
+      z-index: 2;
+      padding: 0 8vw;
+      max-width: 900px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .accent-rule {
+      display: inline-block;
+      width: 32px; height: 1px;
+    }
+
+    .headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* The italic word inside the headline — the signature move */
+    .headline em {
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    .panel[data-index="0"] .headline em { color: var(--p0-accent); }
+    .panel[data-index="1"] .headline em { color: var(--p1-accent); }
+    .panel[data-index="2"] .headline em { color: var(--p2-accent); }
+
+    .body-copy {
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 480px;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    /* ─── Navigation ──────────────────────────────────── */
+    .site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 100;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text-bright);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.25s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--text-bright);
+      transition: width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ─── Progress Dots (right edge) ─────────────────── */
+    .progress-dots {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 100;
+    }
+
+    .dot {
+      width: var(--dot-size);
+      height: var(--dot-size);
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      background: transparent;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s, border-color 0.3s;
+      padding: 0;
+    }
+
+    .dot:hover { transform: scale(1.4); }
+    .dot.active {
+      background: var(--text-bright);
+      border-color: var(--text-bright);
+      transform: scale(1.2);
+    }
+
+    /* ─── Scroll Indicators (both sides) ─────────────── */
+    .scroll-hint {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .scroll-hint.visible { opacity: 1; pointer-events: auto; }
+
+    .scroll-hint.left  { left: 24px; }
+    .scroll-hint.right { right: 52px; } /* right of dots */
+
+    .scroll-hint-label {
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      writing-mode: vertical-lr;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .scroll-hint-label:hover { color: var(--text-bright); }
+
+    .scroll-hint-arrow {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .scroll-hint-arrow:hover {
+      border-color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .scroll-hint-arrow svg { width: 12px; height: 12px; }
+
+    /* ─── Panel Footer ────────────────────────────────── */
+    .panel-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+      background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 100%);
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-socials a {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-socials a:hover { color: var(--text-bright); }
+
+    .footer-contact {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-contact:hover { color: var(--text-bright); }
+
+    /* ─── Panel index indicator (debug / style detail) ── */
+    .panel-counter {
+      position: absolute;
+      right: 8vw;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      text-align: right;
+      pointer-events: none;
+    }
+
+    .panel-counter-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(6rem, 18vw, 16rem);
+      font-weight: 300;
+      line-height: 1;
+      color: rgba(255,255,255,0.04);
+      letter-spacing: -0.06em;
+      user-select: none;
+    }
+
+    /* ─── Grain overlay ────────────────────────────────── */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* ─── Transition blocker ──────────────────────────── */
+    /* Visually invisible but prevents pointer events during snap */
+    .blocker {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      display: none;
+    }
+
+    .blocker.active { display: block; }
+
+    /* ─── Accessibility ───────────────────────────────── */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ─── Responsive ─────────────────────────────────── */
+    @media (max-width: 600px) {
+      .panel-inner { padding: 0 6vw; }
+      .site-nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .panel-footer { padding: 16px 20px; }
+      .progress-dots { right: 14px; }
+      .scroll-hint.right { right: 40px; }
+    }
+
+    /* ─── Focus styles ────────────────────────────────── */
+    .dot:focus-visible,
+    .scroll-hint-arrow:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.6);
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen reader summary -->
+  <div class="sr-only" aria-live="polite" id="sr-announce">Panel 1 of 3</div>
+
+  <!-- Input blocker during transition -->
+  <div class="blocker" id="blocker" aria-hidden="true"></div>
+
+  <!-- Grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ── Navigation ─────────────────────────────────────── -->
+  <nav class="site-nav" role="navigation" aria-label="Main">
+    <a href="#" class="nav-logo">Studio&thinsp;OS</a>
+    <ul class="nav-links">
+      <li><a href="#">Work</a></li>
+      <li><a href="#">Process</a></li>
+      <li><a href="#">Vision</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Progress Dots ──────────────────────────────────── -->
+  <div class="progress-dots" role="tablist" aria-label="Section navigation">
+    <button class="dot active" role="tab" aria-selected="true"  aria-label="Go to section 1" data-target="0" tabindex="0"></button>
+    <button class="dot"        role="tab" aria-selected="false" aria-label="Go to section 2" data-target="1" tabindex="-1"></button>
+    <button class="dot"        role="tab" aria-selected="false" aria-label="Go to section 3" data-target="2" tabindex="-1"></button>
+  </div>
+
+  <!-- ── Scroll Hint — Left (PREV) ──────────────────────── -->
+  <div class="scroll-hint left" id="hint-prev" aria-hidden="true">
+    <div class="scroll-hint-arrow" id="btn-prev" role="button" aria-label="Previous section">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+        <polyline points="2,8 6,4 10,8"/>
+      </svg>
+    </div>
+    <span class="scroll-hint-label">Prev</span>
+  </div>
+
+  <!-- ── Scroll Hint — Right (NEXT) ─────────────────────── -->
+  <div class="scroll-hint right" id="hint-next" aria-hidden="true">
+    <span class="scroll-hint-label">Next</span>
+    <div class="scroll-hint-arrow" id="btn-next" role="button" aria-label="Next section">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+        <polyline points="2,4 6,8 10,4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ── Panels ─────────────────────────────────────────── -->
+  <div class="panels" id="panels" aria-live="polite">
+
+    <!-- Panel 0 — Origin -->
+    <section class="panel" data-index="0" role="tabpanel" aria-label="Section 1: Origin">
+      <div class="fg-orb" aria-hidden="true"></div>
+      <div class="panel-counter" aria-hidden="true">
+        <div class="panel-counter-num">01</div>
+      </div>
+      <div class="panel-inner">
+        <div class="eyebrow">
+          <span class="accent-rule"></span>
+          Chapter One
+        </div>
+        <h1 class="headline">
+          Where great work<br>finds its <em>origin.</em>
+        </h1>
+        <p class="body-copy">
+          Every landmark project begins as a quiet conviction — a clarity of purpose
+          before the first line is drawn. We build from that conviction, obsessively.
+        </p>
+      </div>
+      <footer class="panel-footer">
+        <ul class="footer-socials">
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Dribbble</a></li>
+        </ul>
+        <a href="mailto:hello@studioos.com" class="footer-contact">hello@studioos.com</a>
+      </footer>
+    </section>
+
+    <!-- Panel 1 — Process -->
+    <section class="panel" data-index="1" role="tabpanel" aria-label="Section 2: Process" aria-hidden="true">
+      <div class="fg-orb" aria-hidden="true"></div>
+      <div class="panel-counter" aria-hidden="true">
+        <div class="panel-counter-num">02</div>
+      </div>
+      <div class="panel-inner">
+        <div class="eyebrow">
+          <span class="accent-rule"></span>
+          Chapter Two
+        </div>
+        <h1 class="headline">
+          Craft lives inside<br>the <em>process,</em> not<br>the outcome.
+        </h1>
+        <p class="body-copy">
+          We move slowly through the right questions before we move fast in any
+          direction. Precision is not perfection — it is knowing exactly where to push.
+        </p>
+      </div>
+      <footer class="panel-footer">
+        <ul class="footer-socials">
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Dribbble</a></li>
+        </ul>
+        <a href="mailto:hello@studioos.com" class="footer-contact">hello@studioos.com</a>
+      </footer>
+    </section>
+
+    <!-- Panel 2 — Vision -->
+    <section class="panel" data-index="2" role="tabpanel" aria-label="Section 3: Vision" aria-hidden="true">
+      <div class="fg-orb" aria-hidden="true"></div>
+      <div class="fg-orb-2" aria-hidden="true"></div>
+      <div class="panel-counter" aria-hidden="true">
+        <div class="panel-counter-num">03</div>
+      </div>
+      <div class="panel-inner">
+        <div class="eyebrow">
+          <span class="accent-rule"></span>
+          Chapter Three
+        </div>
+        <h1 class="headline">
+          The future belongs<br>to those who <em>imagine</em><br>it first.
+        </h1>
+        <p class="body-copy">
+          Vision without execution is noise. We translate long-horizon thinking into
+          concrete systems that can be built, shipped, and lived in — right now.
+        </p>
+      </div>
+      <footer class="panel-footer">
+        <ul class="footer-socials">
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Dribbble</a></li>
+        </ul>
+        <a href="mailto:hello@studioos.com" class="footer-contact">hello@studioos.com</a>
+      </footer>
+    </section>
+
+  </div><!-- /panels -->
+
+  <script>
+    /* ─── State ─────────────────────────────────────────── */
+    const TOTAL   = 3;
+    const DUR     = 0.88;   // seconds — snap transition
+    const EASE    = 'power3.inOut';
+
+    let current     = 0;
+    let isAnimating = false;
+
+    // Touch tracking
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    /* ─── DOM refs ──────────────────────────────────────── */
+    const panelsWrap = document.getElementById('panels');
+    const panels     = Array.from(document.querySelectorAll('.panel'));
+    const dots       = Array.from(document.querySelectorAll('.dot'));
+    const hintPrev   = document.getElementById('hint-prev');
+    const hintNext   = document.getElementById('hint-next');
+    const btnPrev    = document.getElementById('btn-prev');
+    const btnNext    = document.getElementById('btn-next');
+    const blocker    = document.getElementById('blocker');
+    const srAnnounce = document.getElementById('sr-announce');
+
+    /* ─── Initial panel positions ───────────────────────── */
+    panels.forEach((panel, i) => {
+      gsap.set(panel, { y: `${i * 100}vh` });
+    });
+
+    /* ─── Snap to panel N ───────────────────────────────── */
+    function snapTo(target) {
+      if (isAnimating || target === current || target < 0 || target >= TOTAL) return;
+
+      isAnimating = true;
+      blocker.classList.add('active');
+
+      // Animate ALL panels simultaneously
+      panels.forEach((panel, i) => {
+        gsap.to(panel, {
+          y: `${(i - target) * 100}vh`,
+          duration: DUR,
+          ease: EASE,
+          overwrite: true,
+        });
+      });
+
+      // Content reveal on the entering panel
+      const entering = panels[target];
+      const elems = [
+        entering.querySelector('.eyebrow'),
+        entering.querySelector('.headline'),
+        entering.querySelector('.body-copy'),
+      ].filter(Boolean);
+
+      // Reset then stagger in
+      gsap.fromTo(elems,
+        { opacity: 0, y: 22 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.55,
+          stagger: 0.09,
+          ease: 'power2.out',
+          delay: DUR * 0.45,
+        }
+      );
+
+      // Exit elements of leaving panel (fade down)
+      const leaving = panels[current];
+      const leavingElems = [
+        leaving.querySelector('.eyebrow'),
+        leaving.querySelector('.headline'),
+        leaving.querySelector('.body-copy'),
+      ].filter(Boolean);
+
+      gsap.to(leavingElems, {
+        opacity: 0,
+        y: target > current ? -16 : 16,
+        duration: 0.3,
+        stagger: 0.05,
+        ease: 'power2.in',
+      });
+
+      // Update state after transition
+      gsap.delayedCall(DUR, () => {
+        current = target;
+        isAnimating = false;
+        blocker.classList.remove('active');
+        updateUI();
+      });
+    }
+
+    /* ─── Update dots, hints, aria ─────────────────────── */
+    function updateUI() {
+      // Dots
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === current);
+        dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        dot.tabIndex = i === current ? 0 : -1;
+      });
+
+      // Scroll hints
+      hintPrev.classList.toggle('visible', current > 0);
+      hintNext.classList.toggle('visible', current < TOTAL - 1);
+
+      // Panels aria-hidden
+      panels.forEach((panel, i) => {
+        panel.setAttribute('aria-hidden', i !== current ? 'true' : 'false');
+      });
+
+      // SR announcement
+      srAnnounce.textContent = `Panel ${current + 1} of ${TOTAL}`;
+    }
+
+    /* ─── Wheel ─────────────────────────────────────────── */
+    let wheelCooldown = false;
+
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+
+      if (isAnimating || wheelCooldown) return;
+
+      // Debounce rapid wheel bursts (trackpad)
+      wheelCooldown = true;
+      setTimeout(() => { wheelCooldown = false; }, 100);
+
+      if (e.deltaY > 0) snapTo(current + 1);
+      else              snapTo(current - 1);
+    }, { passive: false });
+
+    /* ─── Touch ──────────────────────────────────────────── */
+    window.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      const dy = touchStartY - e.changedTouches[0].clientY;
+      const dx = Math.abs(touchStartX - e.changedTouches[0].clientX);
+
+      // Only trigger on vertical swipe (not horizontal)
+      if (Math.abs(dy) < 40 || dx > Math.abs(dy) * 0.7) return;
+
+      if (dy > 0) snapTo(current + 1);
+      else        snapTo(current - 1);
+    }, { passive: true });
+
+    /* ─── Keyboard ──────────────────────────────────────── */
+    window.addEventListener('keydown', (e) => {
+      if (['ArrowDown', 'PageDown', 's'].includes(e.key)) {
+        e.preventDefault();
+        snapTo(current + 1);
+      } else if (['ArrowUp', 'PageUp', 'w'].includes(e.key)) {
+        e.preventDefault();
+        snapTo(current - 1);
+      }
+    });
+
+    /* ─── Dot clicks ────────────────────────────────────── */
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        snapTo(parseInt(dot.dataset.target, 10));
+      });
+    });
+
+    /* ─── Prev / Next buttons ───────────────────────────── */
+    btnPrev.addEventListener('click', () => snapTo(current - 1));
+    btnNext.addEventListener('click', () => snapTo(current + 1));
+
+    /* ─── Keyboard on dot buttons ───────────────────────── */
+    dots.forEach((dot) => {
+      dot.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          snapTo(parseInt(dot.dataset.target, 10));
+        }
+      });
+    });
+
+    /* ─── Initial reveal for panel 0 ───────────────────── */
+    window.addEventListener('DOMContentLoaded', () => {
+      const elems = [
+        panels[0].querySelector('.eyebrow'),
+        panels[0].querySelector('.headline'),
+        panels[0].querySelector('.body-copy'),
+      ].filter(Boolean);
+
+      gsap.from(elems, {
+        opacity: 0,
+        y: 24,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power2.out',
+        delay: 0.25,
+      });
+    });
+
+    /* ─── Initial UI state ──────────────────────────────── */
+    updateUI();
+
+    // Show next hint (prev starts hidden)
+    hintNext.classList.add('visible');
+  </script>
+</body>
+</html>

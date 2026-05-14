@@ -1,5 +1,5 @@
 /**
- * Constants for PropLink
+ * Constants for StrongTower Holdings
  * Includes state/LGA mapping, house types, bedroom categories, and land size units
  */
 

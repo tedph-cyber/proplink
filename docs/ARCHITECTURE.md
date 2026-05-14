@@ -1,9 +1,9 @@
-# PropLink Architecture Overview
+# StrongTower Holdings Architecture Overview
 
 ## 📂 Complete Folder Structure
 
 ```
-proplink/
+StrongTower Holdings/
 │
 ├── 📱 app/                          # Next.js App Router
 │   ├── (public)/                    # Public routes (no auth required)
