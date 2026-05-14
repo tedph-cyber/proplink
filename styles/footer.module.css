@@ -4,26 +4,22 @@
 }
 
 .inner {
+  width: 100%;
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 48px 16px 32px;
+  margin-inline: auto;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 4vw, 2.5rem) clamp(1.5rem, 3vw, 2rem);
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  gap: 2rem;
 }
 
 @media (min-width: 640px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 2.5rem;
   }
 }
 
@@ -31,35 +27,46 @@
 .brandColumn {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .brandName {
-  font-family: var(--font-body);
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.brandNameAccent {
+  font-style: italic;
   font-weight: 600;
   color: var(--color-accent);
-  letter-spacing: 0.02em;
 }
 
 .brandDesc {
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
+  font-weight: 400;
   color: var(--color-text-muted);
+  line-height: 1.65;
+  max-width: 32ch;
 }
 
 /* ─── Link columns ────────────────────────── */
 .linkColumn {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
 }
 
 .linkHeading {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-text-hint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   margin: 0;
 }
 
@@ -69,12 +76,13 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.625rem;
 }
 
 .linkList a {
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 0.875rem;
+  font-weight: 400;
   color: var(--color-text-muted);
   text-decoration: none;
   transition: color var(--t-fast);
@@ -86,14 +94,35 @@
 
 /* ─── Bottom bar ──────────────────────────── */
 .bottom {
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding-top: 1.5rem;
   border-top: 1px solid var(--color-border);
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .copyright {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--color-text-hint);
+}
+
+.bottomLinks {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.bottomLinks a {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-text-hint);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.bottomLinks a:hover {
   color: var(--color-text-muted);
 }
