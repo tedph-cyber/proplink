@@ -39,9 +39,9 @@ export function AdminSidebar({ brand, navItems, cta, variant = 'admin' }: AdminS
   const startTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
-      if (!pinned) setExpanded(false)
+      if (!pinned && !mobileOpen) setExpanded(false)
     }, AUTO_HIDE_DELAY)
-  }, [pinned])
+  }, [pinned, mobileOpen])
 
   const handleMouseEnter = () => {
     if (!expanded) setExpanded(true)
@@ -76,7 +76,10 @@ export function AdminSidebar({ brand, navItems, cta, variant = 'admin' }: AdminS
       {/* Mobile hamburger toggle */}
       <button
         type="button"
-        onClick={() => setMobileOpen(v => !v)}
+        onClick={() => {
+          setMobileOpen(v => !v)
+          setExpanded(true)
+        }}
         className={styles.mobileToggle}
         aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
       >

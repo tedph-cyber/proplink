@@ -3,7 +3,7 @@ import { SectionReveal, StaggerReveal, StaggerItem } from '@/components/ui/motio
 import styles from '@/styles/about.module.css'
 
 export const metadata = {
-  title: 'About Us – PropLink',
+  title: 'About Us – StrongTower Holdings',
   description: 'Nigeria\'s direct property marketplace connecting buyers and sellers without the middleman.',
 }
 
@@ -54,7 +54,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Accessibility',
-    body: 'Whether in Lagos, Abuja, Kano, or Port Harcourt — PropLink works for every Nigerian looking to buy, sell, or invest in real estate.',
+    body: 'Whether in Lagos, Abuja, Kano, or Port Harcourt — StrongTower Holdings works for every Nigerian looking to buy, sell, or invest in real estate.',
   },
   {
     icon: (
@@ -78,13 +78,13 @@ export default function AboutPage() {
         </div>
         <SectionReveal>
           <div className={styles.heroInner}>
-            <span className={styles.heroBadge}>About PropLink</span>
+            <span className={styles.heroBadge}>About StrongTower Holdings</span>
             <h1 className={styles.heroTitle}>
               Nigeria&apos;s Direct<br />
               <span className={styles.heroTitleEm}>Property Marketplace</span>
             </h1>
             <p className={styles.heroDesc}>
-              PropLink connects buyers and sellers directly — no agents, no commissions, no unnecessary delays.
+              StrongTower Holdings connects buyers and sellers directly — no agents, no commissions, no unnecessary delays.
               Browse thousands of properties across Nigeria and talk to sellers instantly via WhatsApp.
             </p>
             <div className={styles.heroActions}>
@@ -126,7 +126,7 @@ export default function AboutPage() {
             <h2 className={styles.missionTitle}>Our Mission</h2>
             <p className={styles.missionText}>
               Property search in Nigeria is often slow, expensive, and frustrating — weighed down by agents
-              who add cost without adding value. PropLink was built to fix that. We give every Nigerian a
+              who add cost without adding value. StrongTower Holdings was built to fix that. We give every Nigerian a
               platform to list, search, and transact property directly, putting the power back in the hands
               of buyers and sellers.
             </p>

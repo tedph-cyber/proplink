@@ -71,25 +71,25 @@ export default async function BlogListingPage() {
   const widePosts = rest.slice(2, 3)
 
   return (
-    <main className="container mx-auto px-6 lg:px-10 py-16 lg:py-20">
-      {/* ── Hero ──────────────────────────────── */}
-      <section className={styles.hero}>
-        <div className={styles.heroGlow} />
-        <div className={styles.heroInner}>
-          <span className={styles.heroBadge}>Insight &amp; Analysis</span>
-          <h1 className={styles.heroTitle}>
-            StrongTower Holdings Blog: Your Guide to the Nigerian Property Market
-          </h1>
-          <p className={styles.heroSubtitle}>
-            Expert insights, legal tips, and neighborhood guides to help you buy with confidence.
-          </p>
-        </div>
-      </section>
-
+    <main className="container-base py-8 lg:py-16">
       {/* ── Content ────────────────────────────── */}
       <div className={styles.layout}>
         {/* Main */}
         <div className={styles.mainContent}>
+          {/* Hero */}
+          <section className={styles.hero}>
+            <div className={styles.heroGlow} />
+            <div className={styles.heroInner}>
+              <span className={styles.heroBadge}>Insight &amp; Analysis</span>
+              <h1 className={styles.heroTitle}>
+                StrongTower Holdings Blog: Your Guide to the Nigerian Property Market
+              </h1>
+              <p className={styles.heroSubtitle}>
+                Expert insights, legal tips, and neighborhood guides to help you buy with confidence.
+              </p>
+            </div>
+          </section>
+
           {typedPosts.length === 0 ? (
             <div className={styles.emptyState}>
               <div className={styles.emptyIcon}>

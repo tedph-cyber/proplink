@@ -1,8 +1,12 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 import styles from '@/styles/footer.module.css'
 
-export function Footer() {
+export async function Footer() {
   const currentYear = new Date().getFullYear()
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const listPropertyHref = user ? '/dashboard/properties/new' : '/register'
 
   return (
     <footer className={styles.footer}>
@@ -25,7 +29,7 @@ export function Footer() {
             <ul className={styles.linkList}>
               <li><Link href="/">Home</Link></li>
               <li><Link href="/properties">Browse Properties</Link></li>
-              <li><Link href="/register">List Your Property</Link></li>
+              <li><Link href={listPropertyHref}>List Your Property</Link></li>
             </ul>
           </div>
 

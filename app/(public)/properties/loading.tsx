@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="container mx-auto px-6 lg:px-10 py-8 lg:py-12">
+    <div className="container-base py-8 lg:py-12">
       <div className="mb-8">
         <div className="h-10 w-64 animate-pulse rounded-lg bg-[var(--color-surface-2)]"></div>
         <div className="mt-2 h-6 w-32 animate-pulse rounded bg-[var(--color-surface-2)]"></div>
