@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(mkdir -p \"c:/Users/theoo/dev/proplink/app/admin/blog/[id]/edit\")",
+      "Bash(mkdir -p \"c:/Users/theoo/dev/proplink/app/api/blog/[id]\")",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}
