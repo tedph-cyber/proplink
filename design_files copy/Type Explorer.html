@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StrongTower · Type Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Spectral:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,400&family=Hanken+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --color-bg:      #0c0b0a;
+    --color-surface: #161412;
+    --color-surface-2:#1e1b18;
+    --color-border:  rgba(255,245,235,0.09);
+    --color-border-h:rgba(255,245,235,0.18);
+    --color-accent:  #c4622d;
+    --color-accent-h:#d4703a;
+    --color-accent-muted: rgba(196,98,45,0.14);
+    --color-wa:      #25d366;
+    --color-text:    #f5f0e8;
+    --color-muted:   rgba(245,240,232,0.52);
+    --color-hint:    rgba(245,240,232,0.32);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 0 80px;
+  }
+  .page-head {
+    padding: 56px 28px 28px;
+    max-width: 1080px; margin: 0 auto;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .ph-kicker { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-accent); }
+  .ph-title { font-family: 'Newsreader', serif; font-weight: 400; font-size: clamp(2rem, 5vw, 3rem); margin: 12px 0 10px; letter-spacing: -0.02em; }
+  .ph-sub { color: var(--color-muted); max-width: 60ch; line-height: 1.6; font-size: 1rem; }
+  .ph-sub strong { color: var(--color-text); font-weight: 500; }
+
+  .specimens { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+  .spec {
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    background: var(--color-surface);
+    padding: 40px;
+    margin-top: 36px;
+    overflow: hidden;
+  }
+  .spec-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+  .spec-logo { display: flex; flex-direction: column; }
+  .spec-logo .lock { font-family: var(--d); font-size: 1.5rem; line-height: 1; letter-spacing: -0.02em; }
+  .spec-logo .lock .strong { color: var(--color-accent); font-weight: 600; }
+  .spec-logo .lock .tower { color: var(--color-text); font-weight: 300; }
+  .spec-logo .hold { font-family: var(--b); font-size: 0.56rem; font-weight: 500; letter-spacing: 0.26em; text-transform: uppercase; color: var(--color-muted); margin-top: 3px; }
+  .spec-meta { text-align: right; }
+  .spec-name { font-family: var(--b); font-size: 0.95rem; font-weight: 600; }
+  .spec-name .tag { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); background: var(--color-accent-muted); padding: 3px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; }
+  .spec-fonts { font-family: var(--b); font-size: 0.78rem; color: var(--color-muted); margin-top: 4px; }
+  .spec-note { font-family: var(--b); font-size: 0.82rem; color: var(--color-hint); margin-top: 2px; }
+
+  .spec-hero {
+    font-family: var(--d);
+    font-weight: var(--dw, 400);
+    font-size: clamp(2.4rem, 6.2vw, 4.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    margin-bottom: 22px;
+  }
+  .spec-hero em { color: var(--color-accent); }
+  .spec.no-italic .spec-hero em { font-style: normal; }
+
+  .spec-lead { font-family: var(--b); font-size: 1.06rem; line-height: 1.6; color: var(--color-muted); max-width: 54ch; margin-bottom: 26px; }
+
+  .spec-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
+  .btn { font-family: var(--b); font-size: 0.9rem; font-weight: 600; padding: 12px 24px; border-radius: 999px; border: none; cursor: default; }
+  .btn-primary { background: var(--color-accent); color: var(--color-text); }
+  .btn-ghost { background: transparent; color: var(--color-text); border: 1px solid var(--color-border-h); }
+  .btn-wa { background: var(--color-wa); color: #06210f; display: inline-flex; align-items: center; gap: 7px; }
+  .wa-dot { width: 14px; height: 14px; border-radius: 50%; background: #06210f; display: inline-block; }
+
+  .spec-divider { height: 1px; background: var(--color-border); margin: 0 0 26px; }
+
+  .spec-ui { display: grid; grid-template-columns: 1fr 300px; gap: 36px; align-items: start; }
+  .ui-stack > * + * { margin-top: 14px; }
+  .ui-seclabel { font-family: var(--d); font-weight: var(--dw, 400); font-size: 1.5rem; letter-spacing: -0.01em; }
+  .ui-nav { font-family: var(--b); display: flex; gap: 22px; font-size: 0.875rem; font-weight: 500; color: var(--color-muted); flex-wrap: wrap; }
+  .ui-label { font-family: var(--b); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.02em; color: var(--color-muted); }
+  .ui-body { font-family: var(--b); font-size: 0.95rem; line-height: 1.6; color: var(--color-muted); }
+  .ui-num { font-family: var(--d); font-weight: var(--dw, 400); font-size: 2.4rem; color: var(--color-accent); letter-spacing: -0.01em; }
+
+  /* mini property card */
+  .pcard { border: 1px solid var(--color-border); border-radius: 16px; overflow: hidden; background: var(--color-surface-2); }
+  .pcard-img { aspect-ratio: 4/3; position: relative; background: linear-gradient(135deg, #2a2521, #1c1916); display: flex; align-items: flex-end; padding: 12px; }
+  .pcard-badge { font-family: var(--b); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent); background: var(--color-accent-muted); padding: 5px 10px; border-radius: 999px; }
+  .pcard-body { padding: 16px; }
+  .pcard-title { font-family: var(--b); font-size: 1.05rem; font-weight: 600; line-height: 1.25; }
+  .pcard-loc { font-family: var(--b); font-size: 0.84rem; color: var(--color-muted); margin: 5px 0 12px; }
+  .pcard-price { font-family: var(--d); font-weight: var(--dw, 400); font-size: 1.5rem; }
+  .pcard-cta { margin-top: 14px; width: 100%; justify-content: center; }
+
+  @media (max-width: 720px) {
+    .spec { padding: 26px; }
+    .spec-ui { grid-template-columns: 1fr; gap: 28px; }
+    .spec-top { flex-direction: column; }
+    .spec-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+  <header class="page-head">
+    <p class="ph-kicker">StrongTower Holdings · Type Explorer</p>
+    <h1 class="ph-title">Pick the voice of the brand</h1>
+    <p class="ph-sub">Same headline, logo, buttons and property card — five type pairings on your real dark / terracotta palette. <strong>Tell me the number you like</strong> (and I can mix — e.g. one display with a different body). Your current Fraunces is first, for reference.</p>
+  </header>
+
+  <main class="specimens" id="specimens"></main>
+
+<script>
+  const PAIRS = [
+    { d: "'Fraunces'", dw: 600, b: "'DM Sans'", name: "Fraunces / DM Sans", tag: "current", note: "What's live now — high-contrast, curly, a touch fussy at large sizes.", italic: true },
+    { d: "'Newsreader'", dw: 500, b: "'DM Sans'", name: "Newsreader / DM Sans", note: "Warm editorial serif, sturdier than Fraunces. Keeps your body font.", italic: true },
+    { d: "'Spectral'", dw: 500, b: "'Hanken Grotesk'", name: "Spectral / Hanken Grotesk", note: "Refined, literary, calm. Reads like premium print.", italic: true },
+    { d: "'Bodoni Moda'", dw: 500, b: "'Hanken Grotesk'", name: "Bodoni Moda / Hanken Grotesk", note: "High-fashion luxe — dramatic thick/thin contrast. Boldest option.", italic: true },
+    { d: "'Bricolage Grotesque'", dw: 600, b: "'Hanken Grotesk'", name: "Bricolage Grotesque / Hanken Grotesk", note: "Modern, confident, no serif. Characterful display sans.", italic: false },
+  ];
+
+  const HEAD = 'Building <em>Legacies</em>,<br>one property at&nbsp;a&nbsp;time';
+  const LEAD = 'Where trust meets opportunity — a marketplace built for the way Nigeria buys and sells real estate. No agents, no middlemen, no noise.';
+
+  const html = PAIRS.map((p, i) => `
+    <section class="spec ${p.italic ? '' : 'no-italic'}" style="--d:${p.d}, Georgia, serif; --b:${p.b}, system-ui, sans-serif; --dw:${p.dw};">
+      <div class="spec-top">
+        <div class="spec-logo">
+          <span class="lock"><span class="strong">Strong</span><span class="tower">Tower</span></span>
+          <span class="hold">Holdings</span>
+        </div>
+        <div class="spec-meta">
+          <div class="spec-name">${String(i+1).padStart(2,'0')} · ${p.name}${p.tag ? `<span class="tag">${p.tag}</span>` : ''}</div>
+          <div class="spec-note">${p.note}</div>
+        </div>
+      </div>
+
+      <h2 class="spec-hero">${HEAD}</h2>
+      <p class="spec-lead">${LEAD}</p>
+      <div class="spec-btns">
+        <button class="btn btn-primary">List Property</button>
+        <button class="btn btn-ghost">Browse Properties</button>
+        <button class="btn btn-wa"><span class="wa-dot"></span> Contact Seller</button>
+      </div>
+
+      <div class="spec-divider"></div>
+
+      <div class="spec-ui">
+        <div class="ui-stack">
+          <div class="ui-nav"><span>Properties</span><span>How it works</span><span>Sell</span><span>Blog</span></div>
+          <div class="ui-seclabel">Featured homes across Nigeria</div>
+          <div class="ui-label">VERIFIED · LEKKI PHASE 1, LAGOS</div>
+          <p class="ui-body">Browse verified listings from trusted owners, connect directly on WhatsApp, and close with confidence. Every step is transparent.</p>
+          <div class="ui-num">4,200+</div>
+          <div class="ui-label">Verified properties listed</div>
+        </div>
+
+        <div class="pcard">
+          <div class="pcard-img"><span class="pcard-badge">House</span></div>
+          <div class="pcard-body">
+            <div class="pcard-title">5-Bedroom Detached Duplex with BQ</div>
+            <div class="pcard-loc">Lekki Phase 1, Lagos</div>
+            <div class="pcard-price">₦285,000,000</div>
+            <button class="btn btn-wa pcard-cta"><span class="wa-dot"></span> Contact Seller</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  `).join('');
+
+  document.getElementById('specimens').innerHTML = html;
+</script>
+</body>
+</html>

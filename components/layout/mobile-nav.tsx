@@ -1,22 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
 import styles from '@/styles/header.module.css'
-import {
-  Menu,
-  X,
-  LayoutDashboard,
-  Home,
-  Plus,
-  User as UserIcon,
-  LogOut,
-  LogIn,
-  UserPlus,
-  Shield,
-} from 'lucide-react'
+import { Menu, X, LogOut, MessageCircle, ArrowRight } from 'lucide-react'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 interface MobileNavProps {
   user: User | null
@@ -25,188 +15,125 @@ interface MobileNavProps {
 
 export function MobileNav({ user, isAdmin }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
+
+  const openMenu = () => setIsOpen(true)
   const closeMenu = () => setIsOpen(false)
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeMenu() }
+      window.addEventListener('keydown', handler)
+      return () => {
+        document.body.style.overflow = ''
+        window.removeEventListener('keydown', handler)
+      }
+    }
+  }, [isOpen])
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname.startsWith(href)
+  }
+
+  const linkClass = (href: string) =>
+    `${styles.mobileNavItem}${isActive(href) ? ` ${styles.mobileNavItemActive}` : ''}`
+
   return (
-    <div className="md:hidden flex items-center gap-2">
-      {user && (
-        <div className={styles.mobileUserBadge}>
-          {user.email?.[0].toUpperCase()}
-        </div>
-      )}
-      {/* Hamburger Button */}
+    <>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={openMenu}
         className={styles.mobileHamburger}
-        aria-label="Toggle menu"
-        aria-expanded={isOpen}
+        aria-label="Open menu"
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={isOpen ? 'close' : 'open'}
-            initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
-            animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
-            transition={{ duration: 0.15 }}
-          >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </motion.span>
-        </AnimatePresence>
+        <Menu className="h-5 w-5" />
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className={styles.mobileBackdrop}
-              onClick={closeMenu}
-            />
-
-            {/* Menu Panel */}
-            <motion.div
-              key="panel"
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className={styles.mobilePanel}
-            >
-              <nav className={styles.mobileNavInner}>
-                <Link
-                  href="/properties"
-                  className={styles.mobileNavItem}
-                  onClick={closeMenu}
-                >
-                  <span className={styles.mobileNavItemIcon}>
-                    <Home className="w-4 h-4" />
-                  </span>
-                  Browse Properties
+      {isOpen && (
+        <>
+          <div className={styles.scrim} onClick={closeMenu} />
+          <div className={`${styles.mobileMenu} ${styles.mobileMenuOpen}`}>
+            <div className={styles.mobileMenuInner}>
+              {/* Head */}
+              <div className={styles.mobileMenuHead}>
+                <Link href="/" className={styles.logoLink} onClick={closeMenu}>
+                  <div className={styles.logoName}>
+                    <span className={styles.logoStrong}>Strong</span>
+                    <span className={styles.logoTower}>Tower</span>
+                  </div>
                 </Link>
-
-                <Link
-                  href="/blog"
-                  className={styles.mobileNavItem}
+                <button
                   onClick={closeMenu}
+                  className={styles.mobileHamburger}
+                  aria-label="Close menu"
                 >
-                  <span className={styles.mobileNavItemIcon}>
-                    <Home className="w-4 h-4" />
-                  </span>
-                  Blog
-                </Link>
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
 
-                {isAdmin && (
+              {/* Links */}
+              <nav className={styles.mobileLinks}>
+                {[
+                  { href: '/properties', label: 'Properties' },
+                  { href: '/how-it-works', label: 'How it works' },
+                  { href: '/why-us', label: 'Why us' },
+                  { href: '/blog', label: 'Journal' },
+                  ...(user ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
+                  ...(isAdmin ? [{ href: '/admin', label: 'Admin' }] : []),
+                ].map(({ href, label }, i) => (
                   <Link
-                    href="/admin"
-                    className={styles.mobileNavItem}
+                    key={href}
+                    href={href}
+                    className={linkClass(href)}
                     onClick={closeMenu}
+                    style={{ animationDelay: `${i * 0.05}s` }}
                   >
-                    <span className={styles.mobileNavItemIcon}>
-                      <Shield className="w-4 h-4" />
-                    </span>
-                    Admin Panel
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Foot */}
+              <div className={styles.mobileMenuFoot}>
+                <Link href="/register" className={styles.mobileCta} onClick={closeMenu}>
+                  List a property
+                </Link>
+
+                {user ? (
+                  <form action="/auth/signout" method="post">
+                    <button type="submit" onClick={closeMenu} className={styles.mobileLogInLink}>
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </form>
+                ) : (
+                  <Link href="/login" className={styles.mobileLogInLink} onClick={closeMenu}>
+                    Log in
+                    <ArrowRight className={styles.mobileLogInArrow} size={14} />
                   </Link>
                 )}
 
-                <div className={styles.mobileNavDivider} />
+                <a
+                  href="https://wa.me/2348000000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.mobileWhatsApp}
+                >
+                  <MessageCircle size={15} />
+                  Chat on WhatsApp
+                </a>
 
-                {user ? (
-                  <>
-                    <Link
-                      href="/dashboard"
-                      className={styles.mobileNavItem}
-                      onClick={closeMenu}
-                    >
-                      <span className={styles.mobileNavItemIcon}>
-                        <LayoutDashboard className="w-4 h-4" />
-                      </span>
-                      Dashboard
-                    </Link>
-                    <Link
-                      href="/dashboard/properties"
-                      className={styles.mobileNavItem}
-                      onClick={closeMenu}
-                    >
-                      <span className={styles.mobileNavItemIcon}>
-                        <Home className="w-4 h-4" />
-                      </span>
-                      My Properties
-                    </Link>
-                    <Link
-                      href="/dashboard/properties/new"
-                      className={styles.mobileNavItemPrimary}
-                      onClick={closeMenu}
-                    >
-                      <span className={styles.mobileNavItemIcon}>
-                        <Plus className="w-4 h-4" />
-                      </span>
-                      List Property
-                    </Link>
-                    <Link
-                      href="/dashboard/profile"
-                      className={styles.mobileNavItem}
-                      onClick={closeMenu}
-                    >
-                      <span className={styles.mobileNavItemIcon}>
-                        <UserIcon className="w-4 h-4" />
-                      </span>
-                      Profile
-                    </Link>
+                <ThemeToggle mobile />
 
-                    <div className={styles.mobileNavDivider} />
-
-                    <div className={styles.mobileUserSection}>
-                      <p className={styles.mobileUserLabel}>Signed in as</p>
-                      <p className={styles.mobileUserEmail}>{user.email}</p>
-                    </div>
-
-                    <form action="/auth/signout" method="post">
-                      <button
-                        type="submit"
-                        onClick={closeMenu}
-                        className={styles.signOutBtn}
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </button>
-                    </form>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      className={styles.mobileNavItem}
-                      onClick={closeMenu}
-                    >
-                      <span className={styles.mobileNavItemIcon}>
-                        <LogIn className="w-4 h-4" />
-                      </span>
-                      Login
-                    </Link>
-                    <Link
-                      href="/register"
-                      className={styles.mobileNavItemPrimary}
-                      onClick={closeMenu}
-                    >
-                      <span className={styles.mobileNavItemIcon}>
-                        <UserPlus className="w-4 h-4" />
-                      </span>
-                      Create Account
-                    </Link>
-                  </>
-                )}
-
-                <div className="pb-2" />
-              </nav>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </div>
+                <div className={styles.mobileContact}>
+                  hello@strongtowerholdings.com · Lagos · Abuja · Port Harcourt
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   )
 }

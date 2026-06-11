@@ -63,7 +63,7 @@
 
 .heroTitleEm {
   color: var(--color-accent);
-  font-style: italic;
+  font-style: normal;
   font-weight: 600;
 }
 

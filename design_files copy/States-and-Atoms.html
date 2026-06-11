@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>StrongTower — States, Atoms & Patterns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="components.css" />
+<link rel="stylesheet" href="states.css" />
+</head>
+<body>
+<div class="sheet">
+  <header class="sheet-head">
+    <p class="sheet-kicker">StrongTower Holdings · Design System</p>
+    <h1 class="sheet-title">States, Atoms &amp; Patterns</h1>
+    <p class="sheet-sub">The shared building blocks every page reuses — buttons, prices, badges, form fields, status pills — and the easy-to-forget states: loading, empty, 404, and feedback. Build these as real components so the whole app stays consistent.</p>
+  </header>
+
+  <!-- BUTTONS -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">01</span><span class="block-h">Buttons</span><span class="block-note">Two variants + WhatsApp. Sizes sm/md/lg. WhatsApp button is sacred — never reskinned.</span></div>
+    <div class="stack">
+      <div class="row">
+        <button class="btn btn-primary btn-md">List Property</button>
+        <button class="btn btn-ghost btn-md">Browse Properties</button>
+        <button class="btn btn-wa btn-md"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5Z"/></svg> Contact Seller</button>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary btn-sm">Small</button>
+        <button class="btn btn-primary btn-md">Medium</button>
+        <button class="btn btn-primary btn-lg2">Large · hero CTA</button>
+        <button class="btn btn-primary btn-md" disabled style="opacity:.5">Disabled</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICE + BADGES -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">02</span><span class="block-h">Price &amp; badges</span><span class="block-note">Always render price via the &lt;Price&gt; component. Verified chip is neutral — never green.</span></div>
+    <div class="row" style="gap:28px">
+      <div class="specimen">
+        <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:-.01em">₦285,000,000</div>
+        <div class="specimen-cap">&lt;Price amount={285000000} /&gt;</div>
+      </div>
+      <div class="specimen">
+        <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:-.01em">₦180,000<span style="font-size:1rem;color:var(--ink-soft)"> /night</span></div>
+        <div class="specimen-cap">range / period supported</div>
+      </div>
+      <div class="stack">
+        <span class="badge-verify"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5Z"/><path d="m9 12 2 2 4-4"/></svg> Verified</span>
+        <span class="pill" style="background:var(--gold-soft);color:var(--gold-deep)">House</span>
+        <span class="pill" style="background:var(--gold-soft);color:var(--gold-deep)">Land</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS PILLS -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">03</span><span class="block-h">Status pills</span><span class="block-note">Listing status in dashboard + admin tables.</span></div>
+    <div class="row">
+      <span class="st st-active">● Active</span>
+      <span class="st st-pending">● Pending review</span>
+      <span class="st st-sold">● Sold</span>
+      <span class="st st-inactive">● Inactive</span>
+    </div>
+  </section>
+
+  <!-- FORM ATOMS -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">04</span><span class="block-h">Form fields</span><span class="block-note">Label above input always. Native selects. Error below field — no toasts for validation.</span></div>
+    <div class="row" style="gap:36px;align-items:flex-start">
+      <div class="fld">
+        <label>Property Title</label>
+        <input class="inp" placeholder="e.g. 5-Bedroom Detached Duplex, Lekki" />
+      </div>
+      <div class="fld">
+        <label>State</label>
+        <select><option>Lagos</option><option>Abuja (FCT)</option><option>Rivers</option></select>
+      </div>
+      <div class="fld">
+        <label>WhatsApp Number</label>
+        <input class="inp err-inp" value="0801 234" />
+        <span class="err-msg">Include your country code, e.g. +234 801 234 5678</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOADING -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">05</span><span class="block-h">Loading — skeletons</span><span class="block-note">Skeleton cards match real card dimensions. No spinners on the property grid.</span></div>
+    <div class="skel-grid">
+      <div class="skel-card"><div class="skel skel-img"></div><div style="padding:16px 0"><div class="skel skel-line" style="width:40%"></div><div class="skel skel-line" style="width:80%;margin-top:12px"></div><div class="skel skel-line" style="width:55%;margin-top:12px"></div></div></div>
+      <div class="skel-card"><div class="skel skel-img"></div><div style="padding:16px 0"><div class="skel skel-line" style="width:40%"></div><div class="skel skel-line" style="width:80%;margin-top:12px"></div><div class="skel skel-line" style="width:55%;margin-top:12px"></div></div></div>
+      <div class="skel-card"><div class="skel skel-img"></div><div style="padding:16px 0"><div class="skel skel-line" style="width:40%"></div><div class="skel skel-line" style="width:80%;margin-top:12px"></div><div class="skel skel-line" style="width:55%;margin-top:12px"></div></div></div>
+    </div>
+  </section>
+
+  <!-- EMPTY -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">06</span><span class="block-h">Empty state</span><span class="block-note">One centred message, one action. No illustration, no animation.</span></div>
+    <div class="state-box">
+      <div class="state-mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+      <div class="state-h">No properties match your filters</div>
+      <p class="state-p">Try a different state or property type — there are thousands of verified listings across Nigeria.</p>
+      <button class="btn btn-ghost btn-md" style="margin-top:10px">Reset filters</button>
+    </div>
+  </section>
+
+  <!-- 404 -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">07</span><span class="block-h">404 / error</span><span class="block-note">On-brand dark band, terracotta accent, one clear way home.</span></div>
+    <div class="err404">
+      <div class="big">4<span>0</span>4</div>
+      <div class="err-h">This page has moved on</div>
+      <p>The listing or page you’re looking for isn’t here. It may have been sold or taken down.</p>
+      <div class="row" style="justify-content:center">
+        <button class="btn btn-gold btn-md">Back to home</button>
+        <button class="btn btn-ghost btn-md" style="color:var(--on-dark);border-color:oklch(1 0 0 / .3)">Browse properties</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOASTS -->
+  <section class="block">
+    <div class="block-label"><span class="block-num">08</span><span class="block-h">Feedback — toasts</span><span class="block-note">For async results (listing published, save failed). NOT for form-field validation.</span></div>
+    <div class="stack">
+      <div class="toast ok"><span class="toast-ic ok"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></span><div><strong>Property published</strong><span>Your listing is now live and visible to buyers.</span></div></div>
+      <div class="toast bad"><span class="toast-ic bad"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></span><div><strong>Couldn’t save changes</strong><span>Check your connection and try again.</span></div></div>
+    </div>
+  </section>
+
+  <!-- AUTH -->
+  <section class="block" style="border-bottom:none">
+    <div class="block-label"><span class="block-num">09</span><span class="block-h">Auth card (reference)</span><span class="block-note">Already built in-app — shown brief-compliant: centred card, labels above, no decorative glow.</span></div>
+    <div class="auth-stage">
+      <div class="auth-card">
+        <div class="auth-brand">Strong<b>Tower</b></div>
+        <div class="auth-h">Welcome back</div>
+        <div class="auth-sub">Sign in to manage your listings.</div>
+        <div class="stack">
+          <div class="fld" style="max-width:none"><label>Email address</label><input class="inp" placeholder="name@example.com" /></div>
+          <div class="fld" style="max-width:none"><label>Password</label><input class="inp" type="password" value="password" /></div>
+          <button class="btn btn-primary btn-md btn-block" style="width:100%">Sign in</button>
+        </div>
+        <div class="auth-foot">Don’t have an account? <a href="#">Register</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

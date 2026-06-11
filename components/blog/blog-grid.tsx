@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { BlogPost, BlogCategory, BLOG_CATEGORIES } from '@/lib/types'
-import { BlogCard } from './blog-card'
+import { StoryCard } from './blog-card'
 
 interface BlogGridProps {
   posts: BlogPost[]
@@ -74,7 +74,7 @@ export function BlogGrid({ posts }: BlogGridProps) {
                 transition={{ duration: 0.3 }}
                 className="mb-8"
               >
-                <BlogCard post={featured} featured />
+                <StoryCard post={featured} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -95,7 +95,7 @@ export function BlogGrid({ posts }: BlogGridProps) {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.25, delay: i * 0.05 }}
                   >
-                    <BlogCard post={post} />
+                    <StoryCard post={post} />
                   </motion.div>
                 ))}
               </AnimatePresence>

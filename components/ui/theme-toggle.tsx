@@ -1,41 +1,38 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { Sun, Moon } from 'lucide-react'
+import styles from '@/styles/header.module.css'
 
-export function ThemeToggle() {
-  const [dark, setDark] = useState(true)
+interface ThemeToggleProps {
+  mobile?: boolean
+}
+
+export function ThemeToggle({ mobile }: ThemeToggleProps) {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
 
   useEffect(() => {
-    const stored = localStorage.getItem('theme')
-    const isDark = stored ? stored === 'dark' : true
-    setDark(isDark)
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
+    const stored = localStorage.getItem('st-theme') || 'dark'
+    setTheme(stored as 'dark' | 'light')
   }, [])
 
   const toggle = () => {
-    const next = !dark
-    setDark(next)
-    const theme = next ? 'dark' : 'light'
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    localStorage.setItem('st-theme', next)
+    document.documentElement.setAttribute('data-theme', next)
   }
+
+  const Icon = theme === 'dark' ? Sun : Moon
 
   return (
     <button
-      type="button"
       onClick={toggle}
-      className="relative w-10 h-10 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-2)] transition-all"
-      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className={mobile ? styles.mobileThemeToggle : styles.themeToggle}
+      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
     >
-      {dark ? (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ) : (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-      )}
+      <Icon className={styles.themeToggleIcon} />
+      {mobile && <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>}
     </button>
   )
 }

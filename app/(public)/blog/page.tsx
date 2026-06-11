@@ -1,358 +1,164 @@
- import Link from 'next/link'
+import Link from 'next/link'
+import { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { BlogPost } from '@/lib/types'
+import { BlogPost, BLOG_CATEGORIES } from '@/lib/types'
+import { estimateReadTime } from '@/lib/utils'
+import { StoryCard } from '@/components/blog/blog-card'
 import styles from '@/styles/blog.module.css'
 
-const CATEGORY_LABELS: Record<string, string> = {
-  'market-insights': 'Market Insights',
-  'buyers-guide': "Buyer's Guide",
-  'sellers-tips': 'Sellers Tips',
-  'investment': 'Investment',
-  'legal-finance': 'Legal & Finance',
-  'neighborhood': 'Neighborhood',
+export const metadata: Metadata = {
+  title: 'The Foundation — StrongTower Journal',
+  description: 'Field notes on buying, building and owning property in Nigeria — written for people who would rather skip the agent.',
 }
 
-function readTime(content: string) {
-  const words = content.trim().split(/\s+/).length
-  return Math.max(1, Math.ceil(words / 200))
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-const TOPICS = [
-  { label: 'Land Titles', href: '/blog?category=legal-finance' },
-  { label: 'First-time Buyers', href: '/blog?category=buyers-guide' },
-  { label: 'Investment Guides', href: '/blog?category=investment' },
-  { label: 'Lagos Market', href: '/blog?category=neighborhood' },
-  { label: 'Construction Tips', href: '/blog?category=sellers-tips' },
-]
+export default async function BlogListingPage(props: { searchParams: Promise<{ category?: string }> }) {
+  const searchParams = await props.searchParams
+  const activeCategory = searchParams.category ?? 'all'
 
-function SearchIcon() {
-  return (
-    <svg className={styles.sidebarSearchIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-  )
-}
-
-function ArrowRightIcon() {
-  return (
-    <svg className={styles.gridCardLinkArrow} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-    </svg>
-  )
-}
-
-function MailIcon() {
-  return (
-    <svg className={styles.newsletterIcon} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
-    </svg>
-  )
-}
-
-function EmptyIcon() {
-  return (
-    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-    </svg>
-  )
-}
-
-export default async function BlogListingPage() {
   const supabase = await createClient()
   const { data: posts } = await supabase
     .from('blog_posts')
-    .select('*, author:profiles(id, company_name)')
+    .select('*')
     .eq('status', 'published')
     .order('published_at', { ascending: false })
 
   const typedPosts = (posts ?? []) as BlogPost[]
-  const [featured, ...rest] = typedPosts
-  const gridPosts = rest.slice(0, 2)
-  const widePosts = rest.slice(2, 3)
+
+  const filtered = activeCategory === 'all'
+    ? typedPosts
+    : typedPosts.filter(p => p.category === activeCategory)
+
+  const lead = filtered.find(p => (p as any).featured) || filtered[0] || null
+  const rest = filtered.filter(p => p !== lead)
+  const wideIndex = 3
 
   return (
-    <main className="container-base py-8 lg:py-16">
-      {/* ── Content ────────────────────────────── */}
-      <div className={styles.layout}>
-        {/* Main */}
-        <div className={styles.mainContent}>
-          {/* Hero */}
-          <section className={styles.hero}>
-            <div className={styles.heroGlow} />
-            <div className={styles.heroInner}>
-              <span className={styles.heroBadge}>Insight &amp; Analysis</span>
-              <h1 className={styles.heroTitle}>
-                StrongTower Holdings Blog: Your Guide to the Nigerian Property Market
-              </h1>
-              <p className={styles.heroSubtitle}>
-                Expert insights, legal tips, and neighborhood guides to help you buy with confidence.
-              </p>
-            </div>
-          </section>
-
-          {typedPosts.length === 0 ? (
-            <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>
-                <EmptyIcon />
-              </div>
-              <h2 className={styles.emptyTitle}>No Insights Yet</h2>
-              <p className={styles.emptyText}>
-                We&apos;re crafting in-depth guides on the Nigerian property market.
-                Check back soon for expert analysis and investment tips.
-              </p>
-              <Link href="/properties" className={styles.emptyCta}>
-                Browse Properties
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-          ) : (
-            <>
-              {/* Featured */}
-              {featured && (
-                <Link href={`/blog/${featured.slug}`} className={`${styles.featuredCard} ${styles.fadeIn}`}>
-                  <div className={styles.featuredInner}>
-                    <div className={styles.featuredImageWrap}>
-                      {featured.cover_image_url ? (
-                        <img
-                          src={featured.cover_image_url}
-                          alt={featured.title}
-                          className={styles.featuredImage}
-                        />
-                      ) : (
-                        <div className={styles.featuredImageBg} />
-                      )}
-                      <span className={styles.featuredBadge}>Featured</span>
-                    </div>
-                    <div className={styles.featuredContent}>
-                      <div className={styles.featuredMeta}>
-                        <span className={styles.featuredCategory}>
-                          {CATEGORY_LABELS[featured.category] ?? featured.category}
-                        </span>
-                        <span className={styles.featuredDot} />
-                        <span className={styles.featuredDate}>
-                          {featured.published_at
-                            ? new Date(featured.published_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
-                            : new Date(featured.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
-                          }
-                        </span>
-                      </div>
-                      <h2 className={styles.featuredTitle}>{featured.title}</h2>
-                      {featured.excerpt && (
-                        <p className={styles.featuredExcerpt}>{featured.excerpt}</p>
-                      )}
-                      <div className={styles.featuredFooter}>
-                        <div>
-                          <p className={styles.featuredReadTime}>{readTime(featured.content)} min read</p>
-                          <p className={styles.featuredReadCat}>
-                            {CATEGORY_LABELS[featured.category] ?? featured.category}
-                          </p>
-                        </div>
-                        <div className={styles.featuredArrow}>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              )}
-
-              {/* Grid */}
-              {gridPosts.length > 0 && (
-                <div className={styles.grid}>
-                  {gridPosts.map((post, i) => (
-                    <Link
-                      key={post.id}
-                      href={`/blog/${post.slug}`}
-                      className={`${styles.gridCard} ${styles.fadeIn}`}
-                      style={{ animationDelay: `${i * 0.1}s` }}
-                    >
-                      <div className={styles.gridCardImageWrap}>
-                        {post.cover_image_url ? (
-                          <img
-                            src={post.cover_image_url}
-                            alt={post.title}
-                            className={styles.gridCardImage}
-                          />
-                        ) : (
-                          <div className={styles.gridCardImageBg} />
-                        )}
-                      </div>
-                      <div className={styles.gridCardBody}>
-                        <span className={styles.gridCardCategory}>
-                          {CATEGORY_LABELS[post.category] ?? post.category}
-                        </span>
-                        <h3 className={styles.gridCardTitle}>{post.title}</h3>
-                        {post.excerpt && (
-                          <p className={styles.gridCardExcerpt}>{post.excerpt}</p>
-                        )}
-                        <span className={styles.gridCardLink}>
-                          Read Full Article
-                          <ArrowRightIcon />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-
-                  {/* Wide card */}
-                  {widePosts.map((post) => (
-                    <Link
-                      key={post.id}
-                      href={`/blog/${post.slug}`}
-                      className={`${styles.wideCard} ${styles.fadeIn}`}
-                    >
-                      <div className={styles.wideImageWrap}>
-                        {post.cover_image_url ? (
-                          <img
-                            src={post.cover_image_url}
-                            alt={post.title}
-                            className={styles.wideImage}
-                          />
-                        ) : (
-                          <div className={styles.wideImageBg} />
-                        )}
-                      </div>
-                      <div className={styles.wideBody}>
-                        <span className={styles.wideCategory}>
-                          {CATEGORY_LABELS[post.category] ?? post.category}
-                        </span>
-                        <h3 className={styles.wideTitle}>{post.title}</h3>
-                        {post.excerpt && (
-                          <p className={styles.wideExcerpt}>{post.excerpt}</p>
-                        )}
-                        <span className={styles.wideLink}>
-                          Read Full Article
-                          <ArrowRightIcon />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-
-                  {/* Remaining posts */}
-                  {rest.slice(3).map((post) => (
-                    <Link
-                      key={post.id}
-                      href={`/blog/${post.slug}`}
-                      className={styles.gridCard}
-                    >
-                      <div className={styles.gridCardImageWrap}>
-                        {post.cover_image_url ? (
-                          <img
-                            src={post.cover_image_url}
-                            alt={post.title}
-                            className={styles.gridCardImage}
-                          />
-                        ) : (
-                          <div className={styles.gridCardImageBg} />
-                        )}
-                      </div>
-                      <div className={styles.gridCardBody}>
-                        <span className={styles.gridCardCategory}>
-                          {CATEGORY_LABELS[post.category] ?? post.category}
-                        </span>
-                        <h3 className={styles.gridCardTitle}>{post.title}</h3>
-                        {post.excerpt && (
-                          <p className={styles.gridCardExcerpt}>{post.excerpt}</p>
-                        )}
-                        <span className={styles.gridCardLink}>
-                          Read Full Article
-                          <ArrowRightIcon />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+    <main className={styles.journal}>
+      <header className={styles.masthead}>
+        <div className={styles.mastheadRule} />
+        <div className={styles.mastheadTop}>
+          <span className={styles.mastheadKicker}>StrongTower Journal · Est. 2024</span>
+          <span className={styles.mastheadIssue}>
+            {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} · {filtered.length} {filtered.length === 1 ? 'dispatch' : 'dispatches'}
+          </span>
         </div>
+        <h1 className={styles.mastheadTitle}>The Foundation</h1>
+        <p className={styles.mastheadStand}>
+          Field notes on buying, building and owning property in Nigeria — written for people who would rather skip the agent.
+        </p>
+      </header>
 
-        {/* ── Sidebar ────────────────────────────── */}
-        <aside className={styles.sidebar}>
-          <div className={styles.sidebarCard}>
-            {/* Search */}
-            <div className={`${styles.sidebarSection} ${styles.sidebarSearch}`}>
-              <input
-                className={styles.sidebarSearchInput}
-                placeholder="Search insights..."
-                type="text"
-              />
-              <SearchIcon />
+      <div className={styles.rail}>
+        <div className={styles.railInner}>
+          <Link
+            href="/blog"
+            className={`${styles.chip} ${activeCategory === 'all' ? styles.chipActive : ''}`}
+          >
+            All
+          </Link>
+          {BLOG_CATEGORIES.map(c => (
+            <Link
+              key={c.value}
+              href={`/blog?category=${c.value}`}
+              className={`${styles.chip} ${activeCategory === c.value ? styles.chipActive : ''}`}
+            >
+              {c.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.wrap}>
+        {lead && (
+          <Link href={`/blog/${lead.slug}`} className={styles.leadStory}>
+            <div className={styles.leadMedia}>
+              {lead.cover_image_url ? (
+                <img src={lead.cover_image_url} alt={lead.title} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', background: 'var(--color-surface-2)', position: 'absolute', inset: 0 }} />
+              )}
+              <span className={styles.leadBadge}>Featured</span>
             </div>
+            <div className={styles.leadBody}>
+              <span className={styles.leadEyebrow}>
+                {BLOG_CATEGORIES.find(c => c.value === lead.category)?.label ?? lead.category}
+              </span>
+              <h2 className={styles.leadTitle}>{lead.title}</h2>
+              {lead.excerpt && <p className={styles.leadExcerpt}>{lead.excerpt}</p>}
+              <div className={styles.leadMeta}>
+                <span>{lead.published_at ? formatDate(lead.published_at) : formatDate(lead.created_at)}</span>
+                <span className={styles.leadDot} />
+                <span>{estimateReadTime(lead.content)} min read</span>
+              </div>
+              <span className={styles.leadLink}>Read the story →</span>
+            </div>
+          </Link>
+        )}
 
-            {/* Topics */}
-            <div className={styles.sidebarSection}>
-              <h4 className={styles.sidebarLabel}>Popular Topics</h4>
-              <div className={styles.sidebarTopics}>
-                {TOPICS.map(({ label, href }) => (
-                  <Link key={label} href={href} className={styles.sidebarTopic}>
-                    {label}
+        {rest.length > 0 && (
+          <div className={styles.grid}>
+            {rest.map((p, i) => {
+              if (i === wideIndex && rest.length > wideIndex + 1) {
+                return (
+                  <Link key={p.id} href={`/blog/${p.slug}`} className={styles.wideStory}>
+                    <div className={styles.wideMedia}>
+                      {p.cover_image_url ? (
+                        <img src={p.cover_image_url} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                      ) : (
+                        <div style={{ width: '100%', height: '100%', background: 'var(--color-surface-2)', position: 'absolute', inset: 0 }} />
+                      )}
+                    </div>
+                    <div className={styles.wideBody}>
+                      <span className={styles.storyEyebrow}>
+                        {BLOG_CATEGORIES.find(c => c.value === p.category)?.label ?? p.category}
+                      </span>
+                      <h3 className={styles.storyTitle}>{p.title}</h3>
+                      {p.excerpt && <p className={styles.storyExcerpt}>{p.excerpt}</p>}
+                      <div className={styles.storyFoot}>
+                        <span>{p.published_at ? formatDate(p.published_at) : formatDate(p.created_at)}</span>
+                        <span>·</span>
+                        <span>{estimateReadTime(p.content)} min read</span>
+                      </div>
+                    </div>
                   </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Newsletter */}
-            <div className={styles.newsletter}>
-              <div className={styles.newsletterGlow} />
-              <MailIcon />
-              <h4 className={styles.newsletterTitle}>Stay Informed</h4>
-              <p className={styles.newsletterText}>
-                Join 5,000+ investors receiving our monthly market report and exclusive legal breakdowns.
-              </p>
-              <div className={styles.newsletterForm}>
-                <input
-                  className={styles.newsletterInput}
-                  placeholder="Your email"
-                  type="email"
-                />
-                <button className={styles.newsletterBtn} type="submit">
-                  Subscribe Now
-                </button>
-              </div>
-            </div>
-
-            {/* Recent Posts */}
-            {typedPosts.length > 1 && (
-              <div className={styles.recentPosts}>
-                <h4 className={styles.sidebarLabel}>Latest Posts</h4>
-                <div className={styles.recentList}>
-                  {typedPosts.slice(0, 3).map((post) => (
-                    <Link
-                      key={post.id}
-                      href={`/blog/${post.slug}`}
-                      className={styles.recentItem}
-                    >
-                      <div className={styles.recentImage}>
-                        {post.cover_image_url ? (
-                          <img
-                            src={post.cover_image_url}
-                            alt={post.title}
-                            className={styles.recentImg}
-                          />
-                        ) : (
-                          <div className={styles.recentImgBg} />
-                        )}
-                      </div>
-                      <div>
-                        <h5 className={styles.recentTitle}>{post.title}</h5>
-                        <p className={styles.recentDate}>
-                          {post.published_at
-                            ? new Date(post.published_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })
-                            : new Date(post.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })
-                          }
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+                )
+              }
+              if (i !== wideIndex) {
+                return <StoryCard key={p.id} post={p} />
+              }
+              return null
+            })}
           </div>
-        </aside>
+        )}
+
+        {filtered.length === 0 && (
+          <div className={styles.empty}>
+            <div className={styles.emptyMark}>✦</div>
+            <h2 className={styles.emptyTitle}>No dispatches yet</h2>
+            <p className={styles.emptyText}>
+              We haven&apos;t published anything in this category yet. Check back soon.
+            </p>
+            <Link href="/blog" className={styles.emptyCta}>View all stories</Link>
+          </div>
+        )}
+
+        <section className={styles.newsletter}>
+          <div className={styles.newsletterInner}>
+            <p className={styles.newsletterEyebrow}>Stay informed</p>
+            <h3 className={styles.newsletterTitle}>The market report, once a month.</h3>
+            <p className={styles.newsletterText}>
+              Join 5,000+ buyers, sellers and investors getting our monthly read on the Nigerian property market — plus the legal breakdowns we wish we&apos;d had earlier.
+            </p>
+            <form className={styles.newsletterForm}>
+              <input className={styles.newsletterInput} type="email" placeholder="Your email address" />
+              <button className={styles.newsletterBtn} type="submit">Subscribe</button>
+            </form>
+          </div>
+        </section>
       </div>
     </main>
   )

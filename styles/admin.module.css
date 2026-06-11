@@ -411,7 +411,9 @@
   font-size: var(--text-base);
   letter-spacing: -0.02em;
   color: var(--color-text);
-  line-height: 1.2;
+  line-height: 1.3;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .dashBrandTagline {
@@ -967,6 +969,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--color-accent-muted);
+  color: var(--color-accent);
   transition: all var(--t-fast);
 }
 
@@ -1353,6 +1357,194 @@
   color: var(--color-text-muted);
 }
 
+/* ─── Filter Chips ─────────────────────────────── */
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: transparent;
+  text-decoration: none;
+  transition: all var(--t-fast);
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.filterChip:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+.filterChipActive {
+  composes: filterChip;
+  background: var(--color-accent);
+  color: white;
+}
+
+.filterChipActive:hover {
+  background: var(--color-accent-hover);
+  color: white;
+}
+
+/* ─── Blog Cards (mobile <768px) ───────────────── */
+.blogCardGrid {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .blogCardGrid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}
+
+.desktopTable {
+  display: table;
+}
+
+@media (max-width: 767px) {
+  .desktopTable {
+    display: none;
+  }
+}
+
+.blogCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.blogCardTop {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.blogCardThumb {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--color-surface-2);
+}
+
+.blogCardThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blogCardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.blogCardTitle {
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blogCardExcerpt {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blogCardMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.blogCardActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.blogCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ─── New Post button ──────────────────────────── */
+.newPostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: white;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.newPostBtn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 639px) {
+  .newPostBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+  }
+}
+
+.emptyNewPostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+
+.emptyNewPostBtn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
 /* ─── Empty State ──────────────────────────────── */
 .emptyState {
   background: var(--color-surface);
@@ -1513,7 +1705,7 @@
   position: relative;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  background: var(--color-text);
+  background: var(--color-surface);
   min-height: 180px;
   display: flex;
   align-items: center;
@@ -1523,15 +1715,13 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, var(--color-surface-2), rgba(110, 101, 85, 0.8) 60%, transparent);
-  /* background: var(--color-surface); */
+  background: linear-gradient(90deg, rgba(12,11,10,.92) 0%, rgba(12,11,10,.55) 60%, rgba(12,11,10,.2) 100%);
   z-index: 1;
 }
 
 .heroBg {
   position: absolute;
   inset: 0;
-  opacity: 0.2;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1550,19 +1740,19 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #b2c5ff;
+  color: var(--color-accent);
 }
 
 .heroTitle {
   font-size: var(--text-3xl);
   font-weight: 800;
-  color: white;
+  color: var(--color-text);
   letter-spacing: -0.02em;
 }
 
 .heroDesc {
   font-size: var(--text-lg);
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted);
 }
 
 @media (max-width: 767px) {
