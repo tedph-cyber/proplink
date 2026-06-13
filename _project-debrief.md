@@ -103,8 +103,8 @@ lib/
   --color-text-hint:   rgba(245,240,232,0.32);
 
   /* ── Typography ──────────────────────────────────── */
-  --font-display:      'Fraunces', Georgia, serif;
-  --font-body:         'DM Sans', system-ui, sans-serif;
+  --font-display:      'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body:         'Hanken Grotesk', system-ui, sans-serif;
 
   --text-xs:   0.72rem;   /* 11.5px — captions, badges */
   --text-sm:   0.82rem;   /* 13px — meta, labels */
@@ -147,11 +147,11 @@ lib/
 }
 ```
 
-**Font loading (in `app/layout.tsx`):**
+**Font loading (in `app/layout.tsx`) — updated 2026 refresh:**
 ```tsx
-import { DM_Sans, Fraunces } from 'next/font/google'
-const dmSans    = DM_Sans({ subsets: ['latin'], weight: ['300','400','500'], variable: '--font-body' })
-const fraunces  = Fraunces({ subsets: ['latin'], weight: ['300','600'], variable: '--font-display' })
+import { Hanken_Grotesk, Bricolage_Grotesque } from 'next/font/google'
+const hankenGrotesk = Hanken_Grotesk({ subsets: ['latin'], weight: ['300','400','500','600'], variable: '--font-body' })
+const bricolage     = Bricolage_Grotesque({ subsets: ['latin'], weight: ['600','700'], variable: '--font-display' })
 ```
 
 ---
@@ -165,7 +165,7 @@ const fraunces  = Fraunces({ subsets: ['latin'], weight: ['300','600'], variable
 - **No gradient text.** No `background-clip: text` ever.
 - **Whitespace is intentional.** Do not fill empty sections. Do not add components to fill visual gaps.
 - **The WhatsApp button is sacred.** It is always `--color-whatsapp`, always has the WA icon, always the same size and weight. Never reskin it for aesthetic reasons.
-- **Fraunces is display-only.** Only `h1`, `h2` on marketing pages. All UI text (labels, nav, buttons, forms) uses DM Sans.
+- **Bricolage Grotesque is display-only.** Only `h1`, `h2` on marketing pages. All UI text (labels, nav, buttons, forms) uses Hanken Grotesk.
 
 ---
 
@@ -291,5 +291,60 @@ Compact filter row above the property grid:
 ✗  No barrel files
 ✗  No TypeScript generics unless structurally necessary
 ```
+
+---
+
+## 2026 Design Refresh — addendum
+
+> These decisions were locked during the 2026 refresh and **supersede** any conflicting older note above.
+
+### Typography (LOCKED)
+- **Display font: `Bricolage Grotesque`** (was Fraunces). Headlines weight **600**, letter-spacing **−0.025em**, line-height **1.02**.
+- **Body font: `Hanken Grotesk`** (was DM Sans).
+- Both wired through `next/font/google` in `app/layout.tsx` as `--font-display` / `--font-body`; the fallback stack in `styles/globals.css` must be **sans-serif**.
+- **Bricolage has no italic.** Never use `font-style: italic` on display text. The old italic accent word is now **upright + terracotta**.
+
+### Palette & aesthetic (reaffirmed)
+- Dark-first, warm near-black `--color-bg #0c0b0a`; one accent per page = terracotta `#c4622d`.
+- **WhatsApp green `#25d366` is sacred** — only on WA buttons, never reskinned.
+- **Verified chip = neutral parchment**, never green.
+- No glassmorphism, no decorative shadows, no gradient text.
+
+### Property model in UI
+- `property_type` = **House | Land** only. Card type badge says `House` or `Land`.
+- **Property cards** carry exactly **one action: WhatsApp Contact Seller.** No like/save/star/view-count.
+- **Search is filter-only** (type + state). No free-text keyword box.
+
+### Blog identity (LOCKED)
+- The blog is **"The Foundation" — the StrongTower Journal**: editorial/print feel.
+- Categories = **neutral/terracotta uppercase eyebrows** — never pastel badges.
+- The old Tailwind `components/blog/blog-card.tsx` is **removed**; on-brand module-CSS story card replaces it.
+- Article pages: terracotta reading-progress bar, ~68ch body, drop cap, Bricolage pull quotes, sticky share rail, "More from The Foundation" related grid.
+
+### Shared states
+- Loading = skeleton cards (no spinners on grid)
+- Empty = one centred message + one action
+- 404 = on-brand dark band (`app/not-found.tsx`)
+- Toasts = async feedback only (field validation errors sit inline below the field)
+
+### Scope discipline
+- **Redesigned:** Home, Properties (+ detail), Blog.
+- **Audit & font-swap only (not redesigned):** auth, dashboard, admin, static pages.
+- New features inherit existing token + component system — flag any new pattern.
+
+### Animation lanes (reaffirmed)
+- GSAP = scroll-driven timelines / cinematic sequences / count-ups
+- Framer Motion = mount/unmount (`AnimatePresence`), route & modal transitions, list stagger
+- CSS = hover / focus / marquee
+- Never cross lanes; never add a third library. All motion respects `prefers-reduced-motion`.
+
+### Pages completed in refresh
+- **Home** (`app/page.tsx`): 9 sections — hero with search, stats band, featured grid, locations mosaic, how-it-works, why-us, testimonials marquee, blog teasers, CTA band. GSAP scroll animations + count-ups.
+- **Properties listing** (`app/(public)/properties/page.tsx`): URL-driven filters, sticky toolbar, pill selects, 3-column grid.
+- **Property detail** (`app/(public)/properties/[id]/page.tsx`): Gallery grid, facts strip, amenities, sidebar contact card, mobile sticky bar, similar properties.
+- **Blog listing** (`app/(public)/blog/page.tsx`): "The Foundation" masthead, category rail, lead story, story grid, newsletter band.
+- **Blog post** (`app/(public)/blog/[slug]/page.tsx`): Reading progress bar, drop cap, pull quotes, share rail, related grid.
+- **404** (`app/not-found.tsx`): On-brand dark band with terracotta accent.
+- **Header + Footer**: Fixed nav, transparent→solid on scroll, slide-in mobile menu, 4-column footer with social buttons.
 
 ---

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Instagram, Twitter, Linkedin } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import styles from '@/styles/footer.module.css'
 
@@ -10,57 +11,98 @@ export async function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.inner}>
-        <div className={styles.grid}>
-          {/* Brand */}
-          <div className={styles.brandColumn}>
-            <h3 className={styles.brandName}>
-              <span className={styles.brandNameAccent}>Strong</span>Tower
-            </h3>
-            <p className={styles.brandDesc}>
-              Your trusted platform for buying and selling properties in Nigeria.
-              No agents, no middlemen, no noise.
+      <div className="container-base">
+        <div className={styles.footerTop}>
+          {/* Brand column */}
+          <div>
+            <div className={styles.footerLogo}>
+              <div className={styles.footerLogoName}>
+                <span className={styles.footerLogoStrong}>Strong</span>
+                <span className={styles.footerLogoTower}>Tower</span>
+              </div>
+              <span className={styles.footerLogoHoldings}>Holdings</span>
+            </div>
+            <p className={styles.footerBlurb}>
+              Nigeria&rsquo;s most trusted marketplace for buying and selling property. No agents, no middlemen, no noise.
             </p>
+            <div className={styles.footerSocial}>
+              <a href="#" className={styles.footerSoc} aria-label="Instagram">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="#" className={styles.footerSoc} aria-label="Twitter">
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a href="#" className={styles.footerSoc} aria-label="LinkedIn">
+                <Linkedin className="w-4 h-4" />
+              </a>
+            </div>
           </div>
 
-          {/* Quick Links */}
-          <div className={styles.linkColumn}>
-            <h4 className={styles.linkHeading}>Quick Links</h4>
-            <ul className={styles.linkList}>
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/properties">Browse Properties</Link></li>
-              <li><Link href={listPropertyHref}>List Your Property</Link></li>
-            </ul>
-          </div>
+          {/* Link columns */}
+          <div className={styles.footerCols}>
+            <div className={styles.footerCol}>
+              <h4>Explore</h4>
+              <Link href="/properties" className={styles.footerItem}>
+                All Properties
+              </Link>
+              <Link href="/properties?state=Lagos" className={styles.footerItem}>
+                Lagos
+              </Link>
+              <Link href="/properties?state=Abuja" className={styles.footerItem}>
+                Abuja
+              </Link>
+              <Link href="/properties?state=Port%20Harcourt" className={styles.footerItem}>
+                Port Harcourt
+              </Link>
+              <Link href="/properties?type=Land" className={styles.footerItem}>
+                Land &amp; Plots
+              </Link>
+            </div>
 
-          {/* Support */}
-          <div className={styles.linkColumn}>
-            <h4 className={styles.linkHeading}>Support</h4>
-            <ul className={styles.linkList}>
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="/faq">FAQ</Link></li>
-            </ul>
-          </div>
+            <div className={styles.footerCol}>
+              <h4>Company</h4>
+              <Link href="/about" className={styles.footerItem}>
+                Our Story
+              </Link>
+              <Link href="/how-it-works" className={styles.footerItem}>
+                How It Works
+              </Link>
+              <Link href="/why-us" className={styles.footerItem}>
+                Why Us
+              </Link>
+              <Link href="/blog" className={styles.footerItem}>
+                Journal
+              </Link>
+            </div>
 
-          {/* Legal */}
-          <div className={styles.linkColumn}>
-            <h4 className={styles.linkHeading}>Legal</h4>
-            <ul className={styles.linkList}>
-              <li><Link href="/privacy">Privacy Policy</Link></li>
-              <li><Link href="/terms">Terms of Service</Link></li>
-            </ul>
+            <div className={styles.footerCol}>
+              <h4>Support</h4>
+              <Link href="/contact" className={styles.footerItem}>
+                Help Centre
+              </Link>
+              <Link href={listPropertyHref} className={styles.footerItem}>
+                List a Property
+              </Link>
+              <Link href="/faq" className={styles.footerItem}>
+                FAQ
+              </Link>
+            </div>
+
+            <div className={styles.footerCol}>
+              <h4>Legal</h4>
+              <Link href="/terms" className={styles.footerItem}>
+                Terms of Service
+              </Link>
+              <Link href="/privacy" className={styles.footerItem}>
+                Privacy Policy
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className={styles.bottom}>
-          <p className={styles.copyright}>
-            &copy; {currentYear} StrongTower Holdings. All rights reserved.
-          </p>
-          <div className={styles.bottomLinks}>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-          </div>
+        <div className={styles.footerBottom}>
+          <span>&copy; {currentYear} StrongTower Holdings. All rights reserved.</span>
+          <span>Made in Nigeria</span>
         </div>
       </div>
     </footer>

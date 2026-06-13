@@ -2,16 +2,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 9px;
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.005em;
   line-height: 1;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast), opacity var(--t-fast);
-  border: 1px solid transparent;
+  transition: transform 0.35s var(--ease-base), background 0.3s, color 0.3s, box-shadow 0.35s var(--ease-base);
+  border: 1.5px solid transparent;
   white-space: nowrap;
   user-select: none;
+}
+
+.base:active {
+  transform: scale(0.97);
 }
 
 .base:disabled {
@@ -21,21 +27,18 @@
 
 /* Sizes */
 .sm {
-  height: 32px;
-  padding: 0 12px;
-  font-size: var(--text-xs);
+  padding: 8px 16px;
+  font-size: 0.86rem;
 }
 
 .md {
-  height: 40px;
-  padding: 0 16px;
-  font-size: var(--text-sm);
+  padding: 12px 22px;
+  font-size: 0.95rem;
 }
 
 .lg {
-  height: 48px;
-  padding: 0 24px;
-  font-size: var(--text-base);
+  padding: 16px 28px;
+  font-size: 1rem;
 }
 
 /* Primary — terracotta fill */
@@ -46,6 +49,8 @@
 
 .primary:hover {
   background: var(--color-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
 }
 
 /* Ghost — border only */
@@ -56,17 +61,19 @@
 }
 
 .ghost:hover {
-  border-color: var(--color-border-hover);
-  color: var(--color-text);
+  border-color: var(--color-text);
+  transform: translateY(-2px);
 }
 
 /* WhatsApp — green only, never reskinned */
 .whatsapp {
   background: var(--color-whatsapp);
-  color: #fff;
+  color: var(--color-whatsapp-on);
   font-weight: 600;
 }
 
 .whatsapp:hover {
   background: var(--color-whatsapp-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
 }

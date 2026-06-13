@@ -22,6 +22,12 @@ export default async function DashboardPage() {
     .select('*', { count: 'exact', head: true })
     .eq('seller_id', user.id)
 
+  const { count: soldCount } = await supabase
+    .from('properties')
+    .select('*', { count: 'exact', head: true })
+    .eq('seller_id', user.id)
+    .eq('status', 'sold')
+
   const { data: recentProperties } = await supabase
     .from('properties')
     .select('id, title, state, status, created_at')
@@ -29,17 +35,15 @@ export default async function DashboardPage() {
     .order('created_at', { ascending: false })
     .limit(5)
 
-  const displayName = typedProfile?.company_name || typedProfile?.username || 'Seller'
-
   return (
     <div className={styles.page}>
       {/* Hero Welcome Banner */}
       <section className={styles.heroBanner}>
         <div className={styles.heroOverlay} />
-        <div className={styles.heroBg} />
+        <div className={styles.heroBg} style={{ backgroundImage: 'url(/image/premium_skyscraper.avif)' }} />
         <div className={styles.heroContent}>
-          <span className={styles.heroBadge}>Curator Workspace</span>
-          <h2 className={styles.heroTitle}>Welcome back, {displayName}</h2>
+          <span className={styles.heroBadge}>Seller Dashboard</span>
+          <h2 className={styles.heroTitle}>Welcome back, {typedProfile?.username ?? 'there'}</h2>
           <p className={styles.heroDesc}>
             Manage your listings and reach buyers across Nigeria.
           </p>
@@ -52,7 +56,7 @@ export default async function DashboardPage() {
           { label: 'Total Properties', value: propertiesCount ?? 0, badge: '+2', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /> },
           { label: 'Total Views', value: '4.2k', badge: '+12%', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /> },
           { label: 'Active Inquiries', value: '28', badge: '+8', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /> },
-          { label: 'Estimated ROI', value: '18%', badge: '+2.4%', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
+          { label: 'Properties Sold', value: soldCount ?? 0, badge: 'Sold', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /> },
         ].map(({ label, value, badge, icon }) => (
           <div key={label} className={styles.statDashCard}>
             <div className={styles.statDashHeader}>
@@ -84,7 +88,7 @@ export default async function DashboardPage() {
           ].map(({ href, label, sub, icon }) => (
             <Link key={href} href={href} className={`${styles.quickActionCard} bg-[var(--color-accent-muted)]`}>
               <div className="space-y-3">
-                <div className={`${styles.quickActionIconBox} bg-white/60 text-[var(--color-accent)]`}>
+                <div className={styles.quickActionIconBox}>
                   <svg className={styles.quickActionIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">{icon}</svg>
                 </div>
                 <div>

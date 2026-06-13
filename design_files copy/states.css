@@ -1,0 +1,85 @@
+/* States, atoms & patterns reference styles (uses tokens from styles.css) */
+
+.sheet { max-width: 1100px; margin: 0 auto; padding: 64px 24px 100px; }
+.sheet-head { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 8px; }
+.sheet-kicker { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-deep); }
+.sheet-title { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -0.025em; margin: 12px 0 10px; }
+.sheet-sub { color: var(--ink-soft); max-width: 64ch; line-height: 1.6; }
+
+.block { padding: 44px 0; border-bottom: 1px solid var(--line-soft); }
+.block-label { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; }
+.block-num { font-family: var(--font-display); font-size: 1.1rem; color: var(--gold-deep); }
+.block-h { font-family: var(--font-display); font-weight: 600; font-size: 1.7rem; letter-spacing: -0.02em; }
+.block-note { font-size: 0.88rem; color: var(--ink-faint); margin-left: auto; max-width: 40ch; text-align: right; }
+
+.row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.specimen { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--r-md); padding: 22px; }
+.specimen-cap { font-size: 0.78rem; color: var(--ink-faint); margin-top: 14px; font-family: ui-monospace, monospace; }
+
+/* WhatsApp button (sacred) */
+.btn-wa { background: var(--wa); color: var(--on-wa); }
+.btn-wa:hover { background: var(--wa-deep); transform: translateY(-2px); }
+.btn-sm { padding: 8px 16px; font-size: 0.86rem; }
+.btn-md { padding: 12px 22px; }
+.btn-lg2 { padding: 16px 28px; font-size: 1rem; }
+
+/* Form atoms */
+.fld { display: flex; flex-direction: column; gap: 7px; max-width: 360px; }
+.fld label { font-size: 0.84rem; font-weight: 600; color: var(--ink); }
+.fld .inp, .fld select, .fld textarea { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; color: var(--ink); font-family: var(--font-ui); font-size: 0.95rem; outline: none; transition: border-color .2s, box-shadow .2s; }
+.fld .inp:focus, .fld select:focus, .fld textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.fld .err-inp { border-color: oklch(0.55 0.18 25); }
+.fld .err-msg { font-size: 0.8rem; color: oklch(0.62 0.19 25); }
+
+/* status pills */
+.st { display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+.st-active { background: oklch(0.5 0.07 156 / 0.16); color: oklch(0.72 0.09 156); }
+.st-pending { background: oklch(0.7 0.1 75 / 0.16); color: oklch(0.78 0.11 75); }
+.st-sold { background: var(--gold-soft); color: var(--gold-deep); }
+.st-inactive { background: var(--paper-2); color: var(--ink-faint); }
+
+/* skeleton */
+.skel-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--r-lg); overflow: hidden; }
+.skel { background: linear-gradient(90deg, var(--paper-2) 0%, var(--surface-2) 50%, var(--paper-2) 100%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skel-img { aspect-ratio: 4/5; }
+.skel-line { height: 13px; border-radius: 5px; margin: 0 16px; }
+.skel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+/* empty + 404 + toast */
+.state-box { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--r-lg); padding: 56px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.state-mark { width: 56px; height: 56px; border-radius: 999px; background: var(--gold-soft); color: var(--gold-deep); display: grid; place-items: center; margin-bottom: 8px; }
+.state-h { font-family: var(--font-display); font-weight: 600; font-size: 1.6rem; }
+.state-p { color: var(--ink-soft); max-width: 42ch; line-height: 1.55; }
+
+.err404 { background: var(--dark); color: var(--on-dark); border-radius: var(--r-lg); padding: 72px 32px; text-align: center; }
+.err404 .big { font-family: var(--font-display); font-weight: 600; font-size: clamp(4rem, 12vw, 8rem); line-height: 1; letter-spacing: -0.03em; }
+.err404 .big span { color: var(--gold); }
+.err404 .err-h { font-family: var(--font-display); font-size: 1.7rem; margin: 8px 0 10px; color: var(--on-dark); }
+.err404 p { color: var(--on-dark-soft); margin: 0 auto 24px; max-width: 40ch; }
+
+.toast { display: inline-flex; align-items: center; gap: 12px; background: var(--surface-2); border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: var(--r-sm); padding: 14px 18px; box-shadow: var(--shadow-md); max-width: 380px; }
+.toast.ok { border-left-color: oklch(0.6 0.09 156); }
+.toast.bad { border-left-color: oklch(0.58 0.18 25); }
+.toast-ic { flex-shrink: 0; }
+.toast-ic.ok { color: oklch(0.7 0.09 156); }
+.toast-ic.bad { color: oklch(0.62 0.18 25); }
+.toast strong { display: block; font-size: 0.92rem; }
+.toast span { font-size: 0.84rem; color: var(--ink-soft); }
+
+/* auth preview */
+.auth-stage { background: var(--dark); border-radius: var(--r-lg); padding: 48px 24px; display: flex; justify-content: center; }
+.auth-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 36px; width: 100%; max-width: 400px; }
+.auth-brand { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 4px; }
+.auth-brand b { color: var(--gold); font-weight: 600; }
+.auth-h { font-family: var(--font-display); font-weight: 600; font-size: 1.9rem; letter-spacing: -0.02em; margin: 18px 0 4px; }
+.auth-sub { color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 24px; }
+.auth-foot { text-align: center; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line-soft); font-size: 0.9rem; color: var(--ink-soft); }
+.auth-foot a { color: var(--gold-deep); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .skel-grid { grid-template-columns: 1fr; }
+  .block-note { display: none; }
+}

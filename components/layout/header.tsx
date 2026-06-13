@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import { User as UserIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from './user-menu'
 import { MobileNav } from './mobile-nav'
 import { HeaderShell } from './header-shell'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import styles from '@/styles/header.module.css'
 
 export async function Header() {
@@ -21,45 +23,55 @@ export async function Header() {
 
   return (
     <HeaderShell>
-      <div className="container-base flex h-16 items-center justify-between">
+      <div className="container-base flex items-center justify-between w-full">
         {/* Logo */}
         <Link href="/" className={styles.logoLink}>
-          <span className={styles.logoStrong}>Strong</span>
-          <span className={styles.logoTower}>Tower</span>
+          <div className={styles.logoName}>
+            <span className={styles.logoStrong}>Strong</span>
+            <span className={styles.logoTower}>Tower</span>
+          </div>
           <span className={styles.logoHoldings}>Holdings</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className={`hidden md:flex ${styles.nav}`}>
+        <nav className={styles.nav}>
           <Link href="/properties" className={styles.navLink}>
-            Browse Properties
+            Properties
+          </Link>
+          <Link href="/how-it-works" className={styles.navLink}>
+            How it works
+          </Link>
+          <Link href="/why-us" className={styles.navLink}>
+            Why us
           </Link>
           <Link href="/blog" className={styles.navLink}>
-            Blog
+            Journal
           </Link>
-
           {isAdmin && (
             <Link href="/admin" className={styles.navLinkAccent}>
-              Admin Panel
+              Admin
             </Link>
           )}
+        </nav>
 
+        {/* Right side actions */}
+        <div className={styles.navActions}>
+          <ThemeToggle />
           {user ? (
             <UserMenu user={user} />
           ) : (
             <>
-              <Link href="/login" className={styles.navLink}>
-                Login
+              <Link href="/login" className={styles.loginLink}>
+                <UserIcon className="w-4 h-4" />
+                Log in
               </Link>
               <Link href="/register" className={styles.ctaButton}>
-                List Property
+                List a property
               </Link>
             </>
           )}
-        </nav>
-
-        {/* Mobile Navigation */}
-        <MobileNav user={user} isAdmin={isAdmin} />
+          <MobileNav user={user} isAdmin={isAdmin} />
+        </div>
       </div>
     </HeaderShell>
   )
