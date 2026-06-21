@@ -3,8 +3,8 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { PropertyType, PropertyFeatures, HouseType, BedroomCategory, LandSizeUnit } from '@/lib/types'
-import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS } from '@/lib/constants'
+import { PropertyType, PropertyFeatures, HouseType, BedroomCategory, LandSizeUnit, ListingCategory } from '@/lib/types'
+import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS, LISTING_CATEGORIES } from '@/lib/constants'
 import { geocodeAddress } from '@/lib/geocode'
 import styles from '@/styles/admin.module.css'
 
@@ -19,6 +19,7 @@ export default function NewPropertyPage() {
     title: '',
     description: '',
     property_type: 'house' as PropertyType,
+    listing_category: '' as ListingCategory | '',
     listing_type: 'sale',
     price_min: '',
     price_max: '',
@@ -81,6 +82,7 @@ export default function NewPropertyPage() {
         title: formData.title,
         description: formData.description,
         property_type: formData.property_type,
+        listing_category: formData.listing_category || null,
         price_min: parseInt(formData.price_min),
         price_max: formData.price_max ? parseInt(formData.price_max) : null,
         country: 'Nigeria',
@@ -168,17 +170,24 @@ export default function NewPropertyPage() {
                   <input className={styles.formInput} placeholder="e.g. Modern Minimalist Villa in Lekki Phase 1" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
                 </div>
 
-                {/* Category + Listing Type */}
-                <div className={styles.formGrid}>
-                  <div>
-                    <label className={styles.formLabel}>Category</label>
-                    <select className={styles.formSelect} value={formData.property_type} onChange={e => setFormData({ ...formData, property_type: e.target.value as PropertyType })}>
-                      <option value="house">House</option>
-                      <option value="land">Land</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className={styles.formLabel}>Listing Type</label>
+                {/* Category */}
+                <div>
+                  <label className={styles.formLabel}>Listing Category</label>
+                  <select className={styles.formSelect} value={formData.listing_category} onChange={e => {
+                    const val = e.target.value as ListingCategory
+                    const cat = LISTING_CATEGORIES.find(c => c.value === val)
+                    setFormData({ ...formData, listing_category: val, property_type: cat ? cat.propertyType : 'house' })
+                  }} required>
+                    <option value="">Select Category</option>
+                    {LISTING_CATEGORIES.map(c => (
+                      <option key={c.value} value={c.value}>{c.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Listing Type */}
+                <div>
+                  <label className={styles.formLabel}>Listing Type</label>
                     <div className="flex bg-[var(--color-surface-2)] p-1 rounded-[6px]">
                       {['sale', 'rent'].map(t => (
                         <button key={t} type="button" onClick={() => setFormData({ ...formData, listing_type: t })}
@@ -188,7 +197,6 @@ export default function NewPropertyPage() {
                       ))}
                     </div>
                   </div>
-                </div>
 
                 {/* Price */}
                 <div className={styles.formGrid}>

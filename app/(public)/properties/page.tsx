@@ -9,11 +9,24 @@ export const metadata = {
   description: "Browse all available houses and land for sale across Nigeria",
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  'new-builds': 'New Builds',
+  'houses-rent': 'Houses & Apartments For Rent',
+  'houses-sale': 'Houses & Apartments For Sale',
+  'short-let': 'Short Let',
+  'land-rent': 'Land & Plots for Rent',
+  'land-sale': 'Land & Plots For Sale',
+  'event-centres': 'Event Centres, Venues & Workstations',
+  'commercial-rent': 'Commercial Property For Rent',
+  'commercial-sale': 'Commercial Property For Sale',
+}
+
 type SearchParams = {
   type?: string
   state?: string
   sort?: string
   verified?: string
+  cat?: string
 }
 
 export default async function PropertiesPage({
@@ -63,13 +76,8 @@ export default async function PropertiesPage({
 
   const list = typedProperties || []
 
-  const activeType = params.type || "all"
-  const displayTitle =
-    activeType === "all"
-      ? "All properties"
-      : activeType === "house"
-        ? "Houses"
-        : "Land"
+  const activeCat = params.cat
+  const displayTitle = activeCat ? CATEGORY_LABELS[activeCat] ?? "Properties" : "All properties"
 
   return (
     <div className={styles.page}>

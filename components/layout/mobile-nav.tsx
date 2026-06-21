@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/client'
 import styles from '@/styles/header.module.css'
 import { Menu, X, LogOut, MessageCircle, ArrowRight } from 'lucide-react'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
@@ -16,6 +17,7 @@ interface MobileNavProps {
 export function MobileNav({ user, isAdmin }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
 
   const openMenu = () => setIsOpen(true)
   const closeMenu = () => setIsOpen(false)
@@ -101,12 +103,16 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
                 </Link>
 
                 {user ? (
-                  <form action="/auth/signout" method="post">
-                    <button type="submit" onClick={closeMenu} className={styles.mobileLogInLink}>
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
-                    </button>
-                  </form>
+                  <button onClick={async () => {
+                    closeMenu()
+                    const supabase = createClient()
+                    await supabase.auth.signOut()
+                    router.push('/')
+                    router.refresh()
+                  }} className={styles.mobileLogInLink}>
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
                 ) : (
                   <Link href="/login" className={styles.mobileLogInLink} onClick={closeMenu}>
                     Log in
