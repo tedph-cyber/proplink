@@ -7,10 +7,29 @@ import { NIGERIAN_STATES } from '@/lib/constants'
 import styles from '@/styles/properties.module.css'
 
 const CATEGORIES = [
-  { value: 'all', label: 'All', icon: 'grid' },
-  { value: 'house', label: 'House', icon: 'home' },
-  { value: 'land', label: 'Land', icon: 'ruler' },
+  { value: 'all', label: 'All' },
+  { value: 'new-builds', label: 'New Builds' },
+  { value: 'houses-rent', label: 'Houses & Apartments For Rent' },
+  { value: 'houses-sale', label: 'Houses & Apartments For Sale' },
+  { value: 'short-let', label: 'Short Let' },
+  { value: 'land-rent', label: 'Land & Plots for Rent' },
+  { value: 'land-sale', label: 'Land & Plots For Sale' },
+  { value: 'event-centres', label: 'Event Centres, Venues & Workstations' },
+  { value: 'commercial-rent', label: 'Commercial Property For Rent' },
+  { value: 'commercial-sale', label: 'Commercial Property For Sale' },
 ] as const
+
+const CATEGORY_TO_TYPE: Record<string, string | undefined> = {
+  'new-builds': 'house',
+  'houses-rent': 'house',
+  'houses-sale': 'house',
+  'short-let': 'house',
+  'land-rent': 'land',
+  'land-sale': 'land',
+  'event-centres': 'house',
+  'commercial-rent': 'house',
+  'commercial-sale': 'house',
+}
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest first' },
@@ -46,7 +65,8 @@ export function PropertiesToolbar({ currentType, currentState, currentSort, veri
   )
 
   const handleCategory = (val: string) => {
-    router.push(buildHref({ type: val === 'all' ? undefined : val }))
+    const type = val === 'all' ? undefined : CATEGORY_TO_TYPE[val]
+    router.push(buildHref({ type, cat: val === 'all' ? undefined : val }))
   }
 
   const handleState = (val: string) => {
@@ -68,7 +88,7 @@ export function PropertiesToolbar({ currentType, currentState, currentSort, veri
     router.push(buildHref({ sort: val === 'newest' ? undefined : val }))
   }
 
-  const activeCat = currentType || 'all'
+  const activeCat = searchParams.get('cat') || 'all'
 
   return (
     <div className={styles.toolbar}>

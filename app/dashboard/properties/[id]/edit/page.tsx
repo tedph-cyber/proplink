@@ -6,8 +6,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { PropertyType, PropertyFeatures, Property, PropertyMedia, HouseType, BedroomCategory, LandSizeUnit } from '@/lib/types'
-import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS } from '@/lib/constants'
+import { PropertyType, PropertyFeatures, Property, PropertyMedia, HouseType, BedroomCategory, LandSizeUnit, ListingCategory } from '@/lib/types'
+import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS, LISTING_CATEGORIES } from '@/lib/constants'
 import styles from '@/styles/admin.module.css'
 
 export default function EditPropertyPage({ params }: { params: Promise<{ id: string }> }) {
@@ -25,6 +25,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     title: '',
     description: '',
     property_type: 'house' as PropertyType,
+    listing_category: '' as ListingCategory | '',
     price_min: '',
     price_max: '',
     country: 'Nigeria',
@@ -87,6 +88,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
         title: prop.title,
         description: prop.description,
         property_type: prop.property_type,
+        listing_category: (prop.listing_category as ListingCategory | '') || '',
         price_min: prop.price_min.toString(),
         price_max: prop.price_max?.toString() || '',
         country: prop.country,
@@ -206,6 +208,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           title: formData.title,
           description: formData.description,
           property_type: formData.property_type,
+          listing_category: formData.listing_category || null,
           price_min: parseInt(formData.price_min),
           price_max: formData.price_max ? parseInt(formData.price_max) : null,
           country: 'Nigeria',
@@ -329,20 +332,26 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
             />
           </div>
 
-          {/* Property Type + Status */}
+          {/* Category + Status */}
           <div className={styles.editGrid}>
             <div>
               <label className={styles.editLabel}>
-                Property Type <span className={styles.editLabelRequired}>*</span>
+                Listing Category <span className={styles.editLabelRequired}>*</span>
               </label>
               <select
                 required
-                value={formData.property_type}
-                onChange={(e) => setFormData({ ...formData, property_type: e.target.value as PropertyType })}
+                value={formData.listing_category}
+                onChange={(e) => {
+                  const val = e.target.value as ListingCategory
+                  const cat = LISTING_CATEGORIES.find(c => c.value === val)
+                  setFormData({ ...formData, listing_category: val, property_type: cat ? cat.propertyType : 'house' })
+                }}
                 className={styles.editSelect}
               >
-                <option value="house">House</option>
-                <option value="land">Land</option>
+                <option value="">Select Category</option>
+                {LISTING_CATEGORIES.map(c => (
+                  <option key={c.value} value={c.value}>{c.label}</option>
+                ))}
               </select>
             </div>
             <div>

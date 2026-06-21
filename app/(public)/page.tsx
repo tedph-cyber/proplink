@@ -41,6 +41,15 @@ function SearchBar() {
               <option value="">All types</option>
               <option value="house">House</option>
               <option value="land">Land</option>
+              <option value="commercial">Commercial</option>
+              <option value="rental">Rental</option>
+              <option value="apartment">Apartment</option>
+              <option value="duplex">Duplex</option>
+              <option value="block of flats">Block of flats</option>
+              <option value="mini flat">Mini flat</option>
+              <option value="studio apartment">Studio apartment</option>
+              <option value="town-house">Town-house</option>
+              <option value="shared apartment">Shared apartment</option>
             </select>
           </div>
         </label>

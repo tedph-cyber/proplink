@@ -23,6 +23,17 @@ export interface Profile {
 
 export type PropertyType = 'house' | 'land'
 
+export type ListingCategory =
+  | 'new-builds'
+  | 'houses-rent'
+  | 'houses-sale'
+  | 'short-let'
+  | 'land-rent'
+  | 'land-sale'
+  | 'event-centres'
+  | 'commercial-rent'
+  | 'commercial-sale'
+
 // House categorization enums
 export type HouseType = 
   | 'duplex' 
@@ -61,6 +72,7 @@ export interface Property {
   title: string
   description: string
   property_type: PropertyType
+  listing_category?: ListingCategory | null
   price_min: number
   price_max?: number | null
   country: string

@@ -3,7 +3,7 @@
  * Includes state/LGA mapping, house types, bedroom categories, and land size units
  */
 
-import type { HouseType, BedroomCategory, LandSizeUnit } from './types'
+import type { HouseType, BedroomCategory, LandSizeUnit, ListingCategory } from './types'
 
 // ==================== Nigerian States & Local Governments ====================
 
@@ -347,3 +347,17 @@ export const NIGERIAN_STATES = [
   'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba',
   'Yobe', 'Zamfara'
 ] as const
+
+// ==================== Listing Categories ====================
+
+export const LISTING_CATEGORIES: Array<{ value: ListingCategory; label: string; propertyType: 'house' | 'land' }> = [
+  { value: 'new-builds', label: 'New Builds', propertyType: 'house' },
+  { value: 'houses-rent', label: 'Houses & Apartments For Rent', propertyType: 'house' },
+  { value: 'houses-sale', label: 'Houses & Apartments For Sale', propertyType: 'house' },
+  { value: 'short-let', label: 'Short Let', propertyType: 'house' },
+  { value: 'land-rent', label: 'Land & Plots for Rent', propertyType: 'land' },
+  { value: 'land-sale', label: 'Land & Plots For Sale', propertyType: 'land' },
+  { value: 'event-centres', label: 'Event Centres, Venues & Workstations', propertyType: 'house' },
+  { value: 'commercial-rent', label: 'Commercial Property For Rent', propertyType: 'house' },
+  { value: 'commercial-sale', label: 'Commercial Property For Sale', propertyType: 'house' },
+]

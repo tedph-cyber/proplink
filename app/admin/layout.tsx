@@ -18,11 +18,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .single()
 
   if (!profile || profile.role !== 'admin') {
-    console.log(`[ADMIN LAYOUT] BLOCKED user=${user.email} role=${profile?.role}`)
     redirect('/dashboard')
   }
-
-  console.log(`[ADMIN LAYOUT] ALLOWED user=${user.email} role=${profile?.role}`)
 
   return (
     <div className={styles.layout}>
