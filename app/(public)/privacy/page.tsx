@@ -1,8 +1,9 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Privacy Policy – PropLink',
-  description: 'How PropLink collects, uses, and protects your personal information.',
+  title: 'Privacy Policy',
+  description: 'How StrongTower Holdings collects, uses, and protects your personal information.',
+  robots: { index: false },
 }
 
 const LAST_UPDATED = 'March 2025'
@@ -96,7 +97,7 @@ export default function PrivacyPage() {
           <li><strong>Withdraw consent</strong> where processing is based on your consent</li>
         </ul>
         <p>
-          To exercise any of these rights, contact us at <a href="mailto:hello@proplink.ng">hello@proplink.ng</a>.
+          To exercise any of these rights, contact us at <a href="mailto:strongtowerholdingsglobal@gmail.com">strongtowerholdingsglobal@gmail.com</a>.
         </p>
 
         <h2>7. Third-Party Links</h2>
@@ -125,8 +126,8 @@ export default function PrivacyPage() {
           If you have any questions about this Privacy Policy or our data practices, please contact us:
         </p>
         <ul>
-          <li>Email: <a href="mailto:hello@proplink.ng">hello@proplink.ng</a></li>
-          <li>WhatsApp: +234 800 000 0000</li>
+          <li>Email: <a href="mailto:strongtowerholdingsglobal@gmail.com">strongtowerholdingsglobal@gmail.com</a></li>
+          <li>WhatsApp: +234 703 520 9012</li>
         </ul>
       </div>
 

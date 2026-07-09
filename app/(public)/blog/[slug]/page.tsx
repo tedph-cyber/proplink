@@ -37,19 +37,27 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
 
   const { data: post } = await supabase
     .from('blog_posts')
-    .select('title, excerpt, slug')
+    .select('title, excerpt, slug, featured_image, category')
     .eq('slug', slug)
     .eq('status', 'published')
     .single()
 
-  if (!post) return { title: 'Post Not Found — The Foundation' }
+  if (!post) return { title: 'Post Not Found' }
 
   return {
-    title: `${post.title} — The Foundation`,
+    title: post.title,
     description: post.excerpt ?? undefined,
     openGraph: {
       title: post.title,
       description: post.excerpt ?? undefined,
+      url: `https://strongtowerholdings.com.ng/blog/${slug}`,
+      images: post.featured_image ? [{ url: post.featured_image, width: 1200, height: 630 }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      images: post.featured_image ? [post.featured_image] : [],
     },
   }
 }

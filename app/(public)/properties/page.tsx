@@ -5,8 +5,10 @@ import { PropertiesToolbar } from "@/components/properties/properties-toolbar"
 import styles from "@/styles/properties.module.css"
 
 export const metadata = {
-  title: "Browse Properties | StrongTower Holdings",
+  title: "Browse Properties",
   description: "Browse all available houses and land for sale across Nigeria",
+  openGraph: { title: "Browse Properties — StrongTower Holdings", description: "Browse all available houses and land for sale across Nigeria" },
+  twitter: { card: 'summary_large_image' as const, title: "Browse Properties — StrongTower Holdings", description: "Browse all available houses and land for sale across Nigeria" },
 }
 
 const CATEGORY_LABELS: Record<string, string> = {

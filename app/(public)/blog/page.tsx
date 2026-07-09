@@ -7,8 +7,10 @@ import { StoryCard } from '@/components/blog/blog-card'
 import styles from '@/styles/blog.module.css'
 
 export const metadata: Metadata = {
-  title: 'The Foundation — StrongTower Journal',
+  title: 'The Foundation',
   description: 'Field notes on buying, building and owning property in Nigeria — written for people who would rather skip the agent.',
+  openGraph: { title: 'The Foundation — StrongTower Journal', description: 'Field notes on buying, building and owning property in Nigeria.' },
+  twitter: { card: 'summary_large_image', title: 'The Foundation — StrongTower Journal', description: 'Field notes on buying, building and owning property in Nigeria.' },
 }
 
 function formatDate(dateStr: string) {

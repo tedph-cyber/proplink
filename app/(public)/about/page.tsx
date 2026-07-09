@@ -3,8 +3,10 @@ import { SectionReveal, StaggerReveal, StaggerItem } from '@/components/ui/motio
 import styles from '@/styles/about.module.css'
 
 export const metadata = {
-  title: 'About Us – StrongTower Holdings',
+  title: 'About Us',
   description: 'Nigeria\'s direct property marketplace connecting buyers and sellers without the middleman.',
+  openGraph: { title: 'About Us', description: 'Nigeria\'s direct property marketplace connecting buyers and sellers without the middleman.' },
+  twitter: { card: 'summary_large_image' as const, title: 'About Us', description: 'Nigeria\'s direct property marketplace connecting buyers and sellers without the middleman.' },
 }
 
 const STATS = [
