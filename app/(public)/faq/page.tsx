@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { SectionReveal } from '@/components/ui/motion-wrappers'
+import styles from '@/styles/content.module.css'
 
 const FAQ_GROUPS = [
   {
@@ -17,15 +19,11 @@ const FAQ_GROUPS = [
       },
       {
         q: 'Are the prices negotiable?',
-        a: 'That\'s between you and the seller. PropLink shows the price the seller has listed, which may be a range (min–max). Negotiation happens directly in your WhatsApp conversation.',
+        a: 'That\'s between you and the seller. StrongTower Holdings shows the price the seller has listed, which may be a range (min–max). Negotiation happens directly in your WhatsApp conversation.',
       },
       {
         q: 'How do I know a listing is genuine?',
         a: 'Sellers are required to provide accurate information and real photos. If you suspect a fraudulent listing, contact us immediately via WhatsApp or email and we will investigate.',
-      },
-      {
-        q: 'Can I save or bookmark properties?',
-        a: 'This feature is coming soon. For now, you can share a property\'s URL or screenshot it for future reference.',
       },
     ],
   },
@@ -34,7 +32,7 @@ const FAQ_GROUPS = [
     items: [
       {
         q: 'How much does it cost to list a property?',
-        a: 'Listing a property on PropLink is completely free. There are no listing fees, no commissions, and no hidden charges.',
+        a: 'Listing a property on StrongTower Holdings is completely free. There are no listing fees, no commissions, and no hidden charges.',
       },
       {
         q: 'How do I list a property?',
@@ -50,7 +48,7 @@ const FAQ_GROUPS = [
       },
       {
         q: 'Can I list land as well as houses?',
-        a: 'Yes. PropLink supports both residential houses and land plots. Each type has specific fields — for houses: bedrooms, bathrooms, house type; for land: size and unit (sqm, acres, plots, etc.).',
+        a: 'Yes. StrongTower Holdings supports both residential houses and land plots. Each type has specific fields — for houses: bedrooms, bathrooms, house type; for land: size and unit (sqm, acres, plots, etc.).',
       },
       {
         q: 'What happens after I list a property?',
@@ -67,15 +65,11 @@ const FAQ_GROUPS = [
       },
       {
         q: 'Why is a WhatsApp number required?',
-        a: 'WhatsApp is the primary way buyers contact sellers on PropLink. Without a valid WhatsApp number, buyers cannot reach you. Make sure you include your country code (e.g., 2348012345678 for Nigeria).',
+        a: 'WhatsApp is the primary way buyers contact sellers on StrongTower Holdings. Without a valid WhatsApp number, buyers cannot reach you. Make sure you include your country code (e.g., 2348012345678 for Nigeria).',
       },
       {
         q: 'Can I change my WhatsApp number later?',
         a: 'Yes. Go to Dashboard → Profile Settings and update your WhatsApp number at any time. The change will reflect on all your active listings immediately.',
-      },
-      {
-        q: 'I forgot my password. How do I reset it?',
-        a: 'On the login page, click "Forgot password?" (coming soon) or contact us via WhatsApp and we\'ll help you recover your account.',
       },
     ],
   },
@@ -83,16 +77,16 @@ const FAQ_GROUPS = [
     group: 'Platform & Safety',
     items: [
       {
-        q: 'Is PropLink available outside Nigeria?',
-        a: 'PropLink is currently focused on the Nigerian property market. All listings are within Nigeria. We may expand to other African markets in the future.',
+        q: 'Is StrongTower Holdings available outside Nigeria?',
+        a: 'StrongTower Holdings is currently focused on the Nigerian property market. All listings are within Nigeria. We may expand to other African markets in the future.',
       },
       {
         q: 'How do I report a suspicious listing?',
         a: 'Contact us immediately via WhatsApp (+234 703 520 9012) or email (strongtowerholdingsglobal@gmail.com) with the listing URL. We investigate all reports promptly.',
       },
       {
-        q: 'Does PropLink handle payments or escrow?',
-        a: 'No. PropLink is a listing and discovery platform. All payment arrangements are made directly between buyer and seller. We strongly advise verifying a property in person before making any payment.',
+        q: 'Does StrongTower Holdings handle payments or escrow?',
+        a: 'No. StrongTower Holdings is a listing and discovery platform. All payment arrangements are made directly between buyer and seller. We strongly advise verifying a property in person before making any payment.',
       },
     ],
   },
@@ -101,70 +95,93 @@ const FAQ_GROUPS = [
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border border-zinc-200 rounded-xl overflow-hidden">
+    <div className={styles.faqItem}>
       <button
-        className="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-semibold text-zinc-900 hover:bg-zinc-50 transition-colors"
+        className={`${styles.faqQuestion} ${open ? styles.faqQuestionOpen : ''}`}
         onClick={() => setOpen(!open)}
       >
         <span>{q}</span>
         <svg
-          className={`h-4 w-4 text-zinc-400 shrink-0 ml-3 transition-transform ${open ? 'rotate-180' : ''}`}
-          fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          className={`${styles.faqIcon} ${open ? styles.faqIconOpen : ''}`}
+          width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v14M5 12h14" />
         </svg>
       </button>
-      {open && (
-        <div className="px-5 pb-4 text-sm text-zinc-500 leading-relaxed border-t border-zinc-100 bg-zinc-50/40 pt-3">
-          {a}
-        </div>
-      )}
+      <div
+        className={styles.faqAnswer}
+        style={{ maxHeight: open ? '300px' : '0' }}
+      >
+        <div className={styles.faqAnswerInner}>{a}</div>
+      </div>
     </div>
   )
 }
 
 export default function FaqPage() {
   return (
-    <div className="flex flex-col">
-      {/* Hero */}
-      <section className="bg-gradient-to-b from-zinc-50 to-white py-14 border-b border-zinc-100">
-        <div className="container mx-auto px-4 max-w-2xl text-center">
-          <h1 className="text-4xl font-bold text-zinc-900 mb-3">Frequently Asked Questions</h1>
-          <p className="text-zinc-500 text-lg">Everything you need to know about buying and selling on PropLink.</p>
-        </div>
+    <div>
+      <section className={styles.hero}>
+        <div className={styles.heroBg}><div className={styles.heroBgGradient} /></div>
+        <SectionReveal>
+          <div className={styles.heroInner}>
+            <span className={styles.heroBadge}>FAQ</span>
+            <h1 className={styles.heroTitle}>
+              Frequently Asked <span className={styles.heroTitleEm}>Questions</span>
+            </h1>
+            <p className={styles.heroDesc}>
+              Everything you need to know about buying, selling, and using StrongTower Holdings.
+            </p>
+          </div>
+        </SectionReveal>
       </section>
 
-      {/* FAQ Groups */}
-      <section className="py-14 bg-white">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <div className="space-y-12">
-            {FAQ_GROUPS.map(group => (
-              <div key={group.group}>
-                <h2 className="text-xl font-bold text-zinc-900 mb-5">{group.group}</h2>
-                <div className="space-y-3">
+      <section className={`${styles.section} ${styles.sectionAlt}`}>
+        <div className={styles.sectionInner}>
+          <SectionReveal>
+            <div style={{ maxWidth: 800, marginInline: 'auto' }}>
+              {FAQ_GROUPS.map(group => (
+                <div key={group.group} className={styles.faqGroup}>
+                  <h2 className={styles.faqGroupTitle}>{group.group}</h2>
                   {group.items.map(item => (
                     <FaqItem key={item.q} q={item.q} a={item.a} />
                   ))}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </SectionReveal>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionInnerNarrow}>
+          <div style={{ textAlign: 'center' }}>
+            <h2 className={styles.ctaTitle} style={{ marginBottom: '0.75rem' }}>Still Have a Question?</h2>
+            <p className={styles.sectionSubtitle}>
+              Our team is available on WhatsApp and email to help with anything not covered here.
+            </p>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+            <Link href="/contact" className={styles.heroCtaPrimary}>
+              Contact Us
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Still have questions */}
-      <section className="py-12 bg-zinc-50 border-t border-zinc-100">
-        <div className="container mx-auto px-4 max-w-xl text-center">
-          <h2 className="text-xl font-bold text-zinc-900 mb-2">Still have a question?</h2>
-          <p className="text-sm text-zinc-500 mb-5">
-            Our team is available on WhatsApp and email to help with anything not covered here.
-          </p>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 rounded-full bg-[#0568fd] text-white px-6 py-2.5 text-sm font-semibold hover:bg-[#0568fd]/90 transition-colors"
-          >
-            Contact Us
-          </Link>
+      <section className={styles.ctaBanner}>
+        <div className={styles.ctaBg}><div className={styles.ctaBgPattern} /></div>
+        <div className={styles.ctaInner}>
+          <h2 className={styles.ctaTitle}>Ready to Get Started?</h2>
+          <p className={styles.ctaDesc}>Browse thousands of properties across Nigeria and connect with sellers directly.</p>
+          <div className={styles.ctaActions}>
+            <Link href="/properties" className={styles.ctaPrimary}>
+              Browse Properties
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </Link>
+            <Link href="/register" className={styles.ctaSecondary}>List for Free</Link>
+          </div>
         </div>
       </section>
     </div>
