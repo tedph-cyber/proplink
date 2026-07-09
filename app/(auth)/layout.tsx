@@ -1,5 +1,10 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import styles from "@/styles/auth.module.css";
+
+export const metadata: Metadata = {
+  robots: { index: false },
+};
 
 export default function AuthLayout({
   children,

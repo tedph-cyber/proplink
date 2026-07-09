@@ -371,8 +371,8 @@ export function SnapScroll({ panels }: SnapScrollProps) {
                   <li><Link href="/blog">Blog</Link></li>
                   <li><Link href="/register">List Property</Link></li>
                 </ul>
-                <a href="mailto:hello@strongtowerholdings.com" className={styles.footerContact}>
-                  hello@strongtowerholdings.com
+                <a href="mailto:strongtowerholdingsglobal@gmail.com" className={styles.footerContact}>
+                  strongtowerholdingsglobal@gmail.com
                 </a>
               </footer>
             </section>

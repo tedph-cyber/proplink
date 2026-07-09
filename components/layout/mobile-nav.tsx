@@ -121,7 +121,7 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
                 )}
 
                 <a
-                  href="https://wa.me/2348000000000"
+                  href="https://wa.me/2347035209012"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.mobileWhatsApp}
@@ -133,7 +133,7 @@ export function MobileNav({ user, isAdmin }: MobileNavProps) {
                 <ThemeToggle mobile />
 
                 <div className={styles.mobileContact}>
-                  hello@strongtowerholdings.com · Lagos · Abuja · Port Harcourt
+                  strongtowerholdingsglobal@gmail.com · Lagos · Abuja · Port Harcourt
                 </div>
               </div>
             </div>

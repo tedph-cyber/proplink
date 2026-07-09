@@ -1,6 +1,11 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+
+export const metadata: Metadata = {
+  robots: { index: false },
+}
 import { AdminSidebar } from '@/components/ui/admin-sidebar'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { LogoutButton } from '@/components/ui/logout-button'

@@ -17,9 +17,30 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "StrongTower Holdings — Find Your Perfect Property",
+  metadataBase: new URL('https://strongtowerholdings.com.ng'),
+  title: {
+    default: "StrongTower Holdings — Find Your Perfect Property",
+    template: "%s | StrongTower Holdings",
+  },
   description:
     "Browse houses and land for sale across Nigeria. Contact owners directly — no agents, no middlemen.",
+  openGraph: {
+    type: 'website',
+    locale: 'en_NG',
+    siteName: 'StrongTower Holdings',
+    title: "StrongTower Holdings — Find Your Perfect Property",
+    description:
+      "Browse houses and land for sale across Nigeria. Contact owners directly — no agents, no middlemen.",
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "StrongTower Holdings — Find Your Perfect Property",
+    description:
+      "Browse houses and land for sale across Nigeria. Contact owners directly — no agents, no middlemen.",
+  },
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

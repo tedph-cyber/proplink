@@ -1,6 +1,8 @@
 export const metadata = {
-  title: 'Contact Us – PropLink',
-  description: 'Get in touch with the PropLink team for support, partnerships, or general enquiries.',
+  title: 'Contact Us',
+  description: 'Get in touch with the StrongTower Holdings team for support, partnerships, or general enquiries.',
+  openGraph: { title: 'Contact Us', description: 'Get in touch with the StrongTower Holdings team for support, partnerships, or general enquiries.' },
+  twitter: { card: 'summary_large_image' as const, title: 'Contact Us', description: 'Get in touch with the StrongTower Holdings team for support, partnerships, or general enquiries.' },
 }
 
 const CONTACT_ITEMS = [
@@ -11,9 +13,9 @@ const CONTACT_ITEMS = [
       </svg>
     ),
     label: 'WhatsApp',
-    value: '+234 800 000 0000',
+    value: '+234 703 520 9012',
     description: 'Fastest response — available Mon–Sat, 8am–6pm WAT',
-    href: 'https://wa.me/2348000000000',
+    href: 'https://wa.me/2347035209012',
   },
   {
     icon: (
@@ -22,9 +24,9 @@ const CONTACT_ITEMS = [
       </svg>
     ),
     label: 'Email',
-    value: 'hello@proplink.ng',
+    value: 'strongtowerholdingsglobal@gmail.com',
     description: 'We reply within 24 hours on business days',
-    href: 'mailto:hello@proplink.ng',
+    href: 'mailto:strongtowerholdingsglobal@gmail.com',
   },
   {
     icon: (

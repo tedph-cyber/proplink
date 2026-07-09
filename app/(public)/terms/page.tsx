@@ -1,8 +1,9 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Terms of Service – PropLink',
-  description: 'The terms and conditions governing your use of the PropLink property marketplace.',
+  title: 'Terms of Service',
+  description: 'The terms and conditions governing your use of the StrongTower Holdings property marketplace.',
+  robots: { index: false },
 }
 
 const LAST_UPDATED = 'March 2025'
@@ -146,8 +147,8 @@ export default function TermsPage() {
           For questions about these Terms, contact us at:
         </p>
         <ul>
-          <li>Email: <a href="mailto:hello@proplink.ng">hello@proplink.ng</a></li>
-          <li>WhatsApp: +234 800 000 0000</li>
+          <li>Email: <a href="mailto:strongtowerholdingsglobal@gmail.com">strongtowerholdingsglobal@gmail.com</a></li>
+          <li>WhatsApp: +234 703 520 9012</li>
         </ul>
       </div>
 

@@ -88,7 +88,7 @@ const FAQ_GROUPS = [
       },
       {
         q: 'How do I report a suspicious listing?',
-        a: 'Contact us immediately via WhatsApp (+234 800 000 0000) or email (hello@proplink.ng) with the listing URL. We investigate all reports promptly.',
+        a: 'Contact us immediately via WhatsApp (+234 703 520 9012) or email (strongtowerholdingsglobal@gmail.com) with the listing URL. We investigate all reports promptly.',
       },
       {
         q: 'Does PropLink handle payments or escrow?',

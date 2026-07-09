@@ -28,15 +28,23 @@ async function getProperty(id: string) {
 export async function generateMetadata({ params }: PropertyPageProps): Promise<Metadata> {
   const { id } = await params
   const property = await getProperty(id)
-  if (!property) return { title: 'Property Not Found | StrongTower Holdings' }
+  if (!property) return { title: 'Property Not Found' }
 
   const images = (property.property_media || []).filter((m) => m.media_type === 'image')
   const coverImage = images[0]
+  const location = [property.city, property.lga, property.state].filter(Boolean).join(', ')
 
   return {
-    title: `${property.title} | StrongTower Holdings`,
+    title: property.title,
     description: truncateText(property.description, 160),
     openGraph: {
+      title: `${property.title} — ${property.property_type === 'house' ? 'House' : 'Land'} in ${location}`,
+      description: truncateText(property.description, 160),
+      url: `https://strongtowerholdings.com.ng/properties/${id}`,
+      images: coverImage ? [{ url: coverImage.media_url, width: 1200, height: 630 }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
       title: property.title,
       description: truncateText(property.description, 160),
       images: coverImage ? [coverImage.media_url] : [],
