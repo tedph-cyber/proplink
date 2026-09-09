@@ -6,6 +6,7 @@ import { Property, PropertyMedia, Profile } from '@/lib/types'
 import { generateWhatsAppLink, formatPriceRange, truncateText } from '@/lib/utils'
 import { PropertyGallery } from '@/components/properties/property-gallery'
 import { PropertyCard } from '@/components/properties/property-card'
+import { MapWrapper } from '@/components/properties/map-wrapper'
 import type { Metadata } from 'next'
 import styles from '@/styles/property-detail.module.css'
 
@@ -174,14 +175,22 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
             <section className={styles.section}>
               <h2>Where you&apos;ll be</h2>
-              <div className={styles.map}>
-                <span style={{ zIndex: 1, opacity: 0.5 }}>
-                  Map — {property.city || property.lga || property.state}
-                </span>
-                <div className={styles.mapPin}>
-                  <MapPin size={22} />
+              {property.latitude != null && property.longitude != null ? (
+                <MapWrapper
+                  lat={Number(property.latitude)}
+                  lng={Number(property.longitude)}
+                  label={property.title}
+                />
+              ) : (
+                <div className={styles.map}>
+                  <span style={{ zIndex: 1, opacity: 0.5 }}>
+                    Map — {property.city || property.lga || property.state}
+                  </span>
+                  <div className={styles.mapPin}>
+                    <MapPin size={22} />
+                  </div>
                 </div>
-              </div>
+              )}
               <p className={styles.mapNote}>
                 Exact location shared with serious enquirers after first contact, for the owner&apos;s privacy and safety.
               </p>

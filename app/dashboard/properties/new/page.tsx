@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { PropertyType, PropertyFeatures, HouseType, BedroomCategory, LandSizeUnit, ListingCategory } from '@/lib/types'
 import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS, LISTING_CATEGORIES } from '@/lib/constants'
-import { geocodeAddress } from '@/lib/geocode'
+import { geocodeAndUpdateProperty } from '@/lib/actions/geocode-property'
 import styles from '@/styles/admin.module.css'
 
 export default function NewPropertyPage() {
@@ -47,7 +47,7 @@ export default function NewPropertyPage() {
     if (files.length + mediaFiles.length > 10) { setError('Maximum 10 files'); return }
     const valid = files.filter(f => {
       if (!f.type.startsWith('image/') && !f.type.startsWith('video/')) { setError('Images and videos only'); return false }
-      if (f.size > 10 * 1024 * 1024) { setError('Files must be under 10MB'); return false }
+      if (f.size > 50 * 1024 * 1024) { setError('Files must be under 50MB'); return false }
       return true
     })
     setMediaFiles(p => [...p, ...valid])
@@ -107,15 +107,8 @@ export default function NewPropertyPage() {
         await supabase.from('property_media').insert({ property_id: property.id, media_url: publicUrl, media_type: isImage ? 'image' : 'video', display_order: i })
       }
 
-      // Geocode address for map display (non-blocking)
-      geocodeAddress(formData.city, formData.state, formData.lga).then((result) => {
-        if (result) {
-          supabase.from('properties').update({
-            latitude: result.lat,
-            longitude: result.lng,
-          }).eq('id', property.id).then()
-        }
-      })
+      // Geocode address for map display
+      await geocodeAndUpdateProperty(property.id, formData.city, formData.state, formData.lga)
 
       router.push('/dashboard/properties')
     } catch (err: any) {
@@ -330,12 +323,12 @@ export default function NewPropertyPage() {
               <form onSubmit={handleSubmit} className={styles.formFields}>
                 {/* Drop zone */}
                 <div>
-                  <label className={styles.formLabel}>Photos & Videos <span className={styles.formLabelHint}>max 10 files, 10MB each</span></label>
+                  <label className={styles.formLabel}>Photos & Videos <span className={styles.formLabelHint}>max 10 files, 50MB each</span></label>
                   <label className={styles.dropZone}>
                     <div className="flex flex-col items-center gap-2">
                       <svg className={styles.dropZoneIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       <span className={styles.dropZoneText}>Click to upload or drag & drop</span>
-                      <span className={styles.dropZoneSub}>JPG, PNG, MP4 up to 10MB</span>
+                      <span className={styles.dropZoneSub}>JPG, PNG, MP4 up to 50MB</span>
                     </div>
                     <input type="file" multiple accept="image/*,video/*" onChange={handleFileChange} className="hidden" />
                   </label>

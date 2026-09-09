@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MapPin, Bed, Bath, Ruler, Check, MessageCircle } from 'lucide-react'
+import { MapPin, Bed, Bath, Ruler, Check, MessageCircle, Play } from 'lucide-react'
 import { Property, PropertyMedia } from '@/lib/types'
 import { formatPriceRange, formatLocation, getBedroomLabel, formatLandSize } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -15,8 +15,9 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
-  const coverImage = property.property_media?.find(m => m.media_type === 'image')
-  const imageUrl = coverImage?.media_url || '/placeholder-property.svg'
+  const coverMedia = property.property_media?.find(m => m.media_type === 'image') || property.property_media?.[0]
+  const isVideo = coverMedia?.media_type === 'video'
+  const imageUrl = coverMedia?.media_url || '/placeholder-property.svg'
   const whatsappLink = generateWhatsAppLink(
     property.seller?.whatsapp_number || '',
     property.title,
@@ -26,7 +27,34 @@ export function PropertyCard({ property }: PropertyCardProps) {
   return (
     <div className={styles.card}>
       <Link href={`/properties/${property.id}`} className={styles.imageWrap}>
-        <img src={imageUrl} alt={property.title} />
+        {isVideo ? (
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <video src={imageUrl} muted preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(0,0,0,0.2)',
+              pointerEvents: 'none',
+            }}>
+              <div style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.9)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <Play size={18} fill="var(--color-text)" color="var(--color-text)" style={{ marginLeft: 2 }} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <img src={imageUrl} alt={property.title} />
+        )}
         <div className={styles.badgeWrap}>
           <Badge variant={property.property_type === 'house' ? 'typeHouse' : 'typeLand'}>
             {property.property_type === 'house' ? 'House' : 'Land'}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { ChevronLeft, ChevronRight, X, Grid3X3 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Grid3X3, Play } from 'lucide-react'
 import { PropertyMedia } from '@/lib/types'
 
 interface PropertyGalleryProps {
@@ -9,13 +9,79 @@ interface PropertyGalleryProps {
   title: string
 }
 
+function MediaThumb({ item, title, onClick }: { item: PropertyMedia; title: string; onClick?: () => void }) {
+  if (item.media_type === 'video') {
+    return (
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          cursor: onClick ? 'pointer' : undefined,
+          width: '100%',
+          height: '100%',
+        }}
+        onClick={onClick}
+      >
+        <video
+          src={item.media_url}
+          muted
+          preload="metadata"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transition: 'transform 0.8s var(--ease-base)',
+          }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)' }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)' }}
+        />
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(0,0,0,0.25)',
+          pointerEvents: 'none',
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          }}>
+            <Play size={22} fill="var(--color-text)" color="var(--color-text)" style={{ marginLeft: 2 }} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <img
+      src={item.media_url}
+      alt={title}
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        transition: 'transform 0.8s var(--ease-base)',
+      }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)' }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)' }}
+    />
+  )
+}
+
 export function PropertyGallery({ media, title }: PropertyGalleryProps) {
-  const images = media.filter((m) => m.media_type === 'image')
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
-  const mainImage = images[0]
-  const sideImages = images.slice(1, 4)
+  const mainItem = media[0]
+  const sideItems = media.slice(1, 4)
 
   const openLightbox = useCallback((index: number) => {
     setLightboxIndex(index)
@@ -27,14 +93,14 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
   }, [])
 
   const prev = useCallback(() => {
-    setLightboxIndex((i) => (i === 0 ? images.length - 1 : i - 1))
-  }, [images.length])
+    setLightboxIndex((i) => (i === 0 ? media.length - 1 : i - 1))
+  }, [media.length])
 
   const next = useCallback(() => {
-    setLightboxIndex((i) => (i === images.length - 1 ? 0 : i + 1))
-  }, [images.length])
+    setLightboxIndex((i) => (i === media.length - 1 ? 0 : i + 1))
+  }, [media.length])
 
-  if (images.length === 0) {
+  if (media.length === 0) {
     return (
       <div style={{
         aspectRatio: '16/8',
@@ -46,10 +112,12 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
         color: 'var(--color-text-hint)',
         marginBottom: 32,
       }}>
-        No images available
+        No media available
       </div>
     )
   }
+
+  const currentItem = media[lightboxIndex]
 
   return (
     <>
@@ -63,7 +131,7 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
         overflow: 'hidden',
         marginBottom: 32,
       }}>
-        {/* Main image */}
+        {/* Main item */}
         <div
           className="gallery-main"
           style={{
@@ -75,24 +143,13 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
           }}
           onClick={() => openLightbox(0)}
         >
-          <img
-            src={mainImage.media_url}
-            alt={title}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.8s var(--ease-base)',
-            }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)' }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)' }}
-          />
+          <MediaThumb item={mainItem} title={title} />
         </div>
 
-        {/* Side images */}
+        {/* Side items */}
         {[0, 1, 2].map((i) => {
-          const img = sideImages[i]
-          if (!img) {
+          const item = sideItems[i]
+          if (!item) {
             return (
               <div key={`empty-${i}`} style={{
                 position: 'relative',
@@ -102,10 +159,10 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
               }} />
             )
           }
-          const isLast = i === 2 && images.length > 4
+          const isLast = i === 2 && media.length > 4
           return (
             <div
-              key={img.id}
+              key={item.id}
               style={{
                 position: 'relative',
                 overflow: 'hidden',
@@ -113,18 +170,7 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
               }}
               onClick={() => openLightbox(i + 1)}
             >
-              <img
-                src={img.media_url}
-                alt={`${title} ${i + 2}`}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  transition: 'transform 0.8s var(--ease-base)',
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)' }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)' }}
-              />
+              <MediaThumb item={item} title={`${title} ${i + 2}`} />
               {isLast && (
                 <button
                   style={{
@@ -144,6 +190,7 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
                     border: 'none',
                     cursor: 'pointer',
                     fontFamily: 'var(--font-body)',
+                    zIndex: 2,
                   }}
                   onClick={(e) => {
                     e.stopPropagation()
@@ -151,7 +198,7 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
                   }}
                 >
                   <Grid3X3 size={16} />
-                  Show all photos
+                  Show all
                 </button>
               )}
             </div>
@@ -216,17 +263,32 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
             <ChevronLeft size={22} />
           </button>
 
-          <img
-            src={images[lightboxIndex]?.media_url}
-            alt={`${title} ${lightboxIndex + 1}`}
-            style={{
-              maxWidth: '90vw',
-              maxHeight: '85vh',
-              objectFit: 'contain',
-              borderRadius: 8,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
+          {currentItem?.media_type === 'video' ? (
+            <video
+              key={currentItem.id}
+              src={currentItem.media_url}
+              controls
+              autoPlay
+              style={{
+                maxWidth: '90vw',
+                maxHeight: '85vh',
+                borderRadius: 8,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <img
+              src={currentItem?.media_url}
+              alt={`${title} ${lightboxIndex + 1}`}
+              style={{
+                maxWidth: '90vw',
+                maxHeight: '85vh',
+                objectFit: 'contain',
+                borderRadius: 8,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
 
           <button
             style={{
@@ -261,7 +323,7 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
               fontFamily: 'var(--font-body)',
             }}
           >
-            {lightboxIndex + 1} / {images.length}
+            {lightboxIndex + 1} / {media.length}
           </div>
         </div>
       )}
