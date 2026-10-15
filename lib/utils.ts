@@ -34,21 +34,27 @@ export function formatPriceRange(
 }
 
 /**
- * Generate WhatsApp message link
+ * Build a WhatsApp click-to-chat link with an optional pre-filled message
+ */
+export function buildWhatsAppLink(phoneNumber: string, message?: string): string {
+  // Remove any non-digit characters from phone number
+  const cleanNumber = phoneNumber.replace(/\D/g, '')
+  const query = message ? `?text=${encodeURIComponent(message)}` : ''
+  return `https://wa.me/${cleanNumber}${query}`
+}
+
+/**
+ * Generate WhatsApp message link for a property enquiry
  */
 export function generateWhatsAppLink(
   phoneNumber: string,
   propertyTitle: string,
   propertyId: string
 ): string {
-  // Remove any non-digit characters from phone number
-  const cleanNumber = phoneNumber.replace(/\D/g, '')
-  
-  const message = encodeURIComponent(
+  return buildWhatsAppLink(
+    phoneNumber,
     `Hi, I'm interested in your property: ${propertyTitle} (ID: ${propertyId})`
   )
-  
-  return `https://wa.me/${cleanNumber}?text=${message}`
 }
 
 /**
