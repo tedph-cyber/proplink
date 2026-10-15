@@ -1,0 +1,282 @@
+/* ── How We Can Help — intent accordion ─────────────── */
+
+.section {
+  background: var(--color-surface);
+  padding: clamp(56px, 9vw, 116px) 0;
+}
+
+/* ── Section head ──────────────────────────────────── */
+.head {
+  max-width: 720px;
+  margin-bottom: clamp(28px, 4vw, 52px);
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin: 0 0 14px;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  margin: 0;
+}
+
+.title {
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.title em {
+  font-style: normal;
+  color: var(--color-accent);
+}
+
+.sub {
+  margin: 18px 0 0;
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 58ch;
+  text-wrap: pretty;
+}
+
+/* ── Accordion ─────────────────────────────────────── */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: rgba(245, 240, 232, 0.03);
+  overflow: hidden;
+  transition: border-color 0.3s var(--ease-base), background 0.3s var(--ease-base);
+}
+
+.card:hover {
+  border-color: var(--color-border-hover);
+}
+
+.cardOpen {
+  background: var(--color-surface-2);
+  border-color: rgba(196, 98, 45, 0.4);
+}
+
+.cardHeading {
+  margin: 0;
+}
+
+.cardButton {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  color: var(--color-text);
+}
+
+.cardButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.cardIcon {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--color-accent-muted);
+  color: var(--color-accent-hover);
+  display: grid;
+  place-items: center;
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardEyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.cardHeadline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.chevron {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
+  transition: transform 0.35s var(--ease-base), color 0.3s var(--ease-base);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: var(--color-accent);
+}
+
+/* ── Expandable panel ──────────────────────────────── */
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.42s var(--ease-base);
+}
+
+.panelOpen {
+  grid-template-rows: 1fr;
+}
+
+.panelInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.panelBody {
+  padding: 0 24px 28px;
+}
+
+.standfirst {
+  margin: 0 0 24px;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+/* ── Funnel steps ──────────────────────────────────── */
+.funnel {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 18px;
+  counter-reset: funnel;
+}
+
+.funnelStep {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.funnelNum {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-muted);
+  color: var(--color-accent);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.funnelText {
+  display: block;
+}
+
+.funnelTitle {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+  color: var(--color-text);
+}
+
+.funnelBody {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+/* ── WhatsApp CTA ──────────────────────────────────── */
+.waBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 13px 26px;
+  border-radius: var(--radius-pill);
+  background: var(--color-whatsapp);
+  color: var(--color-whatsapp-on);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: transform 0.35s var(--ease-base), background 0.3s var(--ease-base);
+}
+
+.waBtn:hover {
+  background: var(--color-whatsapp-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 860px) {
+  .funnel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cardButton {
+    padding: 18px 18px;
+    gap: 14px;
+  }
+  .cardIcon {
+    width: 42px;
+    height: 42px;
+  }
+  .panelBody {
+    padding: 0 18px 24px;
+  }
+}
+
+@media (max-width: 560px) {
+  .funnel {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .cardHeadline {
+    font-size: 1.05rem;
+  }
+  .waBtn {
+    width: 100%;
+  }
+}

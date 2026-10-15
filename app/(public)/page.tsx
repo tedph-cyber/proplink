@@ -12,6 +12,7 @@ import { createClient } from '@/lib/supabase/client'
 import { NIGERIAN_STATES } from '@/lib/constants'
 import type { Property, PropertyMedia, BlogPost } from '@/lib/types'
 import { PropertyCard } from '@/components/properties/property-card'
+import { HowWeHelp } from '@/components/home/how-we-help'
 import { Button } from '@/components/ui/button'
 import styles from '@/styles/home.module.css'
 
@@ -327,25 +328,7 @@ export default function Home() {
       </section>
 
       {/* ═══════ HOW IT WORKS ═══════ */}
-      <section className={`${styles.section} ${styles.howSection}`} id="how">
-        <div className="wrap">
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(32px,5vw,64px)' }}>
-            <p className={styles.eyebrow}>How it works</p>
-            <h2 className={styles.display} style={{ fontSize: 'clamp(2.1rem,4.5vw,3.6rem)', marginTop: 10 }}>
-              From <em>discovery</em> to closing
-            </h2>
-          </div>
-          <div className={styles.howGrid}>
-            {steps.map(s => (
-              <div key={s.n} className={styles.howStep}>
-                <span className={styles.howNum}>{s.n}</span>
-                <h3>{s.title}</h3>
-                <p>{s.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HowWeHelp />
 
       {/* ═══════ WHY US ═══════ */}
       <section className={styles.section} id="why">

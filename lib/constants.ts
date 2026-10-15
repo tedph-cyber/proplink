@@ -5,6 +5,11 @@
 
 import type { HouseType, BedroomCategory, LandSizeUnit, ListingCategory } from './types'
 
+// ==================== Company Contact ====================
+
+/** StrongTower Holdings WhatsApp number, international format, digits only. */
+export const COMPANY_WHATSAPP = '2347035209012'
+
 // ==================== Nigerian States & Local Governments ====================
 
 export const STATE_LGA_MAPPING: Record<string, string[]> = {
