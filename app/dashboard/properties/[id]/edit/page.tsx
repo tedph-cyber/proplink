@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { PropertyType, PropertyFeatures, Property, PropertyMedia, HouseType, BedroomCategory, LandSizeUnit, ListingCategory } from '@/lib/types'
 import { NIGERIAN_STATES, STATE_LGA_MAPPING_SIMPLIFIED, HOUSE_TYPES, BEDROOM_CATEGORIES, LAND_SIZE_UNITS, LISTING_CATEGORIES } from '@/lib/constants'
+import { geocodeAndUpdateProperty } from '@/lib/actions/geocode-property'
 import styles from '@/styles/admin.module.css'
 
 export default function EditPropertyPage({ params }: { params: Promise<{ id: string }> }) {
@@ -124,14 +125,14 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     const validFiles = files.filter(file => {
       const isImage = file.type.startsWith('image/')
       const isVideo = file.type.startsWith('video/')
-      const isUnder10MB = file.size <= 10 * 1024 * 1024
+      const isUnder50MB = file.size <= 50 * 1024 * 1024
       
       if (!isImage && !isVideo) {
         setError('Only images and videos are allowed')
         return false
       }
-      if (!isUnder10MB) {
-        setError('Files must be under 10MB')
+      if (!isUnder50MB) {
+        setError('Files must be under 50MB')
         return false
       }
       return true
@@ -276,6 +277,9 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           if (mediaError) throw mediaError
         }
       }
+
+      // Geocode address for map display
+      await geocodeAndUpdateProperty(propertyId, formData.city, formData.state, formData.lga)
 
       router.push('/dashboard/properties')
     } catch (err: any) {

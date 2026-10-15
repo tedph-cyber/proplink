@@ -15,12 +15,13 @@ export function PropertyMap({ lat, lng, label, className }: PropertyMapProps) {
 
   useEffect(() => {
     if (mapInstanceRef.current) return
+    let cancelled = false
 
     async function initMap() {
       const L = (await import('leaflet')).default
       await import('leaflet/dist/leaflet.css')
 
-      if (!mapRef.current) return
+      if (cancelled || !mapRef.current || mapInstanceRef.current) return
 
       const icon = L.divIcon({
         className: '',
@@ -32,7 +33,7 @@ export function PropertyMap({ lat, lng, label, className }: PropertyMapProps) {
       const map = L.map(mapRef.current, {
         center: [lat, lng],
         zoom: 14,
-        scrollWheelZoom: false,
+        scrollWheelZoom: true,
         attributionControl: false,
       })
 
@@ -50,6 +51,7 @@ export function PropertyMap({ lat, lng, label, className }: PropertyMapProps) {
     initMap()
 
     return () => {
+      cancelled = true
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
         mapInstanceRef.current = null
